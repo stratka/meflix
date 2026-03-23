@@ -1,4 +1,9 @@
 export default async function handler(req: any, res: any) {
+  const key = process.env.TMDB_API_KEY;
+  if (!key) {
+    return res.status(500).json({ error: 'TMDB_API_KEY not set', env: Object.keys(process.env).filter(k => k.startsWith('TMDB')) });
+  }
+
   const pathParts = req.query.path;
   const tmdbPath = Array.isArray(pathParts) ? pathParts.join('/') : (pathParts || '');
 
@@ -11,13 +16,13 @@ export default async function handler(req: any, res: any) {
   try {
     const response = await fetch(url.toString(), {
       headers: {
-        Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+        Authorization: `Bearer ${key}`,
         'Content-Type': 'application/json',
       },
     });
     const data = await response.json();
     res.status(response.status).json(data);
-  } catch {
-    res.status(500).json({ error: 'Failed to fetch from TMDB' });
+  } catch (err: any) {
+    res.status(500).json({ error: 'Failed to fetch from TMDB', detail: err?.message });
   }
 }
