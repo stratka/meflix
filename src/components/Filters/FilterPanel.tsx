@@ -1,0 +1,284 @@
+import { useState, useRef, useEffect } from 'react';
+import { Search, X, ChevronDown, SlidersHorizontal } from 'lucide-react';
+import type { Genre } from '../../types/tmdb';
+import type { FilterState, SortOption } from '../../types/app';
+import { SORT_OPTIONS } from '../../utils/constants';
+import { searchPerson } from '../../utils/tmdb';
+
+interface Props {
+  filters: FilterState;
+  genres: Genre[];
+  selectedServices: string[];
+  onChange: (filters: FilterState) => void;
+}
+
+const CURRENT_YEAR = new Date().getFullYear();
+
+export function FilterPanel({ filters, genres, selectedServices, onChange }: Props) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [personQuery, setPersonQuery] = useState(filters.personName);
+  const [personResults, setPersonResults] = useState<{ id: number; name: string; dept: string }[]>([]);
+  const [personSearchLoading, setPersonSearchLoading] = useState(false);
+  const personTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Person search with debounce
+  useEffect(() => {
+    if (personTimeout.current) clearTimeout(personTimeout.current);
+    if (!personQuery.trim() || personQuery === filters.personName) {
+      setPersonResults([]);
+      return;
+    }
+    personTimeout.current = setTimeout(async () => {
+      setPersonSearchLoading(true);
+      try {
+        const res = await searchPerson(personQuery);
+        setPersonResults(
+          res.results.slice(0, 6).map(p => ({
+            id: p.id,
+            name: p.name,
+            dept: p.known_for_department,
+          }))
+        );
+      } catch { /* ignore */ }
+      finally { setPersonSearchLoading(false); }
+    }, 400);
+  }, [personQuery, filters.personName]);
+
+  function selectPerson(id: number, name: string, dept: string) {
+    setPersonQuery(name);
+    setPersonResults([]);
+    onChange({
+      ...filters,
+      personId: id,
+      personName: name,
+      personRole: dept === 'Directing' ? 'crew' : 'cast',
+    });
+  }
+
+  function clearPerson() {
+    setPersonQuery('');
+    setPersonResults([]);
+    onChange({ ...filters, personId: null, personName: '', personRole: 'cast' });
+  }
+
+  function toggleGenre(id: number) {
+    const genres = filters.genres.includes(id)
+      ? filters.genres.filter(g => g !== id)
+      : [...filters.genres, id];
+    onChange({ ...filters, genres });
+  }
+
+  const activeFilterCount = [
+    filters.genres.length > 0,
+    filters.minRating > 0,
+    filters.yearFrom > 1900,
+    filters.yearTo < CURRENT_YEAR,
+    filters.personId !== null,
+  ].filter(Boolean).length;
+
+  const panelContent = (
+    <div className="space-y-6">
+      {/* Sort */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          Řazení
+        </label>
+        <div className="relative">
+          <select
+            value={filters.sortBy}
+            onChange={e => onChange({ ...filters, sortBy: e.target.value as SortOption })}
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8"
+          >
+            {SORT_OPTIONS.map(o => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+        </div>
+      </div>
+
+      {/* Person search */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          Herec / Režisér
+        </label>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+          <input
+            type="text"
+            value={personQuery}
+            onChange={e => setPersonQuery(e.target.value)}
+            placeholder="Jméno osoby..."
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-9 pr-9 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500"
+          />
+          {(personQuery || filters.personId) && (
+            <button
+              onClick={clearPerson}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+        {personResults.length > 0 && (
+          <div className="mt-1 bg-gray-800 border border-gray-700 rounded-lg overflow-hidden shadow-xl z-10">
+            {personResults.map(p => (
+              <button
+                key={p.id}
+                onClick={() => selectPerson(p.id, p.name, p.dept)}
+                className="w-full text-left px-3 py-2 hover:bg-gray-700 text-sm text-white flex justify-between items-center"
+              >
+                <span>{p.name}</span>
+                <span className="text-xs text-gray-500">{p.dept}</span>
+              </button>
+            ))}
+          </div>
+        )}
+        {personSearchLoading && (
+          <p className="text-xs text-gray-500 mt-1">Hledám...</p>
+        )}
+        {filters.personId && (
+          <p className="text-xs text-green-400 mt-1">
+            Filtrováno podle: <strong>{filters.personName}</strong>
+          </p>
+        )}
+      </div>
+
+      {/* Min rating */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          Minimální hodnocení: <span className="text-white">{filters.minRating > 0 ? filters.minRating.toFixed(1) : 'vše'}</span>
+        </label>
+        <input
+          type="range"
+          min={0}
+          max={9}
+          step={0.5}
+          value={filters.minRating}
+          onChange={e => onChange({ ...filters, minRating: parseFloat(e.target.value) })}
+          className="w-full accent-red-500"
+        />
+        <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <span>Vše</span>
+          <span>9.0</span>
+        </div>
+      </div>
+
+      {/* Year range */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          Rok vydání
+        </label>
+        <div className="flex gap-2 items-center">
+          <input
+            type="number"
+            min={1900}
+            max={CURRENT_YEAR}
+            value={filters.yearFrom}
+            onChange={e => onChange({ ...filters, yearFrom: parseInt(e.target.value) || 1900 })}
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500"
+          />
+          <span className="text-gray-500 flex-shrink-0">–</span>
+          <input
+            type="number"
+            min={1900}
+            max={CURRENT_YEAR}
+            value={filters.yearTo}
+            onChange={e => onChange({ ...filters, yearTo: parseInt(e.target.value) || CURRENT_YEAR })}
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500"
+          />
+        </div>
+      </div>
+
+      {/* Genres */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          Žánr
+        </label>
+        <div className="flex flex-wrap gap-2">
+          {genres.map(genre => {
+            const active = filters.genres.includes(genre.id);
+            return (
+              <button
+                key={genre.id}
+                onClick={() => toggleGenre(genre.id)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  active
+                    ? 'bg-red-600 text-white'
+                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
+                }`}
+              >
+                {genre.name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Reset */}
+      {activeFilterCount > 0 && (
+        <button
+          onClick={() => {
+            setPersonQuery('');
+            setPersonResults([]);
+            onChange({
+              genres: [],
+              minRating: 0,
+              yearFrom: 1900,
+              yearTo: CURRENT_YEAR,
+              services: [],
+              personId: null,
+              personName: '',
+              personRole: 'cast',
+              sortBy: 'vote_average.desc',
+            });
+          }}
+          className="w-full py-2 text-sm text-red-400 hover:text-red-300 border border-red-900/50 hover:border-red-700/50 rounded-lg transition-colors"
+        >
+          Resetovat filtry ({activeFilterCount})
+        </button>
+      )}
+    </div>
+  );
+
+  return (
+    <>
+      {/* Mobile toggle */}
+      <div className="lg:hidden px-4 py-2">
+        <button
+          onClick={() => setMobileOpen(o => !o)}
+          className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-lg text-sm text-white"
+        >
+          <SlidersHorizontal className="w-4 h-4" />
+          Filtry
+          {activeFilterCount > 0 && (
+            <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+              {activeFilterCount}
+            </span>
+          )}
+        </button>
+        {mobileOpen && (
+          <div className="mt-3 bg-gray-900 border border-gray-800 rounded-xl p-4">
+            {panelContent}
+          </div>
+        )}
+      </div>
+
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:block w-64 flex-shrink-0">
+        <div className="sticky top-4 bg-gray-900 border border-gray-800 rounded-xl p-4">
+          <h2 className="font-semibold text-white mb-4 flex items-center gap-2">
+            <SlidersHorizontal className="w-4 h-4" />
+            Filtry
+            {activeFilterCount > 0 && (
+              <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center ml-auto">
+                {activeFilterCount}
+              </span>
+            )}
+          </h2>
+          {panelContent}
+        </div>
+      </aside>
+    </>
+  );
+}

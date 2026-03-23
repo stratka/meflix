@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(cp -r \"G:/Můj disk/PROJEKTY/_FYZICKÁ OSOBA/claude/MEFLIX/.\" \"C:/Projects/MEFLIX/\" --exclude=\"node_modules\")",
+      "Bash(rsync -av --exclude='node_modules' \"G:/Můj disk/PROJEKTY/_FYZICKÁ OSOBA/claude/MEFLIX/\" \"C:/Projects/MEFLIX/\")",
+      "Bash(xargs -I{} cp -r {} \"C:/Projects/MEFLIX/\")"
+    ]
+  }
+}
