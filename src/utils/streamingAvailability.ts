@@ -67,6 +67,10 @@ function normalizeNetflixUrl(url: string): string {
   return url.replace(/netflix\.com\/watch\/(\d+)/, 'netflix.com/title/$1');
 }
 
+function normalizeMaxUrl(url: string): string {
+  return url.replace(/hbomax\.com/, 'max.com');
+}
+
 function parseLinks(data: unknown, country: string): DirectStreamingLinks {
   const links: DirectStreamingLinks = {};
   const d = data as Record<string, unknown>;
@@ -79,7 +83,10 @@ function parseLinks(data: unknown, country: string): DirectStreamingLinks {
       const serviceId = typeof option.service === 'string' ? option.service : option.service?.id;
       const ourId = serviceId ? SERVICE_ID_MAP[serviceId] : undefined;
       if (ourId && option.link) {
-        links[ourId] = ourId === 'netflix' ? normalizeNetflixUrl(option.link) : option.link;
+        let link = option.link;
+        if (ourId === 'netflix') link = normalizeNetflixUrl(link);
+        if (ourId === 'max') link = normalizeMaxUrl(link);
+        links[ourId] = link;
       }
     }
     return links;
@@ -91,8 +98,10 @@ function parseLinks(data: unknown, country: string): DirectStreamingLinks {
     for (const [serviceName, entries] of Object.entries(v3Info)) {
       const ourId = SERVICE_ID_MAP[serviceName.toLowerCase()];
       if (ourId && Array.isArray(entries) && entries[0]?.link) {
-        const rawLink = entries[0].link;
-        links[ourId] = ourId === 'netflix' ? normalizeNetflixUrl(rawLink) : rawLink;
+        let rawLink = entries[0].link;
+        if (ourId === 'netflix') rawLink = normalizeNetflixUrl(rawLink);
+        if (ourId === 'max') rawLink = normalizeMaxUrl(rawLink);
+        links[ourId] = rawLink;
       }
     }
   }
