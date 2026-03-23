@@ -8,13 +8,12 @@ import { searchPerson } from '../../utils/tmdb';
 interface Props {
   filters: FilterState;
   genres: Genre[];
-  selectedServices: string[];
   onChange: (filters: FilterState) => void;
 }
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-export function FilterPanel({ filters, genres, selectedServices, onChange }: Props) {
+export function FilterPanel({ filters, genres, onChange }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [personQuery, setPersonQuery] = useState(filters.personName);
   const [personResults, setPersonResults] = useState<{ id: number; name: string; dept: string }[]>([]);

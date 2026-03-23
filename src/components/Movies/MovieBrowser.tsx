@@ -10,7 +10,6 @@ import { MovieSkeletonGrid } from './MovieSkeleton';
 import { FilterPanel } from '../Filters/FilterPanel';
 import { EmptyState } from '../common/EmptyState';
 import { STREAMING_SERVICES } from '../../utils/constants';
-import { ServiceBadge } from '../common/ServiceBadge';
 
 interface Props {
   settings: AppSettings;

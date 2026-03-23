@@ -287,7 +287,7 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable }: Props) 
                   {linksLoading && (
                     <span className="text-xs text-gray-500 animate-pulse">· načítám přímé odkazy…</span>
                   )}
-                  {!linksLoading && settings.rapidApiKey && Object.keys(directLinks).length > 0 && (
+                  {!linksLoading && Object.keys(directLinks).length > 0 && (
                     <span className="text-xs text-green-500">· přímé odkazy ✓</span>
                   )}
                   {!linksLoading && rateLimited && (
@@ -306,7 +306,7 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable }: Props) 
                   {!linksLoading && linksError && (
                     <span className="text-xs text-red-400">· chyba API: {linksError}</span>
                   )}
-                  {!linksLoading && settings.rapidApiKey && !linksError && !rateLimited && Object.keys(directLinks).length === 0 && (
+                  {!linksLoading && !linksError && !rateLimited && !notSubscribed && Object.keys(directLinks).length === 0 && (
                     <span className="text-xs text-yellow-500">· API: žádné přímé links</span>
                   )}
                 </div>
