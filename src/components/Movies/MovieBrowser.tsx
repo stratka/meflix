@@ -160,7 +160,6 @@ export function MovieBrowser({ settings }: Props) {
           <FilterPanel
             filters={filters}
             genres={genres}
-            selectedServices={settings.selectedServices}
             onChange={setFilters}
           />
         )}
