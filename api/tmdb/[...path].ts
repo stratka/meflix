@@ -1,7 +1,7 @@
 export default async function handler(req: any, res: any) {
-  const key = process.env.TMDB_API_KEY;
+  const key = (process.env.TMDB_API_KEY || '').trim();
   if (!key) {
-    return res.status(500).json({ error: 'TMDB_API_KEY not set', env: Object.keys(process.env).filter(k => k.startsWith('TMDB')) });
+    return res.status(500).json({ error: 'TMDB_API_KEY not set' });
   }
 
   const pathParts = req.query.path;
