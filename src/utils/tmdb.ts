@@ -8,7 +8,12 @@ import type {
 import type { FilterState } from '../types/app';
 import { STREAMING_SERVICES, getAllTmdbIds } from './constants';
 
-const BASE = '/api/tmdb';
+// Builds /api/tmdb?_path=<tmdbPath>&<otherParams>
+function buildUrl(tmdbPath: string, params?: URLSearchParams): string {
+  const p = new URLSearchParams(params);
+  p.set('_path', tmdbPath);
+  return `/api/tmdb?${p}`;
+}
 
 async function tmdbFetch<T>(url: string): Promise<T> {
   const res = await fetch(url);
@@ -20,7 +25,7 @@ async function tmdbFetch<T>(url: string): Promise<T> {
 }
 
 export async function fetchGenres(): Promise<TMDBGenresResponse> {
-  return tmdbFetch<TMDBGenresResponse>(`${BASE}/genre/movie/list?language=cs-CZ`);
+  return tmdbFetch<TMDBGenresResponse>(buildUrl('genre/movie/list', new URLSearchParams({ language: 'cs-CZ' })));
 }
 
 export async function discoverMovies(
@@ -65,7 +70,7 @@ export async function discoverMovies(
     else params.set('with_crew', String(filters.personId));
   }
 
-  return tmdbFetch<TMDBDiscoverResponse>(`${BASE}/discover/movie?${params}`);
+  return tmdbFetch<TMDBDiscoverResponse>(buildUrl('discover/movie', params));
 }
 
 export async function fetchMovieDetail(
@@ -77,7 +82,7 @@ export async function fetchMovieDetail(
     append_to_response: 'credits,watch/providers,videos',
   });
   const data = await tmdbFetch<TMDBMovieDetail & { 'watch/providers': WatchProviderResponse }>(
-    `${BASE}/movie/${movieId}?${params}`
+    buildUrl(`movie/${movieId}`, params)
   );
   if (data['watch/providers']) {
     data.watch_providers = data['watch/providers'];
@@ -90,16 +95,16 @@ export async function searchMovies(
   page: number = 1
 ): Promise<TMDBDiscoverResponse> {
   const params = new URLSearchParams({ query, language: 'cs-CZ', page: String(page) });
-  return tmdbFetch<TMDBDiscoverResponse>(`${BASE}/search/movie?${params}`);
+  return tmdbFetch<TMDBDiscoverResponse>(buildUrl('search/movie', params));
 }
 
 export async function fetchMovieWatchProviders(
   movieId: number
 ): Promise<WatchProviderResponse> {
-  return tmdbFetch<WatchProviderResponse>(`${BASE}/movie/${movieId}/watch/providers`);
+  return tmdbFetch<WatchProviderResponse>(buildUrl(`movie/${movieId}/watch/providers`));
 }
 
 export async function searchPerson(query: string): Promise<TMDBSearchPersonResponse> {
   const params = new URLSearchParams({ query, language: 'cs-CZ' });
-  return tmdbFetch<TMDBSearchPersonResponse>(`${BASE}/search/person?${params}`);
+  return tmdbFetch<TMDBSearchPersonResponse>(buildUrl('search/person', params));
 }

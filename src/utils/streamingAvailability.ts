@@ -118,7 +118,7 @@ export async function fetchDirectStreamingLinks(
   if (cached) return cached;
 
   // Volá náš Vercel serverless proxy — klíč je na serveru
-  const res = await fetch(`/api/streaming/${tmdbId}?country=${country}`);
+  const res = await fetch(`/api/streaming?tmdbId=${tmdbId}&country=${country}`);
 
   if (res.status === 429) throw new RateLimitError();
   if (res.status === 403) throw new NotSubscribedError();
