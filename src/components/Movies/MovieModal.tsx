@@ -4,7 +4,7 @@ import type { TMDBMovie, TMDBMovieDetail, Provider } from '../../types/tmdb';
 import type { AppSettings, StreamingService } from '../../types/app';
 import { fetchMovieDetail } from '../../utils/tmdb';
 import { TMDB_IMAGE_BASE, getServiceByTmdbId, getWatchUrl } from '../../utils/constants';
-import { fetchDirectStreamingLinks, RateLimitError, NotSubscribedError, type DirectStreamingLinks } from '../../utils/streamingAvailability';
+import { fetchDirectStreamingLinks, type DirectStreamingLinks } from '../../utils/streamingAvailability';
 import { ServiceBadge } from '../common/ServiceBadge';
 
 interface Props {
@@ -19,10 +19,6 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable }: Props) 
   const [loading, setLoading] = useState(true);
   const [showTrailer, setShowTrailer] = useState(false);
   const [directLinks, setDirectLinks] = useState<DirectStreamingLinks>({});
-  const [linksLoading, setLinksLoading] = useState(false);
-  const [linksError, setLinksError] = useState<string | null>(null);
-  const [rateLimited, setRateLimited] = useState(false);
-  const [notSubscribed, setNotSubscribed] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -38,18 +34,9 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable }: Props) 
 
   // Fetch direct streaming links via server proxy
   useEffect(() => {
-    setLinksLoading(true);
-    setLinksError(null);
-    setRateLimited(false);
-    setNotSubscribed(false);
     fetchDirectStreamingLinks(movie.id, settings.region)
       .then(links => setDirectLinks(links))
-      .catch(err => {
-        if (err instanceof RateLimitError) setRateLimited(true);
-        else if (err instanceof NotSubscribedError) setNotSubscribed(true);
-        else setLinksError(String(err?.message || err));
-      })
-      .finally(() => setLinksLoading(false));
+      .catch(() => { /* silently ignore errors */ });
   }, [movie.id, settings.region]);
 
   const handleBackdropClick = useCallback(
