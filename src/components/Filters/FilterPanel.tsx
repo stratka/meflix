@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, ChevronDown, SlidersHorizontal } from 'lucide-react';
+import { Search, X, ChevronDown, SlidersHorizontal, Eye } from 'lucide-react';
 import type { Genre } from '../../types/tmdb';
 import type { FilterState, SortOption } from '../../types/app';
 import { SORT_OPTIONS } from '../../utils/constants';
@@ -73,10 +73,33 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
     filters.yearFrom > 1900,
     filters.yearTo < CURRENT_YEAR,
     filters.personId !== null,
+    filters.hideWatched,
   ].filter(Boolean).length;
 
   const panelContent = (
     <div className="space-y-6">
+      {/* Skrýt viděné */}
+      <div>
+        <button
+          onClick={() => onChange({ ...filters, hideWatched: !filters.hideWatched })}
+          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
+            filters.hideWatched
+              ? 'bg-green-600/20 border-green-600/50 text-green-400'
+              : 'bg-gray-800 border-gray-700 text-gray-400 hover:text-white'
+          }`}
+        >
+          <span className="flex items-center gap-2">
+            <Eye className="w-4 h-4" />
+            Skrýt viděné filmy
+          </span>
+          <span className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+            filters.hideWatched ? 'bg-green-500 border-green-500' : 'border-gray-600'
+          }`}>
+            {filters.hideWatched && <span className="text-white text-xs font-bold">✓</span>}
+          </span>
+        </button>
+      </div>
+
       {/* Sort */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
@@ -230,6 +253,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
               personName: '',
               personRole: 'cast',
               sortBy: 'vote_average.desc',
+              hideWatched: false,
             });
           }}
           className="w-full py-2 text-sm text-red-400 hover:text-red-300 border border-red-900/50 hover:border-red-700/50 rounded-lg transition-colors"

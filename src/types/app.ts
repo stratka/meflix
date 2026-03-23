@@ -22,7 +22,15 @@ export interface FilterState {
   personName: string;
   personRole: 'cast' | 'crew';
   sortBy: SortOption;
+  hideWatched: boolean;
 }
+
+export interface WatchedEntry {
+  date: string; // ISO datum
+  title: string;
+}
+
+export type WatchedMovies = Record<number, WatchedEntry>;
 
 export type SortOption =
   | 'vote_average.desc'

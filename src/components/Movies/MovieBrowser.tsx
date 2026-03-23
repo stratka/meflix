@@ -4,6 +4,7 @@ import type { TMDBMovie } from '../../types/tmdb';
 import type { AppSettings, FilterState } from '../../types/app';
 import { useMovies } from '../../hooks/useMovies';
 import { useGenres } from '../../hooks/useGenres';
+import { useWatched } from '../../hooks/useWatched';
 import { MovieCard } from './MovieCard';
 import { MovieModal } from './MovieModal';
 import { MovieSkeletonGrid } from './MovieSkeleton';
@@ -27,11 +28,13 @@ const DEFAULT_FILTERS: FilterState = {
   personName: '',
   personRole: 'cast',
   sortBy: 'vote_average.desc',
+  hideWatched: false,
 };
 
 export function MovieBrowser({ settings }: Props) {
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
   const [selectedMovie, setSelectedMovie] = useState<TMDBMovie | null>(null);
+  const { watched, markWatched, unmarkWatched, isWatched } = useWatched();
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [hiddenMovieIds, setHiddenMovieIds] = useState<Set<number>>(new Set());
@@ -185,11 +188,16 @@ export function MovieBrowser({ settings }: Props) {
           ) : (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3">
-                {movies.filter(m => !hiddenMovieIds.has(m.id)).map(movie => (
+                {movies
+                  .filter(m => !hiddenMovieIds.has(m.id))
+                  .filter(m => !filters.hideWatched || !isWatched(m.id))
+                  .map(movie => (
                   <MovieCard
                     key={movie.id}
                     movie={movie}
                     onClick={setSelectedMovie}
+                    isWatched={isWatched(movie.id)}
+                    watchedDate={watched[movie.id]?.date}
                   />
                 ))}
                 {loadingMore && <MovieSkeletonGrid count={10} />}
@@ -215,6 +223,9 @@ export function MovieBrowser({ settings }: Props) {
           settings={settings}
           onClose={() => setSelectedMovie(null)}
           onNotAvailable={(id) => setHiddenMovieIds(prev => new Set(prev).add(id))}
+          watchedEntry={watched[selectedMovie.id]}
+          onMarkWatched={markWatched}
+          onUnmarkWatched={unmarkWatched}
         />
       )}
     </div>

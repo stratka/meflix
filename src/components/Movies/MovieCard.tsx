@@ -1,13 +1,15 @@
-import { Star } from 'lucide-react';
+import { Star, Eye } from 'lucide-react';
 import type { TMDBMovie } from '../../types/tmdb';
 import { TMDB_IMAGE_BASE } from '../../utils/constants';
 
 interface Props {
   movie: TMDBMovie;
   onClick: (movie: TMDBMovie) => void;
+  isWatched?: boolean;
+  watchedDate?: string;
 }
 
-export function MovieCard({ movie, onClick }: Props) {
+export function MovieCard({ movie, onClick, isWatched, watchedDate }: Props) {
   const posterUrl = movie.poster_path
     ? `${TMDB_IMAGE_BASE}/w342${movie.poster_path}`
     : null;
@@ -25,7 +27,7 @@ export function MovieCard({ movie, onClick }: Props) {
           <img
             src={posterUrl}
             alt={movie.title}
-            className="w-full h-full object-cover transition-opacity duration-300"
+            className={`w-full h-full object-cover transition-opacity duration-300 ${isWatched ? 'opacity-50' : ''}`}
             loading="lazy"
           />
         ) : (
@@ -38,6 +40,15 @@ export function MovieCard({ movie, onClick }: Props) {
           <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
           <span className="text-xs font-bold text-white">{rating}</span>
         </div>
+        {/* Watched badge */}
+        {isWatched && (
+          <div className="absolute bottom-2 left-2 bg-green-600/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
+            <Eye className="w-3 h-3 text-white" />
+            <span className="text-xs font-bold text-white">
+              {watchedDate ? new Date(watchedDate).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', year: '2-digit' }) : 'Viděno'}
+            </span>
+          </div>
+        )}
       </div>
       <div className="p-3">
         <h3 className="text-sm font-semibold text-white leading-tight line-clamp-2 group-hover:text-red-400 transition-colors">

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
-import { X, Star, Clock, ExternalLink, Play, Youtube } from 'lucide-react';
+import { X, Star, Clock, ExternalLink, Play, Youtube, Eye, EyeOff } from 'lucide-react';
 import type { TMDBMovie, TMDBMovieDetail, Provider } from '../../types/tmdb';
-import type { AppSettings, StreamingService } from '../../types/app';
+import type { AppSettings, StreamingService, WatchedEntry } from '../../types/app';
 import { fetchMovieDetail } from '../../utils/tmdb';
 import { TMDB_IMAGE_BASE, getServiceByTmdbId, getWatchUrl } from '../../utils/constants';
 import { fetchDirectStreamingLinks, type DirectStreamingLinks } from '../../utils/streamingAvailability';
@@ -12,9 +12,12 @@ interface Props {
   settings: AppSettings;
   onClose: () => void;
   onNotAvailable?: (movieId: number) => void;
+  watchedEntry?: WatchedEntry;
+  onMarkWatched: (id: number, title: string) => void;
+  onUnmarkWatched: (id: number) => void;
 }
 
-export function MovieModal({ movie, settings, onClose, onNotAvailable }: Props) {
+export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEntry, onMarkWatched, onUnmarkWatched }: Props) {
   const [detail, setDetail] = useState<TMDBMovieDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [showTrailer, setShowTrailer] = useState(false);
@@ -266,6 +269,36 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable }: Props) 
               </div>
             )}
 
+
+            {/* Viděl jsem */}
+            <div className="mt-6 pt-4 border-t border-gray-800">
+              {watchedEntry ? (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-green-400">
+                    <Eye className="w-4 h-4" />
+                    <span className="text-sm font-medium">Viděno</span>
+                    <span className="text-xs text-gray-500">
+                      {new Date(watchedEntry.date).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => onUnmarkWatched(movie.id)}
+                    className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-red-400 transition-colors"
+                  >
+                    <EyeOff className="w-3.5 h-3.5" />
+                    Zrušit
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => onMarkWatched(movie.id, movie.title)}
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white text-sm font-medium rounded-lg transition-colors w-full justify-center"
+                >
+                  <Eye className="w-4 h-4" />
+                  Označit jako viděno
+                </button>
+              )}
+            </div>
 
             {/* Also on (other services) */}
             {otherServices.length > 0 && (
