@@ -279,55 +279,6 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable }: Props) 
               </div>
             )}
 
-            {/* Watch on your services */}
-            {userServices.length > 0 && (
-              <div className="mt-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <p className="text-sm text-gray-500">Dostupné na tvých službách</p>
-                  {linksLoading && (
-                    <span className="text-xs text-gray-500 animate-pulse">· načítám přímé odkazy…</span>
-                  )}
-                  {!linksLoading && Object.keys(directLinks).length > 0 && (
-                    <span className="text-xs text-green-500">· přímé odkazy ✓</span>
-                  )}
-                  {!linksLoading && rateLimited && (
-                    <span className="text-xs text-yellow-500" title="Překročen limit API (429) — zobrazuji vyhledávací odkaz">· limit API</span>
-                  )}
-                  {!linksLoading && notSubscribed && (
-                    <a
-                      href="https://rapidapi.com/movie-of-the-night-movie-of-the-night-default/api/streaming-availability"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs text-orange-400 hover:text-orange-300 underline"
-                    >
-                      · přihlásit se k API →
-                    </a>
-                  )}
-                  {!linksLoading && linksError && (
-                    <span className="text-xs text-red-400">· chyba API: {linksError}</span>
-                  )}
-                  {!linksLoading && !linksError && !rateLimited && !notSubscribed && Object.keys(directLinks).length === 0 && (
-                    <span className="text-xs text-yellow-500">· API: žádné přímé links</span>
-                  )}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {userServices.map(({ service, watchLink }) => (
-                    <a
-                      key={service.id}
-                      href={watchLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all hover:opacity-90 hover:scale-105 active:scale-95"
-                      style={{ backgroundColor: service.color, color: service.textColor }}
-                    >
-                      <Play className="w-4 h-4 fill-current" />
-                      {service.name}
-                      <ExternalLink className="w-3 h-3 opacity-70" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Also on (other services) */}
             {otherServices.length > 0 && (
