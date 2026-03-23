@@ -1,6 +1,6 @@
 // Streaming Availability API (Movie of the Night) přes Vercel serverless proxy
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_PREFIX = `sa_cache_${CACHE_VERSION}_`;
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 dní
 
