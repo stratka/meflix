@@ -62,7 +62,7 @@ export function getWatchUrl(
     case 'disney':
       return `https://www.disneyplus.com/search/${encodeURIComponent(title)}`;
     case 'max':
-      return `https://www.max.com/search?q=${encodeURIComponent(title)}`;
+      return `https://www.hbomax.com/search?q=${encodeURIComponent(title)}`;
     case 'prime':
       return `https://www.amazon.com/s?k=${encodeURIComponent(title)}&i=instant-video`;
     case 'apple':
