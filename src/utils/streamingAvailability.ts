@@ -1,6 +1,6 @@
 // Streaming Availability API (Movie of the Night) přes Vercel serverless proxy
 
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const CACHE_PREFIX = `sa_cache_${CACHE_VERSION}_`;
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 dní
 
@@ -67,10 +67,9 @@ function normalizeNetflixUrl(url: string): string {
   return url.replace(/netflix\.com\/watch\/(\d+)/, 'netflix.com/title/$1');
 }
 
-function normalizeMaxUrl(_url: string): string {
-  // Staré hbomax.com URL používají jinou strukturu než nový max.com
-  // Vrátíme prázdný řetězec → fallback na vyhledávací URL v MovieModal
-  return '';
+function normalizeMaxUrl(url: string): string {
+  // Zachovej URL jak ji vrátí API — hbomax.com funguje v CZ, max.com jinde
+  return url;
 }
 
 function parseLinks(data: unknown, country: string): DirectStreamingLinks {
