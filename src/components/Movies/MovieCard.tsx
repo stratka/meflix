@@ -15,7 +15,8 @@ export function MovieCard({ movie, onClick, isWatched, watchedDate }: Props) {
     : null;
 
   const year = movie.release_date ? movie.release_date.slice(0, 4) : '—';
-  const rating = movie.vote_average ? movie.vote_average.toFixed(1) : '—';
+  const rawRating = movie.vote_average >= 10 ? 5 : movie.vote_average;
+  const rating = rawRating ? rawRating.toFixed(1) : '—';
 
   return (
     <button
