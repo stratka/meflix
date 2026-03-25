@@ -228,6 +228,10 @@ export function MovieBrowser({ settings }: Props) {
           watchedEntry={watched[selectedMovie.id]}
           onMarkWatched={markWatched}
           onUnmarkWatched={unmarkWatched}
+          onPersonClick={(personId, personName, role) => {
+            setFilters(f => ({ ...f, personId, personName, personRole: role }));
+            setSelectedMovie(null);
+          }}
         />
       )}
     </div>

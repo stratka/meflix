@@ -15,9 +15,10 @@ interface Props {
   watchedEntry?: WatchedEntry;
   onMarkWatched: (id: number, title: string) => void;
   onUnmarkWatched: (id: number) => void;
+  onPersonClick?: (personId: number, personName: string, role: 'cast' | 'crew') => void;
 }
 
-export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEntry, onMarkWatched, onUnmarkWatched }: Props) {
+export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEntry, onMarkWatched, onUnmarkWatched, onPersonClick }: Props) {
   const [detail, setDetail] = useState<TMDBMovieDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [showTrailer, setShowTrailer] = useState(false);
@@ -355,7 +356,16 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
             {(director || createdBy) && (
               <p className="mt-3 text-sm text-gray-400">
                 <span className="text-gray-500">{createdBy && !director ? 'Tvůrce: ' : 'Režie: '}</span>
-                <span className="text-white">{director?.name ?? createdBy?.name}</span>
+                <button
+                  onClick={() => {
+                    const p = director ?? createdBy!;
+                    onPersonClick?.(p.id, p.name, 'crew');
+                    onClose();
+                  }}
+                  className="text-white hover:text-red-400 transition-colors underline-offset-2 hover:underline"
+                >
+                  {director?.name ?? createdBy?.name}
+                </button>
               </p>
             )}
 
@@ -365,9 +375,13 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
                 <p className="text-sm text-gray-500 mb-2">Obsazení</p>
                 <div className="flex flex-wrap gap-2">
                   {topCast.map(actor => (
-                    <span key={actor.id} className="text-sm text-gray-300 bg-gray-800 px-2.5 py-1 rounded-full">
+                    <button
+                      key={actor.id}
+                      onClick={() => { onPersonClick?.(actor.id, actor.name, 'cast'); onClose(); }}
+                      className="text-sm text-gray-300 bg-gray-800 hover:bg-red-600/30 hover:text-white px-2.5 py-1 rounded-full transition-colors"
+                    >
                       {actor.name}
-                    </span>
+                    </button>
                   ))}
                 </div>
               </div>
