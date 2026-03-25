@@ -23,6 +23,7 @@ export interface FilterState {
   personRole: 'cast' | 'crew';
   sortBy: SortOption;
   hideWatched: boolean;
+  originCountry: string;
 }
 
 export interface WatchedEntry {

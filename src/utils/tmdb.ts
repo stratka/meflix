@@ -69,6 +69,7 @@ export async function discoverMovies(
     if (filters.personRole === 'cast') params.set('with_cast', String(filters.personId));
     else params.set('with_crew', String(filters.personId));
   }
+  if (filters.originCountry) params.set('with_origin_country', filters.originCountry);
 
   return tmdbFetch<TMDBDiscoverResponse>(buildUrl('discover/movie', params));
 }

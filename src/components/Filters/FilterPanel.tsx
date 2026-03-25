@@ -13,6 +13,34 @@ interface Props {
 
 const CURRENT_YEAR = new Date().getFullYear();
 
+const COUNTRIES = [
+  { code: '', name: 'Všechny země' },
+  { code: 'US', name: '🇺🇸 USA' },
+  { code: 'GB', name: '🇬🇧 Velká Británie' },
+  { code: 'FR', name: '🇫🇷 Francie' },
+  { code: 'DE', name: '🇩🇪 Německo' },
+  { code: 'IT', name: '🇮🇹 Itálie' },
+  { code: 'ES', name: '🇪🇸 Španělsko' },
+  { code: 'CZ', name: '🇨🇿 Česká republika' },
+  { code: 'SK', name: '🇸🇰 Slovensko' },
+  { code: 'PL', name: '🇵🇱 Polsko' },
+  { code: 'AT', name: '🇦🇹 Rakousko' },
+  { code: 'SE', name: '🇸🇪 Švédsko' },
+  { code: 'DK', name: '🇩🇰 Dánsko' },
+  { code: 'NO', name: '🇳🇴 Norsko' },
+  { code: 'JP', name: '🇯🇵 Japonsko' },
+  { code: 'KR', name: '🇰🇷 Jižní Korea' },
+  { code: 'IN', name: '🇮🇳 Indie' },
+  { code: 'CN', name: '🇨🇳 Čína' },
+  { code: 'AU', name: '🇦🇺 Austrálie' },
+  { code: 'CA', name: '🇨🇦 Kanada' },
+  { code: 'BR', name: '🇧🇷 Brazílie' },
+  { code: 'MX', name: '🇲🇽 Mexiko' },
+  { code: 'IR', name: '🇮🇷 Írán' },
+  { code: 'RU', name: '🇷🇺 Rusko' },
+  { code: 'TR', name: '🇹🇷 Turecko' },
+];
+
 export function FilterPanel({ filters, genres, onChange }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [personQuery, setPersonQuery] = useState(filters.personName);
@@ -70,10 +98,11 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
   const activeFilterCount = [
     filters.genres.length > 0,
     filters.minRating > 0,
-    filters.yearFrom > 1900,
+    filters.yearFrom > 2010,
     filters.yearTo < CURRENT_YEAR,
     filters.personId !== null,
     filters.hideWatched,
+    filters.originCountry !== '',
   ].filter(Boolean).length;
 
   const panelContent = (
@@ -186,6 +215,25 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
         </div>
       </div>
 
+      {/* Origin country */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          Země původu
+        </label>
+        <div className="relative">
+          <select
+            value={filters.originCountry}
+            onChange={e => onChange({ ...filters, originCountry: e.target.value })}
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8"
+          >
+            {COUNTRIES.map(c => (
+              <option key={c.code} value={c.code}>{c.name}</option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+        </div>
+      </div>
+
       {/* Year range */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
@@ -254,7 +302,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
             onChange({
               genres: [],
               minRating: 0,
-              yearFrom: 1900,
+              yearFrom: 2010,
               yearTo: CURRENT_YEAR,
               services: [],
               personId: null,
@@ -262,6 +310,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
               personRole: 'cast',
               sortBy: 'vote_average.desc',
               hideWatched: false,
+              originCountry: '',
             });
           }}
           className="w-full py-2 text-sm text-red-400 hover:text-red-300 border border-red-900/50 hover:border-red-700/50 rounded-lg transition-colors"

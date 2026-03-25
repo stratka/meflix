@@ -21,7 +21,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 const DEFAULT_FILTERS: FilterState = {
   genres: [],
   minRating: 0,
-  yearFrom: 1900,
+  yearFrom: 2010,
   yearTo: CURRENT_YEAR,
   services: [],
   personId: null,
@@ -29,6 +29,7 @@ const DEFAULT_FILTERS: FilterState = {
   personRole: 'cast',
   sortBy: 'vote_average.desc',
   hideWatched: false,
+  originCountry: '',
 };
 
 export function MovieBrowser({ settings }: Props) {
