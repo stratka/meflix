@@ -28,7 +28,7 @@ export default function App() {
       {/* Top navbar */}
       <nav className="bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-2">
-          <img src="/favicon.svg" alt="MEFLIX logo" className="w-8 h-8 rounded-lg" />
+          <img src="/favicon.svg" alt="MEFLIX logo" className="w-16 h-16 rounded-lg" />
           <span className="text-lg font-bold text-white tracking-tight">MEFLIX</span>
         </div>
         <button
