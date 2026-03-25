@@ -98,7 +98,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
   const activeFilterCount = [
     filters.genres.length > 0,
     filters.minRating > 0,
-    filters.yearFrom > 2010,
+    filters.yearFrom > 1900,
     filters.yearTo < CURRENT_YEAR,
     filters.personId !== null,
     filters.hideWatched,
@@ -324,7 +324,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
             onChange({
               genres: [],
               minRating: 0,
-              yearFrom: 2010,
+              yearFrom: 1900,
               yearTo: CURRENT_YEAR,
               services: [],
               personId: null,

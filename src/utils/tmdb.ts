@@ -8,6 +8,8 @@ import type {
 import type { FilterState } from '../types/app';
 import { STREAMING_SERVICES, getAllTmdbIds } from './constants';
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 // Builds /api/tmdb?_path=<tmdbPath>&<otherParams>
 function buildUrl(tmdbPath: string, params?: URLSearchParams): string {
   const p = new URLSearchParams(params);
@@ -67,8 +69,8 @@ export async function discoverMovies(
 
   if (filters.genres.length > 0) params.set('with_genres', filters.genres.join(','));
   if (filters.minRating > 0) params.set('vote_average.gte', String(filters.minRating));
-  if (filters.yearFrom) params.set(dateGteParam, `${filters.yearFrom}-01-01`);
-  if (filters.yearTo) params.set(dateLteParam, `${filters.yearTo}-12-31`);
+  if (filters.yearFrom > 1900) params.set(dateGteParam, `${filters.yearFrom}-01-01`);
+  if (filters.yearTo < CURRENT_YEAR) params.set(dateLteParam, `${filters.yearTo}-12-31`);
   if (filters.personId) {
     if (filters.personRole === 'cast') params.set('with_cast', String(filters.personId));
     else params.set('with_crew', String(filters.personId));
