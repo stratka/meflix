@@ -1,43 +1,53 @@
 const JUSTWATCH_GRAPHQL = 'https://apis.justwatch.com/graphql';
 
-const MOVIE_QUERY = `
-query GetNodeByExternalId(
-  $externalId: String!
-  $provider: ExternalIdProvider!
-  $objectType: ObjectType!
+// Hledá film podle názvu a vrátí přímé URL pro streamovací služby
+const SEARCH_QUERY = `
+query GetSuggestedTitles(
   $country: Country!
   $language: Language!
-  $platform: Platform!
+  $first: Int!
+  $filter: TitleFilter!
 ) {
-  nodeByExternalId(externalId: $externalId, provider: $provider, objectType: $objectType) {
-    ... on Movie {
-      id
-      content(country: $country, language: $language) { title }
-      offers(country: $country, platform: $platform) {
-        monetizationType
-        standardWebURL
-        package { id packageId clearName technicalName }
-      }
-    }
-    ... on Show {
-      id
-      content(country: $country, language: $language) { title }
-      offers(country: $country, platform: $platform) {
-        monetizationType
-        standardWebURL
-        package { id packageId clearName technicalName }
+  popularTitles(country: $country, first: $first, filter: $filter) {
+    edges {
+      node {
+        ... on Movie {
+          id
+          objectType
+          content(country: $country, language: $language) {
+            title
+            externalIds { tmdbId }
+          }
+          offers(country: $country, platform: WEB) {
+            monetizationType
+            standardWebURL
+            package { id packageId clearName technicalName }
+          }
+        }
+        ... on Show {
+          id
+          objectType
+          content(country: $country, language: $language) {
+            title
+            externalIds { tmdbId }
+          }
+          offers(country: $country, platform: WEB) {
+            monetizationType
+            standardWebURL
+            package { id packageId clearName technicalName }
+          }
+        }
       }
     }
   }
 }`;
 
 export default async function handler(req: any, res: any) {
-  const { tmdbId, country, mediaType } = req.query;
-  if (!tmdbId || !country) {
-    return res.status(400).json({ error: 'Missing tmdbId or country' });
+  const { tmdbId, country, mediaType, title } = req.query;
+  if (!tmdbId || !country || !title) {
+    return res.status(400).json({ error: 'Missing tmdbId, country or title' });
   }
 
-  const objectType = mediaType === 'tv' ? 'SHOW' : 'MOVIE';
   const lang = country === 'CZ' ? 'cs' : country === 'SK' ? 'sk' : 'en';
 
   try {
@@ -46,23 +56,39 @@ export default async function handler(req: any, res: any) {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'User-Agent': 'Mozilla/5.0',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Origin': 'https://www.justwatch.com',
+        'Referer': 'https://www.justwatch.com/',
       },
       body: JSON.stringify({
-        query: MOVIE_QUERY,
+        operationName: 'GetSuggestedTitles',
+        query: SEARCH_QUERY,
         variables: {
-          externalId: String(tmdbId),
-          provider: 'TMDB',
-          objectType,
           country: String(country).toUpperCase(),
           language: lang,
-          platform: 'WEB',
+          first: 5,
+          filter: { searchQuery: String(title) },
         },
       }),
     });
 
     const data = await response.json();
-    res.status(200).json(data);
+
+    // Najdi správný film podle TMDB ID
+    const edges = data?.data?.popularTitles?.edges || [];
+    const match = edges.find((e: any) => {
+      const extId = e?.node?.content?.externalIds?.tmdbId;
+      return String(extId) === String(tmdbId);
+    });
+
+    if (match) {
+      const offers = (match.node.offers || []).filter((o: any) => o.monetizationType === 'FLATRATE');
+      return res.status(200).json({ offers });
+    }
+
+    // Vrátíme první výsledek jako fallback
+    const firstOffers = edges[0]?.node?.offers?.filter((o: any) => o.monetizationType === 'FLATRATE') || [];
+    res.status(200).json({ offers: firstOffers, fallback: true });
   } catch (err) {
     res.status(500).json({ error: String(err) });
   }
