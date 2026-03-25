@@ -4,6 +4,14 @@ import type { FilterState } from '../types/app';
 import { discoverMovies, searchMovies, fetchMovieWatchProviders } from '../utils/tmdb';
 import { STREAMING_SERVICES, getAllTmdbIds } from '../utils/constants';
 
+export function cappedRating(r: number): number {
+  return r >= 10 ? 5 : r;
+}
+
+function sortByCappedRating(movies: TMDBMovie[]): TMDBMovie[] {
+  return [...movies].sort((a, b) => cappedRating(b.vote_average) - cappedRating(a.vote_average));
+}
+
 interface UseMoviesResult {
   movies: TMDBMovie[];
   loading: boolean;
@@ -86,7 +94,10 @@ export function useMovies(
           setPage(pageNum);
         } else {
           const data = await discoverMovies(region, selectedServices, filters, pageNum);
-          setMovies(prev => (replace ? data.results : [...prev, ...data.results]));
+          const results = filters.sortBy === 'vote_average.desc'
+            ? sortByCappedRating(data.results)
+            : data.results;
+          setMovies(prev => (replace ? results : [...prev, ...results]));
           setTotalPages(data.total_pages);
           setTotalResults(data.total_results);
           setPage(pageNum);
