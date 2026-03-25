@@ -363,6 +363,12 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
         {mobileOpen && (
           <div className="mt-3 bg-gray-900 border border-gray-800 rounded-xl p-4">
             {panelContent}
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="mt-4 w-full py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors"
+            >
+              Hotovo
+            </button>
           </div>
         )}
       </div>
