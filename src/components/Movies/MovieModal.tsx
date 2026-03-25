@@ -4,7 +4,8 @@ import type { TMDBMovie, TMDBMovieDetail, Provider } from '../../types/tmdb';
 import type { AppSettings, StreamingService, WatchedEntry } from '../../types/app';
 import { fetchMovieDetail } from '../../utils/tmdb';
 import { TMDB_IMAGE_BASE, getServiceByTmdbId, getWatchUrl } from '../../utils/constants';
-import { fetchDirectStreamingLinks, type DirectStreamingLinks } from '../../utils/streamingAvailability';
+import { fetchJustWatchLinks } from '../../utils/justwatch';
+import type { DirectStreamingLinks } from '../../utils/streamingAvailability';
 import { ServiceBadge } from '../common/ServiceBadge';
 
 interface Props {
@@ -102,10 +103,10 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
 
   // Fetch direct streaming links via server proxy
   useEffect(() => {
-    fetchDirectStreamingLinks(movie.id, settings.region)
+    fetchJustWatchLinks(movie.id, settings.region, movie.title, movie.media_type ?? 'movie')
       .then(links => setDirectLinks(links))
       .catch(() => { /* silently ignore errors */ });
-  }, [movie.id, settings.region]);
+  }, [movie.id, settings.region, movie.title]);
 
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent) => { if (e.target === e.currentTarget) onClose(); },
