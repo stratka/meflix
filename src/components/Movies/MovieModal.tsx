@@ -287,7 +287,7 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
                   <span>·</span>
                   <span className="flex items-center gap-1 text-yellow-400">
                     <Star className="w-3 h-3 fill-yellow-400" />
-                    <span className="font-bold">{(movie.vote_average >= 10 ? 5 : movie.vote_average).toFixed(1)}</span>
+                    <span className="font-bold">{movie.vote_average.toFixed(1)}</span>
                     <span className="text-gray-500 text-xs">({movie.vote_count.toLocaleString()})</span>
                   </span>
                 </div>
