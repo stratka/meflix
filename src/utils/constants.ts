@@ -9,6 +9,7 @@ export const STREAMING_SERVICES: StreamingService[] = [
   { id: 'paramount',  name: 'Paramount+',   tmdbId: 531,  color: '#0064FF', textColor: '#fff' },
   { id: 'peacock',    name: 'Peacock',      tmdbId: 386,  color: '#000000', textColor: '#fff' },
   { id: 'crunchyroll',name: 'Crunchyroll',  tmdbId: 283,  color: '#F47521', textColor: '#fff' },
+  { id: 'oneplay',    name: 'Oneplay',      tmdbId: 2536, color: '#E4002B', textColor: '#fff' },
 ];
 
 export const REGIONS = [
@@ -73,6 +74,8 @@ export function getWatchUrl(
       return `https://www.peacocktv.com/search?q=${encodeURIComponent(title)}`;
     case 'crunchyroll':
       return `https://www.crunchyroll.com/search?q=${encodeURIComponent(title)}`;
+    case 'oneplay':
+      return `https://www.oneplay.cz/hledat?q=${encodeURIComponent(title)}`;
     default:
       return `https://www.google.com/search?q=${encodeURIComponent(title + ' watch online')}`;
   }
