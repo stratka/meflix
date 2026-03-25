@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Settings, Tv2 } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import type { AppSettings } from './types/app';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { SetupScreen } from './components/Setup/SetupScreen';
@@ -28,9 +28,7 @@ export default function App() {
       {/* Top navbar */}
       <nav className="bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-red-600 rounded-lg flex items-center justify-center">
-            <Tv2 className="w-5 h-5 text-white" />
-          </div>
+          <img src="/favicon.svg" alt="MEFLIX logo" className="w-8 h-8 rounded-lg" />
           <span className="text-lg font-bold text-white tracking-tight">MEFLIX</span>
         </div>
         <button
