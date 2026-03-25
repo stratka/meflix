@@ -29,7 +29,8 @@ async function filterByAvailability(
 ): Promise<TMDBMovie[]> {
   const results = await Promise.allSettled(
     movies.map(async movie => {
-      const providers = await fetchMovieWatchProviders(movie.id);
+      const mediaType = movie.media_type === 'tv' ? 'tv' : 'movie';
+      const providers = await fetchMovieWatchProviders(movie.id, mediaType);
       const flatrate = providers.results?.[region]?.flatrate ?? [];
       const available = flatrate.some(p => providerIds.includes(p.provider_id));
       return available ? movie : null;

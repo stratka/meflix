@@ -418,7 +418,7 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
             {/* TMDB link */}
             <div className="mt-4 pt-4 border-t border-gray-800">
               <a
-                href={`https://www.themoviedb.org/movie/${movie.id}`}
+                href={`https://www.themoviedb.org/${movie.media_type === 'tv' ? 'tv' : 'movie'}/${movie.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs text-gray-500 hover:text-gray-400 flex items-center gap-1"

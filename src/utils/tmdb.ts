@@ -121,13 +121,25 @@ export async function searchMovies(
   page: number = 1
 ): Promise<TMDBDiscoverResponse> {
   const params = new URLSearchParams({ query, language: 'cs-CZ', page: String(page) });
-  return tmdbFetch<TMDBDiscoverResponse>(buildUrl('search/movie', params));
+  const raw = await tmdbFetch<any>(buildUrl('search/multi', params));
+  // Filtruj jen filmy a seriály, mapuj TV pole na movie pole
+  raw.results = (raw.results || [])
+    .filter((r: any) => r.media_type === 'movie' || r.media_type === 'tv')
+    .map((r: any) => {
+      if (r.media_type === 'tv') {
+        return { ...r, title: r.name || r.original_name || '', release_date: r.first_air_date || '' };
+      }
+      return r;
+    });
+  return raw as TMDBDiscoverResponse;
 }
 
 export async function fetchMovieWatchProviders(
-  movieId: number
+  movieId: number,
+  mediaType: 'movie' | 'tv' = 'movie'
 ): Promise<WatchProviderResponse> {
-  return tmdbFetch<WatchProviderResponse>(buildUrl(`movie/${movieId}/watch/providers`));
+  const endpoint = mediaType === 'tv' ? `tv/${movieId}/watch/providers` : `movie/${movieId}/watch/providers`;
+  return tmdbFetch<WatchProviderResponse>(buildUrl(endpoint));
 }
 
 export async function searchPerson(query: string): Promise<TMDBSearchPersonResponse> {
