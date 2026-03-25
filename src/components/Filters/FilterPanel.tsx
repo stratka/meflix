@@ -129,6 +129,28 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
         </button>
       </div>
 
+      {/* Media type */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          Typ obsahu
+        </label>
+        <div className="flex rounded-lg overflow-hidden border border-gray-700">
+          {(['movie', 'tv'] as const).map(type => (
+            <button
+              key={type}
+              onClick={() => onChange({ ...filters, mediaType: type })}
+              className={`flex-1 py-2 text-sm font-medium transition-colors ${
+                filters.mediaType === type
+                  ? 'bg-red-600 text-white'
+                  : 'bg-gray-800 text-gray-400 hover:text-white'
+              }`}
+            >
+              {type === 'movie' ? '🎬 Filmy' : '📺 Seriály'}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Sort */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
@@ -311,6 +333,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
               sortBy: 'vote_average.desc',
               hideWatched: false,
               originCountry: '',
+              mediaType: 'movie',
             });
           }}
           className="w-full py-2 text-sm text-red-400 hover:text-red-300 border border-red-900/50 hover:border-red-700/50 rounded-lg transition-colors"

@@ -24,6 +24,7 @@ export interface FilterState {
   sortBy: SortOption;
   hideWatched: boolean;
   originCountry: string;
+  mediaType: 'movie' | 'tv';
 }
 
 export interface WatchedEntry {

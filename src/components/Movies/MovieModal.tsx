@@ -29,7 +29,7 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
   }, []);
 
   useEffect(() => {
-    fetchMovieDetail(movie.id, settings.region)
+    fetchMovieDetail(movie.id, settings.region, movie.media_type ?? 'movie')
       .then(setDetail)
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -95,6 +95,7 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
   }
 
   const director = detail?.credits?.crew?.find(c => c.job === 'Director');
+  const createdBy = detail?.created_by?.[0];
   const topCast = detail?.credits?.cast?.slice(0, 8) || [];
 
   // Najdi nejlepší trailer — preferuj oficiální YouTube trailer
@@ -188,6 +189,21 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
                       </span>
                     </>
                   )}
+                  {!detail?.runtime && detail?.episode_run_time && detail.episode_run_time.length > 0 && (
+                    <>
+                      <span>·</span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {detail.episode_run_time[0]} min / díl
+                      </span>
+                    </>
+                  )}
+                  {detail?.number_of_seasons && (
+                    <>
+                      <span>·</span>
+                      <span>{detail.number_of_seasons} {detail.number_of_seasons === 1 ? 'sezóna' : detail.number_of_seasons < 5 ? 'sezóny' : 'sezón'}</span>
+                    </>
+                  )}
                   <span>·</span>
                   <span className="flex items-center gap-1 text-yellow-400">
                     <Star className="w-3 h-3 fill-yellow-400" />
@@ -256,11 +272,11 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
               )}
             </div>
 
-            {/* Director */}
-            {director && (
+            {/* Director / Creator */}
+            {(director || createdBy) && (
               <p className="mt-3 text-sm text-gray-400">
-                <span className="text-gray-500">Režie: </span>
-                <span className="text-white">{director.name}</span>
+                <span className="text-gray-500">{createdBy && !director ? 'Tvůrce: ' : 'Režie: '}</span>
+                <span className="text-white">{director?.name ?? createdBy?.name}</span>
               </p>
             )}
 

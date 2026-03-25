@@ -30,6 +30,7 @@ const DEFAULT_FILTERS: FilterState = {
   sortBy: 'vote_average.desc',
   hideWatched: false,
   originCountry: '',
+  mediaType: 'movie',
 };
 
 export function MovieBrowser({ settings }: Props) {

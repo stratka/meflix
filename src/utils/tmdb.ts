@@ -51,6 +51,10 @@ export async function discoverMovies(
     return { page: 1, results: [], total_pages: 0, total_results: 0 };
   }
 
+  const isTV = filters.mediaType === 'tv';
+  const dateGteParam = isTV ? 'first_air_date.gte' : 'primary_release_date.gte';
+  const dateLteParam = isTV ? 'first_air_date.lte' : 'primary_release_date.lte';
+
   const params = new URLSearchParams({
     watch_region: region,
     with_watch_providers: filterServiceIds.join('|'),
@@ -63,32 +67,51 @@ export async function discoverMovies(
 
   if (filters.genres.length > 0) params.set('with_genres', filters.genres.join(','));
   if (filters.minRating > 0) params.set('vote_average.gte', String(filters.minRating));
-  if (filters.yearFrom) params.set('primary_release_date.gte', `${filters.yearFrom}-01-01`);
-  if (filters.yearTo) params.set('primary_release_date.lte', `${filters.yearTo}-12-31`);
+  if (filters.yearFrom) params.set(dateGteParam, `${filters.yearFrom}-01-01`);
+  if (filters.yearTo) params.set(dateLteParam, `${filters.yearTo}-12-31`);
   if (filters.personId) {
     if (filters.personRole === 'cast') params.set('with_cast', String(filters.personId));
     else params.set('with_crew', String(filters.personId));
   }
   if (filters.originCountry) params.set('with_origin_country', filters.originCountry);
 
-  return tmdbFetch<TMDBDiscoverResponse>(buildUrl('discover/movie', params));
+  const endpoint = isTV ? 'discover/tv' : 'discover/movie';
+  const raw = await tmdbFetch<TMDBDiscoverResponse>(buildUrl(endpoint, params));
+
+  if (isTV) {
+    raw.results = raw.results.map((item: any) => ({
+      ...item,
+      title: item.name || item.original_name || '',
+      release_date: item.first_air_date || '',
+      media_type: 'tv' as const,
+    }));
+  } else {
+    raw.results = raw.results.map(item => ({ ...item, media_type: 'movie' as const }));
+  }
+
+  return raw;
 }
 
 export async function fetchMovieDetail(
   movieId: number,
-  _region: string
+  _region: string,
+  mediaType: 'movie' | 'tv' = 'movie'
 ): Promise<TMDBMovieDetail> {
   const params = new URLSearchParams({
     language: 'cs-CZ',
     append_to_response: 'credits,watch/providers,videos',
   });
-  const data = await tmdbFetch<TMDBMovieDetail & { 'watch/providers': WatchProviderResponse }>(
-    buildUrl(`movie/${movieId}`, params)
-  );
-  if (data['watch/providers']) {
-    data.watch_providers = data['watch/providers'];
+  const endpoint = mediaType === 'tv' ? `tv/${movieId}` : `movie/${movieId}`;
+  const data = await tmdbFetch<any>(buildUrl(endpoint, params));
+  if (data['watch/providers']) data.watch_providers = data['watch/providers'];
+  if (mediaType === 'tv') {
+    data.title = data.name || data.original_name || '';
+    data.release_date = data.first_air_date || '';
+    data.media_type = 'tv';
+  } else {
+    data.media_type = 'movie';
   }
-  return data;
+  return data as TMDBMovieDetail;
 }
 
 export async function searchMovies(

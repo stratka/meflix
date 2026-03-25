@@ -11,6 +11,7 @@ export interface TMDBMovie {
   genres?: Genre[];
   popularity: number;
   original_language: string;
+  media_type?: 'movie' | 'tv';
 }
 
 export interface TMDBVideo {
@@ -30,6 +31,9 @@ export interface TMDBMovieDetail extends TMDBMovie {
   credits?: Credits;
   watch_providers?: WatchProviderResponse;
   videos?: { results: TMDBVideo[] };
+  number_of_seasons?: number;
+  episode_run_time?: number[];
+  created_by?: { id: number; name: string }[];
 }
 
 export interface Genre {
