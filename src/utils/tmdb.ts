@@ -60,7 +60,7 @@ export async function discoverMovies(
     with_watch_providers: filterServiceIds.join('|'),
     with_watch_monetization_types: 'flatrate',
     sort_by: filters.sortBy,
-    'vote_count.gte': '50',
+    'vote_count.gte': filters.originCountry ? '5' : '50',
     page: String(page),
     language: 'cs-CZ',
   });
