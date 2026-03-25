@@ -52,7 +52,7 @@ export function MovieCard({ movie, onClick, isWatched, watchedDate }: Props) {
         )}
       </div>
       <div className="p-3">
-        <h3 className="text-sm font-semibold text-white leading-tight line-clamp-2 group-hover:text-red-400 transition-colors">
+        <h3 className="text-sm font-semibold text-white leading-tight line-clamp-2 group-hover:text-blue-400 transition-colors">
           {movie.title}
         </h3>
         <p className="text-xs text-gray-500 mt-1">{year}</p>
