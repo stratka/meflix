@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { X, Star, Clock, ExternalLink, Play, Youtube, Eye } from 'lucide-react';
 import type { TMDBMovie, TMDBMovieDetail, Provider } from '../../types/tmdb';
 import type { AppSettings, StreamingService, WatchedEntry } from '../../types/app';
@@ -22,6 +22,70 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
   const [loading, setLoading] = useState(true);
   const [showTrailer, setShowTrailer] = useState(false);
   const [directLinks, setDirectLinks] = useState<DirectStreamingLinks>({});
+
+  // Swipe-to-dismiss (pouze mobil)
+  const dragY = useRef(0);
+  const scrollY = useRef(0);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const startY = useRef<number | null>(null);
+  const DISMISS_THRESHOLD = 150;
+  const DISMISS_VELOCITY = 0.5; // px/ms
+
+  const applyDrag = (dy: number) => {
+    if (!sheetRef.current || !overlayRef.current) return;
+    const clamped = Math.max(0, dy);
+    sheetRef.current.style.transform = `translateY(${clamped}px) scale(${1 - clamped * 0.00004})`;
+    overlayRef.current.style.opacity = String(Math.max(0, 0.8 - (clamped / DISMISS_THRESHOLD) * 0.8));
+  };
+
+  const resetDrag = () => {
+    if (!sheetRef.current || !overlayRef.current) return;
+    sheetRef.current.style.transition = 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)';
+    sheetRef.current.style.transform = '';
+    overlayRef.current.style.transition = 'opacity 0.3s ease';
+    overlayRef.current.style.opacity = '';
+    setTimeout(() => {
+      if (sheetRef.current) sheetRef.current.style.transition = '';
+      if (overlayRef.current) overlayRef.current.style.transition = '';
+    }, 300);
+  };
+
+  const dismissSheet = () => {
+    if (!sheetRef.current || !overlayRef.current) return;
+    sheetRef.current.style.transition = 'transform 0.26s ease-in';
+    sheetRef.current.style.transform = `translateY(100%)`;
+    overlayRef.current.style.transition = 'opacity 0.26s ease-in';
+    overlayRef.current.style.opacity = '0';
+    setTimeout(onClose, 260);
+  };
+
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    startY.current = e.touches[0].clientY;
+    dragY.current = 0;
+  }, []);
+
+  const onTouchMove = useCallback((e: React.TouchEvent) => {
+    if (startY.current === null) return;
+    const dy = e.touches[0].clientY - startY.current;
+    if (scrollY.current <= 0 && dy > 0) {
+      dragY.current = dy;
+      applyDrag(dy);
+    }
+  }, []);
+
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (startY.current === null) return;
+    const dy = dragY.current;
+    const dt = e.timeStamp;
+    const velocity = dt > 0 ? dy / dt : 0;
+    startY.current = null;
+    if (dy > DISMISS_THRESHOLD || velocity > DISMISS_VELOCITY) {
+      dismissSheet();
+    } else {
+      resetDrag();
+    }
+  }, [onClose]);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -109,10 +173,22 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
 
   return (
     <div
+      ref={overlayRef}
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm"
       onClick={handleBackdropClick}
     >
-      <div className="relative w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] bg-gray-900 sm:rounded-2xl overflow-hidden flex flex-col shadow-2xl">
+      <div
+        ref={sheetRef}
+        className="relative w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] bg-gray-900 sm:rounded-2xl overflow-hidden flex flex-col shadow-2xl"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
+        {/* Drag handle — pouze mobil */}
+        <div className="sm:hidden flex justify-center pt-3 pb-1 flex-shrink-0">
+          <div className="w-10 h-1 bg-gray-600 rounded-full" />
+        </div>
+
         {/* Close button */}
         <button
           onClick={onClose}
@@ -122,7 +198,10 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
         </button>
 
         {/* Scrollable content */}
-        <div className="overflow-y-auto flex-1">
+        <div
+          className="overflow-y-auto flex-1"
+          onScroll={e => { scrollY.current = (e.target as HTMLElement).scrollTop; }}
+        >
           {/* Backdrop */}
           <div className="relative h-48 sm:h-64 bg-gray-800">
             {backdropUrl && (
