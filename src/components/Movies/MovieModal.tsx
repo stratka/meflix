@@ -72,7 +72,7 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
   for (const provider of flatrate) {
     const service = getServiceByTmdbId(provider.provider_id);
     if (service && settings.selectedServices.includes(service.id)) {
-      const watchLink = directLinks[service.id] || regionProviders?.link || getWatchUrl(service.id, movie.title);
+      const watchLink = directLinks[service.id] || getWatchUrl(service.id, movie.title);
       userServices.push({ service, provider, watchLink });
     }
   }
