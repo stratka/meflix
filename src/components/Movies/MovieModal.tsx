@@ -148,17 +148,26 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
                   {userServices.length > 0 && (
                     <div className="flex flex-col gap-1.5 w-full">
                       {userServices.map(({ service, watchLink }) => (
-                        <a
-                          key={service.id}
-                          href={watchLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-1.5 w-full px-2 py-1.5 rounded-lg font-semibold text-xs transition-all hover:opacity-90 hover:scale-105 active:scale-95"
-                          style={{ backgroundColor: service.color, color: service.textColor }}
-                        >
-                          <Play className="w-3 h-3 fill-current flex-shrink-0" />
-                          <span className="truncate">{service.name}</span>
-                        </a>
+                        <div key={service.id} className="flex gap-1">
+                          <a
+                            href={watchLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg font-semibold text-xs transition-all hover:opacity-90 hover:scale-105 active:scale-95"
+                            style={{ backgroundColor: service.color, color: service.textColor }}
+                            onClick={() => { if (directLinks[service.id]) onMarkWatched(movie.id, movie.title); }}
+                          >
+                            <Play className="w-3 h-3 fill-current flex-shrink-0" />
+                            <span className="truncate">{service.name}</span>
+                          </a>
+                          <button
+                            onClick={() => watchedEntry ? onUnmarkWatched(movie.id) : onMarkWatched(movie.id, movie.title)}
+                            title={watchedEntry ? 'Viděno – klikni pro zrušení' : 'Označit jako viděno'}
+                            className={`w-7 flex-shrink-0 flex items-center justify-center rounded-lg transition-colors ${watchedEntry ? 'bg-green-600/30 text-green-400' : 'bg-gray-800 text-gray-500 hover:text-white hover:bg-gray-700'}`}
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       ))}
                     </div>
                   )}
@@ -270,35 +279,13 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
             )}
 
 
-            {/* Viděl jsem */}
-            <div className="mt-6 pt-4 border-t border-gray-800">
-              {watchedEntry ? (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-green-400">
-                    <Eye className="w-4 h-4" />
-                    <span className="text-sm font-medium">Viděno</span>
-                    <span className="text-xs text-gray-500">
-                      {new Date(watchedEntry.date).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'long', year: 'numeric' })}
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => onUnmarkWatched(movie.id)}
-                    className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-red-400 transition-colors"
-                  >
-                    <EyeOff className="w-3.5 h-3.5" />
-                    Zrušit
-                  </button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => onMarkWatched(movie.id, movie.title)}
-                  className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white text-sm font-medium rounded-lg transition-colors w-full justify-center"
-                >
-                  <Eye className="w-4 h-4" />
-                  Označit jako viděno
-                </button>
-              )}
-            </div>
+            {/* Viděno — datum zobrazíme pokud je označeno */}
+            {watchedEntry && (
+              <div className="mt-4 flex items-center gap-1.5 text-xs text-green-400">
+                <Eye className="w-3.5 h-3.5" />
+                <span>Viděno {new Date(watchedEntry.date).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+              </div>
+            )}
 
             {/* Also on (other services) */}
             {otherServices.length > 0 && (
