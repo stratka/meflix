@@ -57,11 +57,16 @@ export async function discoverMovies(
   const dateGteParam = isTV ? 'first_air_date.gte' : 'primary_release_date.gte';
   const dateLteParam = isTV ? 'first_air_date.lte' : 'primary_release_date.lte';
 
+  // Při řazení dle hodnocení použijeme popularity.desc pro TMDB dotaz,
+  // aby nám TMDB nevracel stránky plné filmů s hodnocením 10/1 hlas.
+  // Výsledky pak seřadíme client-side dle cappedRating v useMovies.ts.
+  const tmdbSortBy = filters.sortBy === 'vote_average.desc' ? 'popularity.desc' : filters.sortBy;
+
   const params = new URLSearchParams({
     watch_region: region,
     with_watch_providers: filterServiceIds.join('|'),
     with_watch_monetization_types: 'flatrate',
-    sort_by: filters.sortBy,
+    sort_by: tmdbSortBy,
     'vote_count.gte': '0',
     page: String(page),
     language: 'cs-CZ',
