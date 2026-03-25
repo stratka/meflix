@@ -192,23 +192,31 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
           Rok vydání
         </label>
         <div className="flex gap-2 items-center">
-          <input
-            type="number"
-            min={1900}
-            max={CURRENT_YEAR}
-            value={filters.yearFrom}
-            onChange={e => onChange({ ...filters, yearFrom: parseInt(e.target.value) || 1900 })}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500"
-          />
+          <div className="relative flex-1">
+            <select
+              value={filters.yearFrom}
+              onChange={e => onChange({ ...filters, yearFrom: parseInt(e.target.value) })}
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-7"
+            >
+              {Array.from({ length: CURRENT_YEAR - 1900 + 1 }, (_, i) => CURRENT_YEAR - i).map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+          </div>
           <span className="text-gray-500 flex-shrink-0">–</span>
-          <input
-            type="number"
-            min={1900}
-            max={CURRENT_YEAR}
-            value={filters.yearTo}
-            onChange={e => onChange({ ...filters, yearTo: parseInt(e.target.value) || CURRENT_YEAR })}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-red-500"
-          />
+          <div className="relative flex-1">
+            <select
+              value={filters.yearTo}
+              onChange={e => onChange({ ...filters, yearTo: parseInt(e.target.value) })}
+              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-7"
+            >
+              {Array.from({ length: CURRENT_YEAR - 1900 + 1 }, (_, i) => CURRENT_YEAR - i).map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+          </div>
         </div>
       </div>
 
