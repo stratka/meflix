@@ -155,7 +155,7 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
                             rel="noopener noreferrer"
                             className="flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-lg font-semibold text-xs transition-all hover:opacity-90 hover:scale-105 active:scale-95"
                             style={{ backgroundColor: service.color, color: service.textColor }}
-                            onClick={() => { if (directLinks[service.id]) onMarkWatched(movie.id, movie.title); }}
+                            onClick={() => onMarkWatched(movie.id, movie.title)}
                           >
                             <Play className="w-3 h-3 fill-current flex-shrink-0" />
                             <span className="truncate">{service.name}</span>
