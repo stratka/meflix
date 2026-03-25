@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { X, Star, Clock, ExternalLink, Play, Youtube, Eye, EyeOff } from 'lucide-react';
+import { X, Star, Clock, ExternalLink, Play, Youtube, Eye } from 'lucide-react';
 import type { TMDBMovie, TMDBMovieDetail, Provider } from '../../types/tmdb';
 import type { AppSettings, StreamingService, WatchedEntry } from '../../types/app';
 import { fetchMovieDetail } from '../../utils/tmdb';
