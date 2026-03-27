@@ -227,19 +227,12 @@ export function MovieBrowser({ settings }: Props) {
         </div>
       </div>
 
-      {/* Back button — zavře detail nebo vymaže hledání */}
-      {(isSearching || selectedMovie) && (
+      {/* Back to browse button — vymaže hledání */}
+      {isSearching && (
         <button
-          onClick={() => {
-            if (selectedMovie) {
-              setSelectedMovie(null);
-            } else {
-              setSearchInput('');
-              setSearchQuery('');
-            }
-          }}
+          onClick={() => { setSearchInput(''); setSearchQuery(''); }}
           className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
-          aria-label="Zpět"
+          aria-label="Zpět na úvodní stranu"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>

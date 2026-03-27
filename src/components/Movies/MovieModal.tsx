@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { X, Star, Clock, ExternalLink, Play, Youtube, Eye } from 'lucide-react';
+import { Star, Clock, ExternalLink, Play, Youtube, Eye, ArrowLeft } from 'lucide-react';
 import type { TMDBMovie, TMDBMovieDetail, Provider } from '../../types/tmdb';
 import type { AppSettings, StreamingService, WatchedEntry } from '../../types/app';
 import { fetchMovieDetail } from '../../utils/tmdb';
@@ -191,12 +191,13 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
           <div className="w-10 h-1 bg-gray-600 rounded-full" />
         </div>
 
-        {/* Close button */}
+        {/* Back button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-9 h-9 bg-black/60 hover:bg-black/80 rounded-full flex items-center justify-center text-white transition-colors"
+          className="absolute top-4 right-4 z-10 w-9 h-9 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center text-white transition-colors shadow-lg"
+          aria-label="Zpět"
         >
-          <X className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5" />
         </button>
 
         {/* Scrollable content */}
