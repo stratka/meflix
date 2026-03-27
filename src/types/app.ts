@@ -25,6 +25,7 @@ export interface FilterState {
   hideWatched: boolean;
   originCountry: string;
   mediaType: 'movie' | 'tv';
+  certification: '' | 'G' | 'PG' | 'PG-13';
 }
 
 export interface WatchedEntry {

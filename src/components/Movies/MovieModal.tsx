@@ -19,7 +19,7 @@ interface Props {
   onPersonClick?: (personId: number, personName: string, role: 'cast' | 'crew') => void;
 }
 
-export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEntry, onMarkWatched, onUnmarkWatched, onPersonClick }: Props) {
+export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatched, onUnmarkWatched, onPersonClick }: Props) {
   const [detail, setDetail] = useState<TMDBMovieDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [showTrailer, setShowTrailer] = useState(false);

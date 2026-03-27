@@ -75,6 +75,10 @@ export async function discoverMovies(
     else params.set('with_crew', String(filters.personId));
   }
   if (filters.originCountry) params.set('with_origin_country', filters.originCountry);
+  if (filters.certification) {
+    params.set('certification_country', 'US');
+    params.set('certification.lte', filters.certification);
+  }
 
   const endpoint = isTV ? 'discover/tv' : 'discover/movie';
   const raw = await tmdbFetch<TMDBDiscoverResponse>(buildUrl(endpoint, params));

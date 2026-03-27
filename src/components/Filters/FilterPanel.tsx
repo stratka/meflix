@@ -129,6 +129,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       hideWatched: false,
       originCountry: '',
       mediaType: 'movie',
+      certification: '',
     });
   }
 
@@ -140,6 +141,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
     filters.personId !== null,
     filters.hideWatched,
     filters.originCountry !== '',
+    filters.certification !== '',
   ].filter(Boolean).length;
 
   const panelContent = (
@@ -164,6 +166,26 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
             {filters.hideWatched && <span className="text-white text-xs font-bold">✓</span>}
           </span>
         </button>
+      </div>
+
+      {/* Certification / věkové hodnocení */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          Věkové hodnocení
+        </label>
+        <div className="relative">
+          <select
+            value={filters.certification}
+            onChange={e => onChange({ ...filters, certification: e.target.value as FilterState['certification'] })}
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8"
+          >
+            <option value="">Vše</option>
+            <option value="G">Pro nejmenší (G)</option>
+            <option value="PG">Děti 7+ (G, PG)</option>
+            <option value="PG-13">Mládež 12+ (G, PG, PG-13)</option>
+          </select>
+          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+        </div>
       </div>
 
       {/* Media type */}

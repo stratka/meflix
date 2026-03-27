@@ -31,6 +31,7 @@ const DEFAULT_FILTERS: FilterState = {
   hideWatched: false,
   originCountry: '',
   mediaType: 'movie',
+  certification: '' as const,
 };
 
 export function MovieBrowser({ settings }: Props) {
@@ -124,9 +125,9 @@ export function MovieBrowser({ settings }: Props) {
             >
               <SlidersHorizontal className="w-4 h-4" />
               Filtry
-              {Object.values({ a: filters.genres.length > 0, b: filters.minRating > 0, c: filters.yearFrom > 1950, d: filters.yearTo < CURRENT_YEAR, e: filters.personId !== null, f: filters.hideWatched, g: filters.originCountry !== '' }).filter(Boolean).length > 0 && (
+              {Object.values({ a: filters.genres.length > 0, b: filters.minRating > 0, c: filters.yearFrom > 1950, d: filters.yearTo < CURRENT_YEAR, e: filters.personId !== null, f: filters.hideWatched, g: filters.originCountry !== '', h: filters.certification !== '' }).filter(Boolean).length > 0 && (
                 <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
-                  {Object.values({ a: filters.genres.length > 0, b: filters.minRating > 0, c: filters.yearFrom > 1950, d: filters.yearTo < CURRENT_YEAR, e: filters.personId !== null, f: filters.hideWatched, g: filters.originCountry !== '' }).filter(Boolean).length}
+                  {Object.values({ a: filters.genres.length > 0, b: filters.minRating > 0, c: filters.yearFrom > 1950, d: filters.yearTo < CURRENT_YEAR, e: filters.personId !== null, f: filters.hideWatched, g: filters.originCountry !== '', h: filters.certification !== '' }).filter(Boolean).length}
                 </span>
               )}
             </button>
