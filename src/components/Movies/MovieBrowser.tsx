@@ -35,7 +35,7 @@ const DEFAULT_FILTERS: FilterState = {
   personName: '',
   personRole: 'cast',
   sortBy: 'popularity.desc',
-  hideWatched: false,
+  watchedFilter: 'all' as const,
   originCountry: '',
   mediaType: 'movie',
   certification: '' as const,
@@ -114,7 +114,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
     filters.yearFrom > 1950,
     filters.yearTo < CURRENT_YEAR,
     filters.personId !== null,
-    filters.hideWatched,
+    filters.watchedFilter !== 'all',
     filters.originCountry !== '',
     filters.certification !== '',
   ].filter(Boolean).length;
@@ -271,7 +271,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3">
                 {movies
                   .filter(m => !hiddenMovieIds.has(m.id))
-                  .filter(m => !filters.hideWatched || !isWatched(m.id))
+                  .filter(m => filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id)))
                   .map(movie => (
                   <MovieCard
                     key={movie.id}
