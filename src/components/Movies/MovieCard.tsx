@@ -7,9 +7,10 @@ interface Props {
   onClick: (movie: TMDBMovie) => void;
   isWatched?: boolean;
   watchedDate?: string;
+  dimmed?: boolean;
 }
 
-export function MovieCard({ movie, onClick, isWatched, watchedDate }: Props) {
+export function MovieCard({ movie, onClick, isWatched, watchedDate, dimmed }: Props) {
   const posterUrl = movie.poster_path
     ? `${TMDB_IMAGE_BASE}/w342${movie.poster_path}`
     : null;
@@ -20,7 +21,7 @@ export function MovieCard({ movie, onClick, isWatched, watchedDate }: Props) {
   return (
     <button
       onClick={() => onClick(movie)}
-      className="group bg-gray-900 rounded-xl overflow-hidden text-left transition-all duration-200 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/50 focus:outline-none focus:ring-2 focus:ring-red-500"
+      className={`group bg-gray-900 rounded-xl overflow-hidden text-left transition-all duration-200 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/50 focus:outline-none focus:ring-2 focus:ring-red-500 ${dimmed ? 'grayscale opacity-50 hover:grayscale-0 hover:opacity-100' : ''}`}
     >
       <div className="relative aspect-[2/3] bg-gray-800 overflow-hidden">
         {posterUrl ? (

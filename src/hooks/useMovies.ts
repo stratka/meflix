@@ -7,6 +7,7 @@ import { STREAMING_SERVICES, getAllTmdbIds } from '../utils/constants';
 
 interface UseMoviesResult {
   movies: TMDBMovie[];
+  unavailableIds: Set<number>;
   loading: boolean;
   loadingMore: boolean;
   error: string | null;
@@ -23,24 +24,29 @@ function getUserProviderIds(selectedServices: string[]): number[] {
   });
 }
 
-async function filterByAvailability(
+async function checkAvailability(
   movies: TMDBMovie[],
   region: string,
   providerIds: number[]
-): Promise<TMDBMovie[]> {
+): Promise<{ all: TMDBMovie[]; unavailableIds: Set<number> }> {
   const results = await Promise.allSettled(
     movies.map(async movie => {
       const mediaType = movie.media_type === 'tv' ? 'tv' : 'movie';
       const providers = await fetchMovieWatchProviders(movie.id, mediaType);
       const flatrate = providers.results?.[region]?.flatrate ?? [];
       const available = flatrate.some(p => providerIds.includes(p.provider_id));
-      return available ? movie : null;
+      return { movie, available };
     })
   );
-  return results
-    .filter((r): r is PromiseFulfilledResult<TMDBMovie | null> => r.status === 'fulfilled')
-    .map(r => r.value)
-    .filter((m): m is TMDBMovie => m !== null);
+  const unavailableIds = new Set<number>();
+  const all: TMDBMovie[] = [];
+  for (const r of results) {
+    if (r.status === 'fulfilled') {
+      all.push(r.value.movie);
+      if (!r.value.available) unavailableIds.add(r.value.movie.id);
+    }
+  }
+  return { all, unavailableIds };
 }
 
 export function useMovies(
@@ -50,6 +56,7 @@ export function useMovies(
   searchQuery: string = ''
 ): UseMoviesResult {
   const [movies, setMovies] = useState<TMDBMovie[]>([]);
+  const [unavailableIds, setUnavailableIds] = useState<Set<number>>(new Set());
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
@@ -80,8 +87,14 @@ export function useMovies(
         if (isSearch) {
           const data = await searchMovies(searchQuery.trim(), pageNum);
           const providerIds = getUserProviderIds(selectedServices);
-          const filtered = await filterByAvailability(data.results, region, providerIds);
-          setMovies(prev => (replace ? filtered : [...prev, ...filtered]));
+          const { all, unavailableIds: newUnavailable } = await checkAvailability(data.results, region, providerIds);
+          setMovies(prev => (replace ? all : [...prev, ...all]));
+          setUnavailableIds(prev => {
+            if (replace) return newUnavailable;
+            const merged = new Set(prev);
+            newUnavailable.forEach(id => merged.add(id));
+            return merged;
+          });
           setTotalPages(data.total_pages);
           setTotalResults(data.total_results);
           setPage(pageNum);
@@ -120,5 +133,5 @@ export function useMovies(
     fetchPage(1, true);
   }, [fetchPage]);
 
-  return { movies, loading, loadingMore, error, hasMore: page < totalPages, totalResults, loadMore, reset };
+  return { movies, unavailableIds, loading, loadingMore, error, hasMore: page < totalPages, totalResults, loadMore, reset };
 }

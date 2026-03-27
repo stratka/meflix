@@ -43,7 +43,7 @@ export function MovieBrowser({ settings }: Props) {
   const loaderRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const { movies, loading, loadingMore, error, hasMore, totalResults, loadMore } = useMovies(
+  const { movies, unavailableIds, loading, loadingMore, error, hasMore, totalResults, loadMore } = useMovies(
     settings.region,
     settings.selectedServices,
     filters,
@@ -200,6 +200,7 @@ export function MovieBrowser({ settings }: Props) {
                     onClick={setSelectedMovie}
                     isWatched={isWatched(movie.id)}
                     watchedDate={watched[movie.id]?.date}
+                    dimmed={isSearching && unavailableIds.has(movie.id)}
                   />
                 ))}
                 {loadingMore && <MovieSkeletonGrid count={10} />}
