@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, ChevronDown, SlidersHorizontal, Eye, ArrowLeft } from 'lucide-react';
+import { Search, X, ChevronDown, SlidersHorizontal, Eye, Check } from 'lucide-react';
 import type { Genre } from '../../types/tmdb';
 import type { FilterState, SortOption } from '../../types/app';
 import { SORT_OPTIONS } from '../../utils/constants';
@@ -11,6 +11,8 @@ interface Props {
   onChange: (filters: FilterState) => void;
   mobileOpen?: boolean;
   onMobileOpenChange?: (open: boolean) => void;
+  onReset?: () => void;
+  activeFilterCount?: number;
 }
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -43,7 +45,7 @@ const COUNTRIES = [
   { code: 'TR', name: '🇹🇷 Turecko' },
 ];
 
-export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMobileOpen, onMobileOpenChange }: Props) {
+export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMobileOpen, onMobileOpenChange, onReset, activeFilterCount: externalActiveFilterCount }: Props) {
   const [internalMobileOpen, setInternalMobileOpen] = useState(false);
   const mobileOpen = externalMobileOpen !== undefined ? externalMobileOpen : internalMobileOpen;
   const setMobileOpen = (v: boolean) => { setInternalMobileOpen(v); onMobileOpenChange?.(v); };
@@ -381,15 +383,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
         </div>
       </div>
 
-      {/* Reset */}
-      {activeFilterCount > 0 && (
-        <button
-          onClick={resetFilters}
-          className="w-full py-2 text-sm text-red-400 hover:text-red-300 border border-red-900/50 hover:border-red-700/50 rounded-lg transition-colors"
-        >
-          Resetovat filtry ({activeFilterCount})
-        </button>
-      )}
     </div>
   );
 
@@ -403,7 +396,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
             className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
             aria-label="Zavřít filtry"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <Check className="w-5 h-5" />
           </button>
           {panelContent}
         </div>
@@ -412,25 +405,15 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Desktop sidebar */}
       <aside className="hidden lg:block w-64 flex-shrink-0">
         <div className="sticky top-4 bg-gray-900 border border-gray-800 rounded-xl p-4 max-h-[calc(100vh-8rem)] overflow-y-auto">
-          <div className="flex items-center gap-2 mb-4">
-            <h2 className="font-semibold text-white flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4" />
-              Filtry
-              {activeFilterCount > 0 && (
-                <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
-                  {activeFilterCount}
-                </span>
-              )}
-            </h2>
+          <h2 className="font-semibold text-white flex items-center gap-2 mb-4">
+            <SlidersHorizontal className="w-4 h-4" />
+            Filtry
             {activeFilterCount > 0 && (
-              <button
-                onClick={resetFilters}
-                className="ml-auto px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg transition-colors"
-              >
-                Zrušit filtry
-              </button>
+              <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+                {activeFilterCount}
+              </span>
             )}
-          </div>
+          </h2>
           {panelContent}
         </div>
       </aside>

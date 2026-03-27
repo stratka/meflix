@@ -91,6 +91,21 @@ export function MovieBrowser({ settings }: Props) {
 
   const isSearching = searchQuery.trim().length > 0;
 
+  const activeFilterCount = [
+    filters.genres.length > 0,
+    filters.minRating > 0,
+    filters.yearFrom > 1950,
+    filters.yearTo < CURRENT_YEAR,
+    filters.personId !== null,
+    filters.hideWatched,
+    filters.originCountry !== '',
+    filters.certification !== '',
+  ].filter(Boolean).length;
+
+  function resetFilters() {
+    setFilters(DEFAULT_FILTERS);
+  }
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -117,20 +132,30 @@ export function MovieBrowser({ settings }: Props) {
             )}
           </div>
 
-          {/* Mobile filter toggle — in sticky header */}
+          {/* Mobile filter toggle + reset — in sticky header */}
           {!isSearching && (
-            <button
-              onClick={() => setMobileFilterOpen(o => !o)}
-              className="lg:hidden flex items-center gap-2 px-3 py-2 bg-gray-800 rounded-lg text-sm text-white flex-shrink-0"
-            >
-              <SlidersHorizontal className="w-4 h-4" />
-              Filtry
-              {Object.values({ a: filters.genres.length > 0, b: filters.minRating > 0, c: filters.yearFrom > 1950, d: filters.yearTo < CURRENT_YEAR, e: filters.personId !== null, f: filters.hideWatched, g: filters.originCountry !== '', h: filters.certification !== '' }).filter(Boolean).length > 0 && (
-                <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
-                  {Object.values({ a: filters.genres.length > 0, b: filters.minRating > 0, c: filters.yearFrom > 1950, d: filters.yearTo < CURRENT_YEAR, e: filters.personId !== null, f: filters.hideWatched, g: filters.originCountry !== '', h: filters.certification !== '' }).filter(Boolean).length}
-                </span>
+            <div className="lg:hidden flex items-center gap-2 flex-shrink-0">
+              <button
+                onClick={() => setMobileFilterOpen(o => !o)}
+                className="flex items-center gap-2 px-3 py-2 bg-gray-800 rounded-lg text-sm text-white"
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+                Filtry
+                {activeFilterCount > 0 && (
+                  <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </button>
+              {activeFilterCount > 0 && (
+                <button
+                  onClick={resetFilters}
+                  className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors"
+                >
+                  Resetovat
+                </button>
               )}
-            </button>
+            </div>
           )}
 
           {/* Service badges — kliknutím filtruješ */}
@@ -174,6 +199,16 @@ export function MovieBrowser({ settings }: Props) {
             </div>
           )}
 
+          {/* Reset filtry — desktop */}
+          {!isSearching && activeFilterCount > 0 && (
+            <button
+              onClick={resetFilters}
+              className="hidden lg:block px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors"
+            >
+              Resetovat filtry ({activeFilterCount})
+            </button>
+          )}
+
           {/* Počet výsledků */}
           {!loading && totalResults > 0 && (
             <span className="text-sm text-gray-500 ml-auto">
@@ -193,6 +228,8 @@ export function MovieBrowser({ settings }: Props) {
             onChange={setFilters}
             mobileOpen={mobileFilterOpen}
             onMobileOpenChange={setMobileFilterOpen}
+            onReset={resetFilters}
+            activeFilterCount={activeFilterCount}
           />
         )}
 
