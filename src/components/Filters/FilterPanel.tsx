@@ -43,6 +43,7 @@ const COUNTRIES = [
 
 export function FilterPanel({ filters, genres, onChange }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const mobileContainerRef = useRef<HTMLDivElement>(null);
   const [personQuery, setPersonQuery] = useState(filters.personName);
   const [personResults, setPersonResults] = useState<{ id: number; name: string; dept: string }[]>([]);
   const [personSearchLoading, setPersonSearchLoading] = useState(false);
@@ -94,6 +95,19 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
       : [...filters.genres, id];
     onChange({ ...filters, genres });
   }
+
+  // Zavři mobilní filtr při odscrollování mimo viewport
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const el = mobileContainerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (!entry.isIntersecting) setMobileOpen(false); },
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [mobileOpen]);
 
   const activeFilterCount = [
     filters.genres.length > 0,
@@ -347,7 +361,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
   return (
     <>
       {/* Mobile toggle */}
-      <div className="lg:hidden px-4 py-2">
+      <div ref={mobileContainerRef} className="lg:hidden px-4 py-2">
         <button
           onClick={() => setMobileOpen(o => !o)}
           className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-lg text-sm text-white"
