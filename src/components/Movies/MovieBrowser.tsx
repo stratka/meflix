@@ -21,7 +21,7 @@ const CURRENT_YEAR = new Date().getFullYear();
 const DEFAULT_FILTERS: FilterState = {
   genres: [],
   minRating: 0,
-  yearFrom: 1900,
+  yearFrom: 1950,
   yearTo: CURRENT_YEAR,
   services: [],
   personId: null,

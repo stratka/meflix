@@ -115,7 +115,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
     onChange({
       genres: [],
       minRating: 0,
-      yearFrom: 1900,
+      yearFrom: 1950,
       yearTo: CURRENT_YEAR,
       services: [],
       personId: null,
@@ -131,7 +131,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
   const activeFilterCount = [
     filters.genres.length > 0,
     filters.minRating > 0,
-    filters.yearFrom > 1900,
+    filters.yearFrom > 1950,
     filters.yearTo < CURRENT_YEAR,
     filters.personId !== null,
     filters.hideWatched,
@@ -292,34 +292,31 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
       {/* Year range */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          Rok vydání
+          Rok vydání: <span className="text-white">{filters.yearFrom} – {filters.yearTo}</span>
         </label>
-        <div className="flex gap-2 items-center">
-          <div className="relative flex-1">
-            <select
-              value={filters.yearFrom}
-              onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearFrom: v, yearTo: Math.max(v, filters.yearTo) }); }}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-7"
-            >
-              {Array.from({ length: CURRENT_YEAR - 1900 + 1 }, (_, i) => CURRENT_YEAR - i).map(y => (
-                <option key={y} value={y}>{y}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
-          </div>
-          <span className="text-gray-500 flex-shrink-0">–</span>
-          <div className="relative flex-1">
-            <select
-              value={filters.yearTo}
-              onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearTo: v, yearFrom: Math.min(v, filters.yearFrom) }); }}
-              className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-7"
-            >
-              {Array.from({ length: CURRENT_YEAR - 1900 + 1 }, (_, i) => CURRENT_YEAR - i).map(y => (
-                <option key={y} value={y}>{y}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
-          </div>
+        <div className="space-y-2">
+          <input
+            type="range"
+            min={1950}
+            max={CURRENT_YEAR}
+            step={1}
+            value={filters.yearFrom}
+            onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearFrom: v, yearTo: Math.max(v, filters.yearTo) }); }}
+            className="w-full accent-red-500"
+          />
+          <input
+            type="range"
+            min={1950}
+            max={CURRENT_YEAR}
+            step={1}
+            value={filters.yearTo}
+            onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearTo: v, yearFrom: Math.min(v, filters.yearFrom) }); }}
+            className="w-full accent-red-500"
+          />
+        </div>
+        <div className="flex justify-between text-xs text-gray-500 mt-1">
+          <span>1950</span>
+          <span>{CURRENT_YEAR}</span>
         </div>
       </div>
 
