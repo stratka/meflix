@@ -330,7 +330,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
               personId: null,
               personName: '',
               personRole: 'cast',
-              sortBy: 'vote_average.desc',
+              sortBy: 'popularity.desc',
               hideWatched: false,
               originCountry: '',
               mediaType: 'movie',

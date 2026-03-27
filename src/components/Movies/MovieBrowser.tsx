@@ -27,7 +27,7 @@ const DEFAULT_FILTERS: FilterState = {
   personId: null,
   personName: '',
   personRole: 'cast',
-  sortBy: 'vote_average.desc',
+  sortBy: 'popularity.desc',
   hideWatched: false,
   originCountry: '',
   mediaType: 'movie',
