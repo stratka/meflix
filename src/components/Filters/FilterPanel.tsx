@@ -109,6 +109,25 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
     return () => observer.disconnect();
   }, [mobileOpen]);
 
+  function resetFilters() {
+    setPersonQuery('');
+    setPersonResults([]);
+    onChange({
+      genres: [],
+      minRating: 0,
+      yearFrom: 1900,
+      yearTo: CURRENT_YEAR,
+      services: [],
+      personId: null,
+      personName: '',
+      personRole: 'cast',
+      sortBy: 'popularity.desc',
+      hideWatched: false,
+      originCountry: '',
+      mediaType: 'movie',
+    });
+  }
+
   const activeFilterCount = [
     filters.genres.length > 0,
     filters.minRating > 0,
@@ -332,24 +351,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
       {/* Reset */}
       {activeFilterCount > 0 && (
         <button
-          onClick={() => {
-            setPersonQuery('');
-            setPersonResults([]);
-            onChange({
-              genres: [],
-              minRating: 0,
-              yearFrom: 1900,
-              yearTo: CURRENT_YEAR,
-              services: [],
-              personId: null,
-              personName: '',
-              personRole: 'cast',
-              sortBy: 'popularity.desc',
-              hideWatched: false,
-              originCountry: '',
-              mediaType: 'movie',
-            });
-          }}
+          onClick={resetFilters}
           className="w-full py-2 text-sm text-red-400 hover:text-red-300 border border-red-900/50 hover:border-red-700/50 rounded-lg transition-colors"
         >
           Resetovat filtry ({activeFilterCount})
@@ -362,18 +364,28 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
     <>
       {/* Mobile toggle */}
       <div ref={mobileContainerRef} className="lg:hidden px-4 py-2">
-        <button
-          onClick={() => setMobileOpen(o => !o)}
-          className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-lg text-sm text-white"
-        >
-          <SlidersHorizontal className="w-4 h-4" />
-          Filtry
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setMobileOpen(o => !o)}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-lg text-sm text-white"
+          >
+            <SlidersHorizontal className="w-4 h-4" />
+            Filtry
+            {activeFilterCount > 0 && (
+              <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
           {activeFilterCount > 0 && (
-            <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
-              {activeFilterCount}
-            </span>
+            <button
+              onClick={resetFilters}
+              className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors"
+            >
+              Zrušit filtry
+            </button>
           )}
-        </button>
+        </div>
         {mobileOpen && (
           <div className="mt-3 bg-gray-900 border border-gray-800 rounded-xl p-4">
             {panelContent}
@@ -390,15 +402,25 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
       {/* Desktop sidebar */}
       <aside className="hidden lg:block w-64 flex-shrink-0">
         <div className="sticky top-4 bg-gray-900 border border-gray-800 rounded-xl p-4">
-          <h2 className="font-semibold text-white mb-4 flex items-center gap-2">
-            <SlidersHorizontal className="w-4 h-4" />
-            Filtry
+          <div className="flex items-center gap-2 mb-4">
+            <h2 className="font-semibold text-white flex items-center gap-2">
+              <SlidersHorizontal className="w-4 h-4" />
+              Filtry
+              {activeFilterCount > 0 && (
+                <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+                  {activeFilterCount}
+                </span>
+              )}
+            </h2>
             {activeFilterCount > 0 && (
-              <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center ml-auto">
-                {activeFilterCount}
-              </span>
+              <button
+                onClick={resetFilters}
+                className="ml-auto px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white text-xs rounded-lg transition-colors"
+              >
+                Zrušit filtry
+              </button>
             )}
-          </h2>
+          </div>
           {panelContent}
         </div>
       </aside>
