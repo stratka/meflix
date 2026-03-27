@@ -38,8 +38,10 @@ export default function App() {
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             title="Domů"
           >
-            <img src="/favicon.svg" alt="MEFLIX logo" className="w-8 h-8 rounded-lg" />
-            <span className="text-lg font-bold text-white tracking-tight">MEFLIX</span>
+            <img src="/favicon.svg" alt="UltraPopcorn logo" className="w-8 h-8 rounded-lg" />
+            <span className="text-lg font-bold tracking-tight">
+              <span className="text-white">Ultra</span><span className="text-red-500">Popcorn</span>
+            </span>
           </button>
         </div>
         <div className="flex items-center gap-3">
