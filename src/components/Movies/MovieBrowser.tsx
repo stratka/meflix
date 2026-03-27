@@ -2,10 +2,9 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { AlertCircle, RefreshCw, Search, X, ArrowLeft, SlidersHorizontal } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 import type { TMDBMovie } from '../../types/tmdb';
-import type { AppSettings, FilterState } from '../../types/app';
+import type { AppSettings, FilterState, WatchedMovies } from '../../types/app';
 import { useMovies } from '../../hooks/useMovies';
 import { useGenres } from '../../hooks/useGenres';
-import { useCloudWatched } from '../../hooks/useCloudWatched';
 import { useCloudWatchlist } from '../../hooks/useCloudWatchlist';
 import { MovieCard } from './MovieCard';
 import { MovieModal } from './MovieModal';
@@ -18,6 +17,10 @@ interface Props {
   settings: AppSettings;
   user: User | null;
   resetKey?: number;
+  watched: WatchedMovies;
+  markWatched: (id: number, title: string) => void;
+  unmarkWatched: (id: number) => void;
+  isWatched: (id: number) => boolean;
 }
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -38,10 +41,9 @@ const DEFAULT_FILTERS: FilterState = {
   certification: '' as const,
 };
 
-export function MovieBrowser({ settings, user, resetKey }: Props) {
+export function MovieBrowser({ settings, user, resetKey, watched, markWatched, unmarkWatched, isWatched }: Props) {
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
   const [selectedMovie, setSelectedMovie] = useState<TMDBMovie | null>(null);
-  const { watched, markWatched, unmarkWatched, isWatched } = useCloudWatched(user);
   const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useCloudWatchlist(user);
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');

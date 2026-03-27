@@ -1,17 +1,21 @@
 import { useState } from 'react';
-import { Settings } from 'lucide-react';
+import { Settings, Eye } from 'lucide-react';
 import { useAuth } from './hooks/useAuth';
 import { useCloudSettings } from './hooks/useCloudSettings';
+import { useCloudWatched } from './hooks/useCloudWatched';
 import { AuthScreen } from './components/Auth/AuthScreen';
 import { SetupScreen } from './components/Setup/SetupScreen';
 import { MovieBrowser } from './components/Movies/MovieBrowser';
+import { WatchedScreen } from './components/Movies/WatchedScreen';
 import { SettingsPanel } from './components/Settings/SettingsPanel';
 
 export default function App() {
   const { user, loading: authLoading, signOut } = useAuth();
   const { settings, setSettings, synced } = useCloudSettings(user);
+  const { watched, markWatched, unmarkWatched, isWatched } = useCloudWatched(user);
   const [showSettings, setShowSettings] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [showWatched, setShowWatched] = useState(false);
   const [resetKey, setResetKey] = useState(0);
 
   if (authLoading || (user && !synced)) {
@@ -41,8 +45,18 @@ export default function App() {
             <img src="/logo_mimoovie.png" alt="Mimoovie" className="h-10 md:h-12 w-auto" />
           </button>
         </div>
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-gray-600">v1.2.0</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-600">v1.3.0</span>
+          <button
+            onClick={() => setShowWatched(true)}
+            className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors relative"
+            title="Shlédnuté filmy"
+          >
+            <Eye className="w-5 h-5" />
+            {Object.keys(watched).length > 0 && (
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+            )}
+          </button>
           <button
             onClick={() => setShowSettings(true)}
             className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
@@ -53,7 +67,23 @@ export default function App() {
         </div>
       </nav>
 
-      <MovieBrowser settings={settings} user={user} resetKey={resetKey} />
+      <MovieBrowser
+        settings={settings}
+        user={user}
+        resetKey={resetKey}
+        watched={watched}
+        markWatched={markWatched}
+        unmarkWatched={unmarkWatched}
+        isWatched={isWatched}
+      />
+
+      {showWatched && (
+        <WatchedScreen
+          watched={watched}
+          onUnmark={unmarkWatched}
+          onClose={() => setShowWatched(false)}
+        />
+      )}
 
       {showSettings && (
         <SettingsPanel
