@@ -9,6 +9,8 @@ interface Props {
   filters: FilterState;
   genres: Genre[];
   onChange: (filters: FilterState) => void;
+  mobileOpen?: boolean;
+  onMobileOpenChange?: (open: boolean) => void;
 }
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -41,8 +43,10 @@ const COUNTRIES = [
   { code: 'TR', name: '🇹🇷 Turecko' },
 ];
 
-export function FilterPanel({ filters, genres, onChange }: Props) {
-  const [mobileOpen, setMobileOpen] = useState(false);
+export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMobileOpen, onMobileOpenChange }: Props) {
+  const [internalMobileOpen, setInternalMobileOpen] = useState(false);
+  const mobileOpen = externalMobileOpen !== undefined ? externalMobileOpen : internalMobileOpen;
+  const setMobileOpen = (v: boolean) => { setInternalMobileOpen(v); onMobileOpenChange?.(v); };
   const mobileContainerRef = useRef<HTMLDivElement>(null);
   const [personQuery, setPersonQuery] = useState(filters.personName);
   const [personResults, setPersonResults] = useState<{ id: number; name: string; dept: string }[]>([]);
@@ -294,25 +298,35 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
           Rok vydání: <span className="text-white">{filters.yearFrom} – {filters.yearTo}</span>
         </label>
-        <div className="space-y-2">
-          <input
-            type="range"
-            min={1950}
-            max={CURRENT_YEAR}
-            step={1}
-            value={filters.yearFrom}
-            onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearFrom: v, yearTo: Math.max(v, filters.yearTo) }); }}
-            className="w-full accent-red-500"
-          />
-          <input
-            type="range"
-            min={1950}
-            max={CURRENT_YEAR}
-            step={1}
-            value={filters.yearTo}
-            onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearTo: v, yearFrom: Math.min(v, filters.yearFrom) }); }}
-            className="w-full accent-red-500"
-          />
+        <div className="relative mt-3 mb-1">
+          {/* Track */}
+          <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-gray-700 rounded-full pointer-events-none">
+            <div
+              className="absolute h-full bg-red-500 rounded-full"
+              style={{
+                left: `${((filters.yearFrom - 1950) / (CURRENT_YEAR - 1950)) * 100}%`,
+                right: `${((CURRENT_YEAR - filters.yearTo) / (CURRENT_YEAR - 1950)) * 100}%`,
+              }}
+            />
+          </div>
+          <div className="dual-range">
+            <input
+              type="range"
+              min={1950}
+              max={CURRENT_YEAR}
+              step={1}
+              value={filters.yearFrom}
+              onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearFrom: v, yearTo: Math.max(v, filters.yearTo) }); }}
+            />
+            <input
+              type="range"
+              min={1950}
+              max={CURRENT_YEAR}
+              step={1}
+              value={filters.yearTo}
+              onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearTo: v, yearFrom: Math.min(v, filters.yearFrom) }); }}
+            />
+          </div>
         </div>
         <div className="flex justify-between text-xs text-gray-500 mt-1">
           <span>1950</span>
@@ -359,46 +373,22 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
 
   return (
     <>
-      {/* Mobile toggle */}
-      <div ref={mobileContainerRef} className="lg:hidden px-4 py-2">
-        <div className="flex items-center gap-2">
+      {/* Mobile filter dropdown */}
+      {mobileOpen && (
+        <div ref={mobileContainerRef} className="lg:hidden px-4 pb-3 bg-gray-900/95 border-b border-gray-800">
+          {panelContent}
           <button
-            onClick={() => setMobileOpen(o => !o)}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-800 rounded-lg text-sm text-white"
+            onClick={() => setMobileOpen(false)}
+            className="mt-4 w-full py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors"
           >
-            <SlidersHorizontal className="w-4 h-4" />
-            Filtry
-            {activeFilterCount > 0 && (
-              <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
-                {activeFilterCount}
-              </span>
-            )}
+            Hotovo
           </button>
-          {activeFilterCount > 0 && (
-            <button
-              onClick={resetFilters}
-              className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors"
-            >
-              Zrušit filtry
-            </button>
-          )}
         </div>
-        {mobileOpen && (
-          <div className="mt-3 bg-gray-900 border border-gray-800 rounded-xl p-4">
-            {panelContent}
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="mt-4 w-full py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors"
-            >
-              Hotovo
-            </button>
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Desktop sidebar */}
       <aside className="hidden lg:block w-64 flex-shrink-0">
-        <div className="sticky top-4 bg-gray-900 border border-gray-800 rounded-xl p-4">
+        <div className="sticky top-4 bg-gray-900 border border-gray-800 rounded-xl p-4 max-h-[calc(100vh-8rem)] overflow-y-auto">
           <div className="flex items-center gap-2 mb-4">
             <h2 className="font-semibold text-white flex items-center gap-2">
               <SlidersHorizontal className="w-4 h-4" />

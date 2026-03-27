@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { AlertCircle, RefreshCw, Search, X, ArrowLeft } from 'lucide-react';
+import { AlertCircle, RefreshCw, Search, X, ArrowLeft, SlidersHorizontal } from 'lucide-react';
 import type { TMDBMovie } from '../../types/tmdb';
 import type { AppSettings, FilterState } from '../../types/app';
 import { useMovies } from '../../hooks/useMovies';
@@ -40,6 +40,7 @@ export function MovieBrowser({ settings }: Props) {
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [hiddenMovieIds, setHiddenMovieIds] = useState<Set<number>>(new Set());
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -92,8 +93,8 @@ export function MovieBrowser({ settings }: Props) {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-gray-900/50 border-b border-gray-800 px-4 py-3 sticky top-0 z-20 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto flex items-center gap-4 flex-wrap">
+      <div className="bg-gray-900/50 border-b border-gray-800 px-4 py-3 sticky top-14 z-20 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto flex items-center gap-3 flex-wrap">
           {/* Search bar */}
           <div className="relative flex-1 min-w-[200px] max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
@@ -114,6 +115,22 @@ export function MovieBrowser({ settings }: Props) {
               </button>
             )}
           </div>
+
+          {/* Mobile filter toggle — in sticky header */}
+          {!isSearching && (
+            <button
+              onClick={() => setMobileFilterOpen(o => !o)}
+              className="lg:hidden flex items-center gap-2 px-3 py-2 bg-gray-800 rounded-lg text-sm text-white flex-shrink-0"
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              Filtry
+              {Object.values({ a: filters.genres.length > 0, b: filters.minRating > 0, c: filters.yearFrom > 1950, d: filters.yearTo < CURRENT_YEAR, e: filters.personId !== null, f: filters.hideWatched, g: filters.originCountry !== '' }).filter(Boolean).length > 0 && (
+                <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+                  {Object.values({ a: filters.genres.length > 0, b: filters.minRating > 0, c: filters.yearFrom > 1950, d: filters.yearTo < CURRENT_YEAR, e: filters.personId !== null, f: filters.hideWatched, g: filters.originCountry !== '' }).filter(Boolean).length}
+                </span>
+              )}
+            </button>
+          )}
 
           {/* Service badges — kliknutím filtruješ */}
           {!isSearching && (
@@ -173,6 +190,8 @@ export function MovieBrowser({ settings }: Props) {
             filters={filters}
             genres={genres}
             onChange={setFilters}
+            mobileOpen={mobileFilterOpen}
+            onMobileOpenChange={setMobileFilterOpen}
           />
         )}
 
