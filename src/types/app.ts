@@ -23,6 +23,7 @@ export interface FilterState {
   personRole: 'cast' | 'crew';
   sortBy: SortOption;
   watchedFilter: 'all' | 'hide' | 'only';
+  watchlistFilter: 'all' | 'hide' | 'only';
   originCountry: string;
   mediaType: 'movie' | 'tv';
   certification: '' | 'G' | 'PG' | 'PG-13';

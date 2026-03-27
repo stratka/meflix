@@ -36,6 +36,7 @@ const DEFAULT_FILTERS: FilterState = {
   personRole: 'cast',
   sortBy: 'popularity.desc',
   watchedFilter: 'all' as const,
+  watchlistFilter: 'all' as const,
   originCountry: '',
   mediaType: 'movie',
   certification: '' as const,
@@ -115,6 +116,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
     filters.yearTo < CURRENT_YEAR,
     filters.personId !== null,
     filters.watchedFilter !== 'all',
+    filters.watchlistFilter !== 'all',
     filters.originCountry !== '',
     filters.certification !== '',
   ].filter(Boolean).length;
@@ -272,6 +274,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                 {movies
                   .filter(m => !hiddenMovieIds.has(m.id))
                   .filter(m => filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id)))
+                  .filter(m => filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id)))
                   .map(movie => (
                   <MovieCard
                     key={movie.id}

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, ChevronDown, SlidersHorizontal, Eye, Check } from 'lucide-react';
+import { Search, X, ChevronDown, SlidersHorizontal, Eye, Check, Bookmark } from 'lucide-react';
 import type { Genre } from '../../types/tmdb';
 import type { FilterState, SortOption } from '../../types/app';
 import { SORT_OPTIONS } from '../../utils/constants';
@@ -120,6 +120,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
     filters.yearTo < CURRENT_YEAR,
     filters.personId !== null,
     filters.watchedFilter !== 'all',
+    filters.watchlistFilter !== 'all',
     filters.originCountry !== '',
     filters.certification !== '',
   ].filter(Boolean).length;
@@ -142,6 +143,32 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
               onClick={() => onChange({ ...filters, watchedFilter: opt.value })}
               className={`flex-1 py-2 text-xs font-medium transition-colors ${
                 filters.watchedFilter === opt.value
+                  ? 'bg-red-600 text-white'
+                  : 'bg-gray-800 text-gray-400 hover:text-white'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Chci vidět */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+          <span className="flex items-center gap-1"><Bookmark className="w-3.5 h-3.5" /> Chci vidět</span>
+        </label>
+        <div className="flex rounded-lg overflow-hidden border border-gray-700">
+          {([
+            { value: 'all', label: 'Vše' },
+            { value: 'hide', label: 'Skrýt' },
+            { value: 'only', label: 'Jen chci vidět' },
+          ] as const).map(opt => (
+            <button
+              key={opt.value}
+              onClick={() => onChange({ ...filters, watchlistFilter: opt.value })}
+              className={`flex-1 py-2 text-xs font-medium transition-colors ${
+                filters.watchlistFilter === opt.value
                   ? 'bg-red-600 text-white'
                   : 'bg-gray-800 text-gray-400 hover:text-white'
               }`}
