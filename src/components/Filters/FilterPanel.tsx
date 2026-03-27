@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, ChevronDown, SlidersHorizontal, Eye } from 'lucide-react';
+import { Search, X, ChevronDown, SlidersHorizontal, Eye, ArrowLeft } from 'lucide-react';
 import type { Genre } from '../../types/tmdb';
 import type { FilterState, SortOption } from '../../types/app';
 import { SORT_OPTIONS } from '../../utils/constants';
@@ -376,13 +376,16 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Mobile filter dropdown */}
       {mobileOpen && (
         <div ref={mobileContainerRef} className="lg:hidden px-4 pb-3 bg-gray-900/95 border-b border-gray-800">
+          <div className="flex justify-end pt-2 pb-1">
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="w-9 h-9 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition-colors"
+              aria-label="Zavřít filtry"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+          </div>
           {panelContent}
-          <button
-            onClick={() => setMobileOpen(false)}
-            className="mt-4 w-full py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors"
-          >
-            Hotovo
-          </button>
         </div>
       )}
 
