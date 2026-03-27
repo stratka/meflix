@@ -1,0 +1,27 @@
+import { createClient } from '@supabase/supabase-js';
+
+const url = import.meta.env.VITE_SUPABASE_URL as string;
+const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+export const supabase = createClient(url, key);
+
+export type DbUserSettings = {
+  user_id: string;
+  region: string;
+  selected_services: string[];
+  updated_at: string;
+};
+
+export type DbWatchedMovie = {
+  user_id: string;
+  movie_id: number;
+  title: string;
+  watched_at: string;
+};
+
+export type DbWatchlistItem = {
+  user_id: string;
+  movie_id: number;
+  title: string;
+  added_at: string;
+};

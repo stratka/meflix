@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { AlertCircle, RefreshCw, Search, X, ArrowLeft, SlidersHorizontal } from 'lucide-react';
+import type { User } from '@supabase/supabase-js';
 import type { TMDBMovie } from '../../types/tmdb';
 import type { AppSettings, FilterState } from '../../types/app';
 import { useMovies } from '../../hooks/useMovies';
 import { useGenres } from '../../hooks/useGenres';
-import { useWatched } from '../../hooks/useWatched';
-import { useWatchlist } from '../../hooks/useWatchlist';
+import { useCloudWatched } from '../../hooks/useCloudWatched';
+import { useCloudWatchlist } from '../../hooks/useCloudWatchlist';
 import { MovieCard } from './MovieCard';
 import { MovieModal } from './MovieModal';
 import { MovieSkeletonGrid } from './MovieSkeleton';
@@ -15,6 +16,7 @@ import { STREAMING_SERVICES } from '../../utils/constants';
 
 interface Props {
   settings: AppSettings;
+  user: User | null;
 }
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -35,11 +37,11 @@ const DEFAULT_FILTERS: FilterState = {
   certification: '' as const,
 };
 
-export function MovieBrowser({ settings }: Props) {
+export function MovieBrowser({ settings, user }: Props) {
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
   const [selectedMovie, setSelectedMovie] = useState<TMDBMovie | null>(null);
-  const { watched, markWatched, unmarkWatched, isWatched } = useWatched();
-  const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
+  const { watched, markWatched, unmarkWatched, isWatched } = useCloudWatched(user);
+  const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useCloudWatchlist(user);
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [hiddenMovieIds, setHiddenMovieIds] = useState<Set<number>>(new Set());
@@ -230,8 +232,6 @@ export function MovieBrowser({ settings }: Props) {
             onChange={setFilters}
             mobileOpen={mobileFilterOpen}
             onMobileOpenChange={setMobileFilterOpen}
-            onReset={resetFilters}
-            activeFilterCount={activeFilterCount}
           />
         )}
 
@@ -308,7 +308,7 @@ export function MovieBrowser({ settings }: Props) {
           onMarkWatched={markWatched}
           onUnmarkWatched={unmarkWatched}
           isInWatchlist={isInWatchlist(selectedMovie.id)}
-          onToggleWatchlist={(id, title) => isInWatchlist(id) ? removeFromWatchlist(id) : addToWatchlist(id)}
+          onToggleWatchlist={(id) => isInWatchlist(id) ? removeFromWatchlist(id) : addToWatchlist(id, selectedMovie!.title)}
           onPersonClick={(personId, personName, role) => {
             setFilters(f => ({ ...f, personId, personName, personRole: role }));
             setSelectedMovie(null);
