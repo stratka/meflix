@@ -23,14 +23,14 @@ export function MovieCard({ movie, onClick, isWatched, watchedDate, dimmed, avai
   return (
     <button
       onClick={() => onClick(movie)}
-      className={`group bg-gray-900 rounded-xl overflow-hidden text-left transition-all duration-200 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/50 focus:outline-none focus:ring-2 focus:ring-red-500 ${dimmed ? 'grayscale opacity-50 hover:grayscale-0 hover:opacity-100' : ''}`}
+      className={`group bg-gray-900 rounded-xl overflow-hidden text-left transition-all duration-200 hover:scale-[1.03] hover:shadow-xl hover:shadow-black/50 focus:outline-none focus:ring-2 focus:ring-red-500 ${dimmed ? 'opacity-50 hover:opacity-100' : ''}`}
     >
       <div className="relative aspect-[2/3] bg-gray-800 overflow-hidden">
         {posterUrl ? (
           <img
             src={posterUrl}
             alt={movie.title}
-            className={`w-full h-full object-cover transition-opacity duration-300 ${isWatched ? 'opacity-50' : ''}`}
+            className={`w-full h-full object-cover transition-opacity duration-300 ${dimmed ? 'grayscale group-hover:grayscale-0' : ''} ${isWatched ? 'opacity-50' : ''}`}
             loading="lazy"
           />
         ) : (
@@ -45,7 +45,7 @@ export function MovieCard({ movie, onClick, isWatched, watchedDate, dimmed, avai
         </div>
         {/* Provider badges for unavailable movies */}
         {dimmed && availableOn && availableOn.length > 0 && (
-          <div className="absolute bottom-2 left-2 flex flex-col gap-1 items-start">
+          <div className="absolute top-2 left-2 flex flex-col gap-1 items-start">
             {availableOn.slice(0, 3).map(s => (
               <span
                 key={s.id}
