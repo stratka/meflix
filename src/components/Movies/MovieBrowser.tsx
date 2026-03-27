@@ -17,6 +17,7 @@ import { STREAMING_SERVICES } from '../../utils/constants';
 interface Props {
   settings: AppSettings;
   user: User | null;
+  resetKey?: number;
 }
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -37,7 +38,7 @@ const DEFAULT_FILTERS: FilterState = {
   certification: '' as const,
 };
 
-export function MovieBrowser({ settings, user }: Props) {
+export function MovieBrowser({ settings, user, resetKey }: Props) {
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
   const [selectedMovie, setSelectedMovie] = useState<TMDBMovie | null>(null);
   const { watched, markWatched, unmarkWatched, isWatched } = useCloudWatched(user);
@@ -55,6 +56,16 @@ export function MovieBrowser({ settings, user }: Props) {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Klik na logo — reset search + filtry + scroll nahoru
+  useEffect(() => {
+    if (resetKey === 0 || resetKey === undefined) return;
+    setSearchInput('');
+    setSearchQuery('');
+    setFilters(DEFAULT_FILTERS);
+    setMobileFilterOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [resetKey]);
 
   const { movies, unavailableIds, movieProviders, loading, loadingMore, error, hasMore, totalResults, loadMore } = useMovies(
     settings.region,
