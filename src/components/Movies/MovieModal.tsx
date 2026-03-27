@@ -187,7 +187,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
         {/* Back button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-9 h-9 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center text-white transition-colors shadow-lg"
+          className="fixed bottom-6 right-6 z-[60] w-12 h-12 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center text-white transition-colors shadow-lg"
           aria-label="Zpět"
         >
           <ArrowLeft className="w-5 h-5" />

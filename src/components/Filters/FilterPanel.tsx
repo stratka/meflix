@@ -398,15 +398,13 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Mobile filter dropdown */}
       {mobileOpen && (
         <div ref={mobileContainerRef} className="lg:hidden px-4 pb-3 bg-gray-900/95 border-b border-gray-800">
-          <div className="flex justify-end pt-2 pb-1">
-            <button
-              onClick={() => setMobileOpen(false)}
-              className="w-9 h-9 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition-colors"
-              aria-label="Zavřít filtry"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-          </div>
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
+            aria-label="Zavřít filtry"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
           {panelContent}
         </div>
       )}
