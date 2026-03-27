@@ -36,9 +36,10 @@ async function checkAvailability(
       const providers = await fetchMovieWatchProviders(movie.id, mediaType);
       const flatrate = providers.results?.[region]?.flatrate ?? [];
       const available = flatrate.some(p => providerIds.includes(p.provider_id));
-      const services = flatrate
-        .map(p => getServiceByTmdbId(p.provider_id))
-        .filter((s): s is StreamingService => s !== undefined);
+      const services = flatrate.map(p => {
+        const known = getServiceByTmdbId(p.provider_id);
+        return known ?? { id: `tmdb-${p.provider_id}`, name: p.provider_name, tmdbId: p.provider_id, color: '#374151', textColor: '#fff' } as StreamingService;
+      });
       return { movie, available, services };
     })
   );

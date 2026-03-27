@@ -143,13 +143,13 @@ export function MovieModal({ movie, settings, onClose, onNotAvailable, watchedEn
     }
   }
 
-  // Pokud film není dostupný na žádné uživatelově službě, odstraň ho z gridu a zavři modal
+  // Pokud film není dostupný na žádné uživatelově službě a uživatel má vybrané služby, odstraň ho z gridu a zavři modal
   useEffect(() => {
-    if (!loading && detail && userServices.length === 0) {
+    if (!loading && detail && userServices.length === 0 && settings.selectedServices.length > 0) {
       onNotAvailable?.(movie.id);
       onClose();
     }
-  }, [loading, detail, userServices.length, movie.id, onNotAvailable, onClose]);
+  }, [loading, detail, userServices.length, settings.selectedServices.length, movie.id, onNotAvailable, onClose]);
 
   // Other available services not in user's list
   const otherServices: { service: StreamingService; provider: Provider }[] = [];
