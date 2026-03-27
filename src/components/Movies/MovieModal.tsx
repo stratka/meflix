@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { Star, Clock, ExternalLink, Play, Youtube, Eye, ArrowLeft } from 'lucide-react';
+import { Star, Clock, ExternalLink, Play, Youtube, Eye, ArrowLeft, Bookmark, BookmarkCheck } from 'lucide-react';
 import type { TMDBMovie, TMDBMovieDetail, Provider } from '../../types/tmdb';
 import type { AppSettings, StreamingService, WatchedEntry } from '../../types/app';
 import { fetchMovieDetail } from '../../utils/tmdb';
@@ -17,9 +17,11 @@ interface Props {
   onMarkWatched: (id: number, title: string) => void;
   onUnmarkWatched: (id: number) => void;
   onPersonClick?: (personId: number, personName: string, role: 'cast' | 'crew') => void;
+  isInWatchlist?: boolean;
+  onToggleWatchlist?: (id: number, title: string) => void;
 }
 
-export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatched, onUnmarkWatched, onPersonClick }: Props) {
+export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatched, onUnmarkWatched, onPersonClick, isInWatchlist, onToggleWatchlist }: Props) {
   const [detail, setDetail] = useState<TMDBMovieDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [showTrailer, setShowTrailer] = useState(false);
@@ -243,6 +245,15 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
                           >
                             <Eye className="w-3.5 h-3.5" />
                           </button>
+                          {onToggleWatchlist && (
+                            <button
+                              onClick={() => onToggleWatchlist(movie.id, movie.title)}
+                              title={isInWatchlist ? 'Odebrat z chci vidět' : 'Chci vidět'}
+                              className={`w-7 flex-shrink-0 flex items-center justify-center rounded-lg transition-colors ${isInWatchlist ? 'bg-blue-600/30 text-blue-400' : 'bg-gray-800 text-gray-500 hover:text-white hover:bg-gray-700'}`}
+                            >
+                              {isInWatchlist ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
+                            </button>
+                          )}
                         </div>
                       ))}
                     </div>

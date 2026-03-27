@@ -31,13 +31,16 @@ export default function App() {
           <img src="/favicon.svg" alt="MEFLIX logo" className="w-8 h-8 rounded-lg" />
           <span className="text-lg font-bold text-white tracking-tight">MEFLIX</span>
         </div>
-        <button
-          onClick={() => setShowSettings(true)}
-          className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
-          title="Nastavení"
-        >
-          <Settings className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-gray-600">v1.0.0</span>
+          <button
+            onClick={() => setShowSettings(true)}
+            className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+            title="Nastavení"
+          >
+            <Settings className="w-5 h-5" />
+          </button>
+        </div>
       </nav>
 
       <MovieBrowser settings={settings} />

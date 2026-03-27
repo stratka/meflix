@@ -10,7 +10,9 @@
       "Bash(git -C /c/Projects/MEFLIX log --oneline -20)",
       "mcp__Claude_Preview__preview_start",
       "Bash(git add:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(node -e \"console.log\\(require\\(''./package.json''\\).version\\)\")",
+      "Bash(npm version:*)"
     ]
   }
 }

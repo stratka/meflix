@@ -11,8 +11,6 @@ interface Props {
   onChange: (filters: FilterState) => void;
   mobileOpen?: boolean;
   onMobileOpenChange?: (open: boolean) => void;
-  onReset?: () => void;
-  activeFilterCount?: number;
 }
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -45,7 +43,7 @@ const COUNTRIES = [
   { code: 'TR', name: '🇹🇷 Turecko' },
 ];
 
-export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMobileOpen, onMobileOpenChange, onReset, activeFilterCount: externalActiveFilterCount }: Props) {
+export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMobileOpen, onMobileOpenChange }: Props) {
   const [internalMobileOpen, setInternalMobileOpen] = useState(false);
   const mobileOpen = externalMobileOpen !== undefined ? externalMobileOpen : internalMobileOpen;
   const setMobileOpen = (v: boolean) => { setInternalMobileOpen(v); onMobileOpenChange?.(v); };
@@ -114,26 +112,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
     observer.observe(el);
     return () => observer.disconnect();
   }, [mobileOpen]);
-
-  function resetFilters() {
-    setPersonQuery('');
-    setPersonResults([]);
-    onChange({
-      genres: [],
-      minRating: 0,
-      yearFrom: 1950,
-      yearTo: CURRENT_YEAR,
-      services: [],
-      personId: null,
-      personName: '',
-      personRole: 'cast',
-      sortBy: 'popularity.desc',
-      hideWatched: false,
-      originCountry: '',
-      mediaType: 'movie',
-      certification: '',
-    });
-  }
 
   const activeFilterCount = [
     filters.genres.length > 0,

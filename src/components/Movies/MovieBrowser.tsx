@@ -5,6 +5,7 @@ import type { AppSettings, FilterState } from '../../types/app';
 import { useMovies } from '../../hooks/useMovies';
 import { useGenres } from '../../hooks/useGenres';
 import { useWatched } from '../../hooks/useWatched';
+import { useWatchlist } from '../../hooks/useWatchlist';
 import { MovieCard } from './MovieCard';
 import { MovieModal } from './MovieModal';
 import { MovieSkeletonGrid } from './MovieSkeleton';
@@ -38,6 +39,7 @@ export function MovieBrowser({ settings }: Props) {
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
   const [selectedMovie, setSelectedMovie] = useState<TMDBMovie | null>(null);
   const { watched, markWatched, unmarkWatched, isWatched } = useWatched();
+  const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [hiddenMovieIds, setHiddenMovieIds] = useState<Set<number>>(new Set());
@@ -305,6 +307,8 @@ export function MovieBrowser({ settings }: Props) {
           watchedEntry={watched[selectedMovie.id]}
           onMarkWatched={markWatched}
           onUnmarkWatched={unmarkWatched}
+          isInWatchlist={isInWatchlist(selectedMovie.id)}
+          onToggleWatchlist={(id, title) => isInWatchlist(id) ? removeFromWatchlist(id) : addToWatchlist(id)}
           onPersonClick={(personId, personName, role) => {
             setFilters(f => ({ ...f, personId, personName, personRole: role }));
             setSelectedMovie(null);
