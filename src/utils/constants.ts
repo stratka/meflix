@@ -10,6 +10,7 @@ export const STREAMING_SERVICES: StreamingService[] = [
   { id: 'peacock',    name: 'Peacock',      tmdbId: 386,  color: '#000000', textColor: '#fff' },
   { id: 'crunchyroll',name: 'Crunchyroll',  tmdbId: 283,  color: '#F47521', textColor: '#fff' },
   { id: 'oneplay',    name: 'Oneplay',      tmdbId: 2536, color: '#E4002B', textColor: '#fff' },
+  { id: 'skyshowtime', name: 'SkyShowtime', tmdbId: 1773, color: '#003865', textColor: '#fff' },
 ];
 
 export const REGIONS = [
@@ -76,6 +77,8 @@ export function getWatchUrl(
       return `https://www.crunchyroll.com/search?q=${encodeURIComponent(title)}`;
     case 'oneplay':
       return `https://www.oneplay.cz/hledat?q=${encodeURIComponent(title)}`;
+    case 'skyshowtime':
+      return `https://www.skyshowtime.com/search?q=${encodeURIComponent(title)}`;
     default:
       return `https://www.google.com/search?q=${encodeURIComponent(title + ' watch online')}`;
   }
