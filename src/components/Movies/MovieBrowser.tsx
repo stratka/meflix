@@ -207,8 +207,8 @@ export function MovieBrowser({ settings }: Props) {
                     onClick={setSelectedMovie}
                     isWatched={isWatched(movie.id)}
                     watchedDate={watched[movie.id]?.date}
-                    dimmed={isSearching && unavailableIds.has(movie.id)}
-                    availableOn={isSearching && unavailableIds.has(movie.id) ? movieProviders.get(movie.id) : undefined}
+                    dimmed={unavailableIds.has(movie.id)}
+                    availableOn={unavailableIds.has(movie.id) ? movieProviders.get(movie.id) : undefined}
                   />
                 ))}
                 {loadingMore && <MovieSkeletonGrid count={10} />}
