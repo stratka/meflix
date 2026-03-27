@@ -1,6 +1,6 @@
 {
-  "name": "UltraPopcorn",
-  "short_name": "UltraPopcorn",
+  "name": "Mimoovie",
+  "short_name": "Mimoovie",
   "description": "Procházej filmy dostupné na tvých streamovacích službách",
   "start_url": "/",
   "display": "standalone",

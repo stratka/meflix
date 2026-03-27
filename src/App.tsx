@@ -38,9 +38,9 @@ export default function App() {
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             title="Domů"
           >
-            <img src="/favicon.svg" alt="UltraPopcorn logo" className="w-8 h-8 rounded-lg" />
+            <img src="/favicon.svg" alt="Mimoovie logo" className="w-8 h-8 rounded-lg" />
             <span className="text-lg font-bold tracking-tight">
-              <span className="text-white">Ultra</span><span className="text-red-500">Popcorn</span>
+              <span className="text-white">mim</span><span className="text-red-500">oovie</span>
             </span>
           </button>
         </div>
