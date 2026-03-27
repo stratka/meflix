@@ -38,7 +38,7 @@ export default function App() {
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             title="Domů"
           >
-            <img src="/logo_mimoovie.png" alt="Mimoovie" className="h-8 w-auto" />
+            <img src="/logo_mimoovie.png" alt="Mimoovie" className="h-10 md:h-12 w-auto" />
           </button>
         </div>
         <div className="flex items-center gap-3">
