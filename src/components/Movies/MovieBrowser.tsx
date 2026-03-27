@@ -43,6 +43,13 @@ export function MovieBrowser({ settings }: Props) {
   const loaderRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
+  // Schovej klávesnici při scrollování
+  useEffect(() => {
+    const onScroll = () => { if (document.activeElement === searchRef.current) searchRef.current?.blur(); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   const { movies, unavailableIds, movieProviders, loading, loadingMore, error, hasMore, totalResults, loadMore } = useMovies(
     settings.region,
     settings.selectedServices,
@@ -220,12 +227,19 @@ export function MovieBrowser({ settings }: Props) {
         </div>
       </div>
 
-      {/* Back to browse button */}
-      {isSearching && (
+      {/* Back button — zavře detail nebo vymaže hledání */}
+      {(isSearching || selectedMovie) && (
         <button
-          onClick={() => { setSearchInput(''); setSearchQuery(''); }}
+          onClick={() => {
+            if (selectedMovie) {
+              setSelectedMovie(null);
+            } else {
+              setSearchInput('');
+              setSearchQuery('');
+            }
+          }}
           className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
-          aria-label="Zpět na úvodní stranu"
+          aria-label="Zpět"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
