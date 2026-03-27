@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Tv2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
-export function AuthScreen() {
+export function AuthScreen({ onClose }: { onClose?: () => void }) {
   const { signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
@@ -25,6 +25,8 @@ export function AuthScreen() {
       setError(err.message);
     } else if (mode === 'register') {
       setInfo('Zkontroluj e-mail a potvrď registraci.');
+    } else {
+      onClose?.();
     }
   }
 

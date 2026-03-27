@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Settings, LogOut } from 'lucide-react';
+import { Settings } from 'lucide-react';
 import { useAuth } from './hooks/useAuth';
 import { useCloudSettings } from './hooks/useCloudSettings';
 import { AuthScreen } from './components/Auth/AuthScreen';
@@ -11,6 +11,7 @@ export default function App() {
   const { user, loading: authLoading, signOut } = useAuth();
   const { settings, setSettings, synced } = useCloudSettings(user);
   const [showSettings, setShowSettings] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
 
   if (authLoading || (user && !synced)) {
     return (
@@ -20,7 +21,7 @@ export default function App() {
     );
   }
 
-  if (!user) return <AuthScreen />;
+  if (showAuth) return <AuthScreen onClose={() => setShowAuth(false)} />;
 
   if (!settings.region) {
     return <SetupScreen onComplete={setSettings} initial={settings} />;
@@ -35,21 +36,13 @@ export default function App() {
           <span className="text-lg font-bold text-white tracking-tight">MEFLIX</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-xs text-gray-600">v1.1.0</span>
-          <span className="text-xs text-gray-500 hidden sm:block truncate max-w-[140px]">{user.email}</span>
+          <span className="text-xs text-gray-600">v1.2.0</span>
           <button
             onClick={() => setShowSettings(true)}
             className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
             title="Nastavení"
           >
             <Settings className="w-5 h-5" />
-          </button>
-          <button
-            onClick={signOut}
-            className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
-            title="Odhlásit se"
-          >
-            <LogOut className="w-5 h-5" />
           </button>
         </div>
       </nav>
@@ -61,6 +54,9 @@ export default function App() {
           settings={settings}
           onSave={setSettings}
           onClose={() => setShowSettings(false)}
+          user={user}
+          onSignIn={() => { setShowSettings(false); setShowAuth(true); }}
+          onSignOut={signOut}
         />
       )}
     </div>

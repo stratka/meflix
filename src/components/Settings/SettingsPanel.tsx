@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { X, Settings } from 'lucide-react';
+import { X, Settings, LogIn, LogOut, User } from 'lucide-react';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 import type { AppSettings } from '../../types/app';
 import { RegionStep } from '../Setup/RegionStep';
 import { ServicesStep } from '../Setup/ServicesStep';
@@ -8,11 +9,14 @@ interface Props {
   settings: AppSettings;
   onSave: (settings: AppSettings) => void;
   onClose: () => void;
+  user?: SupabaseUser | null;
+  onSignIn?: () => void;
+  onSignOut?: () => void;
 }
 
 type Tab = 'services' | 'region';
 
-export function SettingsPanel({ settings, onSave, onClose }: Props) {
+export function SettingsPanel({ settings, onSave, onClose, user, onSignIn, onSignOut }: Props) {
   const [tab, setTab] = useState<Tab>('services');
   const [draft, setDraft] = useState<AppSettings>({ ...settings });
 
@@ -79,6 +83,33 @@ export function SettingsPanel({ settings, onSave, onClose }: Props) {
               onBack={() => setTab('region')}
               initial={draft.selectedServices}
             />
+          )}
+        </div>
+
+        {/* Auth section */}
+        <div className="px-6 pb-5 border-t border-gray-800 pt-4">
+          {user ? (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <User className="w-4 h-4" />
+                <span className="truncate max-w-[200px]">{user.email}</span>
+              </div>
+              <button
+                onClick={() => { onSignOut?.(); onClose(); }}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm rounded-lg transition-colors"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                Odhlásit
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => { onClose(); onSignIn?.(); }}
+              className="w-full flex items-center justify-center gap-2 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors"
+            >
+              <LogIn className="w-4 h-4" />
+              Přihlásit se / Registrovat
+            </button>
           )}
         </div>
       </div>
