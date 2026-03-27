@@ -60,10 +60,9 @@ export function ServicesStep({ onNext, onBack, initial = [] }: Props) {
         </button>
         <button
           onClick={() => onNext(selected)}
-          disabled={selected.length === 0}
-          className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-gray-700 disabled:text-gray-500 text-white font-medium py-3 rounded-lg transition-colors"
+          className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-lg transition-colors"
         >
-          {selected.length === 0 ? 'Vyber aspoň jednu' : 'Hotovo!'}
+          Hotovo!
         </button>
       </div>
     </div>

@@ -12,7 +12,7 @@ const EMPTY_SETTINGS: AppSettings = {
 };
 
 function isSetupComplete(settings: AppSettings): boolean {
-  return !!(settings.region && settings.selectedServices.length > 0);
+  return !!settings.region;
 }
 
 export default function App() {

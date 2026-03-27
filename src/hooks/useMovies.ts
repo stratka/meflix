@@ -76,12 +76,6 @@ export function useMovies(
     async (pageNum: number, replace: boolean) => {
       const isSearch = searchQuery.trim().length > 0;
 
-      if (!isSearch && selectedServices.length === 0) {
-        setMovies([]);
-        setTotalResults(0);
-        setLoading(false);
-        return;
-      }
 
       if (abortRef.current) abortRef.current.abort();
       abortRef.current = new AbortController();
@@ -94,7 +88,9 @@ export function useMovies(
         if (isSearch) {
           const data = await searchMovies(searchQuery.trim(), pageNum);
           const providerIds = getUserProviderIds(selectedServices);
-          const { all, unavailableIds: newUnavailable, movieProviders: newProviders } = await checkAvailability(data.results, region, providerIds);
+          const { all, unavailableIds: newUnavailable, movieProviders: newProviders } = selectedServices.length === 0
+            ? { all: data.results, unavailableIds: new Set<number>(), movieProviders: new Map<number, StreamingService[]>() }
+            : await checkAvailability(data.results, region, providerIds);
           setMovies(prev => (replace ? all : [...prev, ...all]));
           setUnavailableIds(prev => {
             if (replace) return newUnavailable;

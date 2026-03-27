@@ -49,23 +49,22 @@ export async function discoverMovies(
         })
       : serviceIds;
 
-  if (filterServiceIds.length === 0) {
-    return { page: 1, results: [], total_pages: 0, total_results: 0 };
-  }
-
   const isTV = filters.mediaType === 'tv';
   const dateGteParam = isTV ? 'first_air_date.gte' : 'primary_release_date.gte';
   const dateLteParam = isTV ? 'first_air_date.lte' : 'primary_release_date.lte';
 
   const params = new URLSearchParams({
-    watch_region: region,
-    with_watch_providers: filterServiceIds.join('|'),
-    with_watch_monetization_types: 'flatrate',
     sort_by: filters.sortBy,
     'vote_count.gte': '5',
     page: String(page),
     language: 'cs-CZ',
   });
+
+  if (filterServiceIds.length > 0) {
+    params.set('watch_region', region);
+    params.set('with_watch_providers', filterServiceIds.join('|'));
+    params.set('with_watch_monetization_types', 'flatrate');
+  }
 
   if (filters.genres.length > 0) params.set('with_genres', filters.genres.join(','));
   if (filters.minRating > 0) params.set('vote_average.gte', String(filters.minRating));
