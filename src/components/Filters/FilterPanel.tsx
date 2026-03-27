@@ -279,7 +279,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
           <div className="relative flex-1">
             <select
               value={filters.yearFrom}
-              onChange={e => onChange({ ...filters, yearFrom: parseInt(e.target.value) })}
+              onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearFrom: v, yearTo: Math.max(v, filters.yearTo) }); }}
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-7"
             >
               {Array.from({ length: CURRENT_YEAR - 1900 + 1 }, (_, i) => CURRENT_YEAR - i).map(y => (
@@ -292,7 +292,7 @@ export function FilterPanel({ filters, genres, onChange }: Props) {
           <div className="relative flex-1">
             <select
               value={filters.yearTo}
-              onChange={e => onChange({ ...filters, yearTo: parseInt(e.target.value) })}
+              onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearTo: v, yearFrom: Math.min(v, filters.yearFrom) }); }}
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-7"
             >
               {Array.from({ length: CURRENT_YEAR - 1900 + 1 }, (_, i) => CURRENT_YEAR - i).map(y => (
