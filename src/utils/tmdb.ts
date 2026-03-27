@@ -77,6 +77,7 @@ export async function discoverMovies(
   if (filters.originCountry) params.set('with_origin_country', filters.originCountry);
   if (filters.certification) {
     params.set('certification_country', 'US');
+    params.set('certification.gte', 'G');
     params.set('certification.lte', filters.certification);
   }
 
