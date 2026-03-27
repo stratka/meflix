@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { AlertCircle, RefreshCw, Search, X, ArrowUp } from 'lucide-react';
+import { AlertCircle, RefreshCw, Search, X, ArrowLeft } from 'lucide-react';
 import type { TMDBMovie } from '../../types/tmdb';
 import type { AppSettings, FilterState } from '../../types/app';
 import { useMovies } from '../../hooks/useMovies';
@@ -42,13 +42,6 @@ export function MovieBrowser({ settings }: Props) {
   const [hiddenMovieIds, setHiddenMovieIds] = useState<Set<number>>(new Set());
   const loaderRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
-  const [showScrollTop, setShowScrollTop] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setShowScrollTop(window.scrollY > 400);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
 
   const { movies, unavailableIds, movieProviders, loading, loadingMore, error, hasMore, totalResults, loadMore } = useMovies(
     settings.region,
@@ -227,14 +220,14 @@ export function MovieBrowser({ settings }: Props) {
         </div>
       </div>
 
-      {/* Scroll to top */}
-      {showScrollTop && (
+      {/* Back to browse button */}
+      {isSearching && (
         <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          onClick={() => { setSearchInput(''); setSearchQuery(''); }}
           className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
-          aria-label="Zpět nahoru"
+          aria-label="Zpět na úvodní stranu"
         >
-          <ArrowUp className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5" />
         </button>
       )}
 
