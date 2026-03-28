@@ -3,7 +3,7 @@ import { Star, Clock, ExternalLink, Play, Youtube, Eye, ArrowLeft, Bookmark, Boo
 import type { TMDBMovie, TMDBMovieDetail, Provider } from '../../types/tmdb';
 import type { AppSettings, StreamingService, WatchedEntry } from '../../types/app';
 import { fetchMovieDetail } from '../../utils/tmdb';
-import { TMDB_IMAGE_BASE, getServiceByTmdbId, getWatchUrl } from '../../utils/constants';
+import { TMDB_IMAGE_BASE, getServiceByTmdbId, getWatchUrl, createDynamicService } from '../../utils/constants';
 import { fetchJustWatchLinks } from '../../utils/justwatch';
 import type { DirectStreamingLinks } from '../../utils/streamingAvailability';
 import { ServiceBadge } from '../common/ServiceBadge';
@@ -138,13 +138,13 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
   // Match providers with user's selected streaming services
   const userServices: { service: StreamingService; provider: Provider; watchLink: string }[] = [];
   for (const provider of flatrate) {
-    const service = getServiceByTmdbId(provider.provider_id);
-    if (service && settings.selectedServices.includes(service.id)) {
+    const service = getServiceByTmdbId(provider.provider_id)
+      ?? createDynamicService(provider.provider_id, provider.provider_name);
+    if (settings.selectedServices.includes(service.id)) {
       const watchLink = directLinks[service.id] || getWatchUrl(service.id, movie.title);
       userServices.push({ service, provider, watchLink });
     }
   }
-
 
   // Other available services not in user's list
   const otherServices: { service: StreamingService; provider: Provider }[] = [];
