@@ -25,6 +25,8 @@ interface Props {
 
 const CURRENT_YEAR = new Date().getFullYear();
 
+const FILTERS_KEY = 'meflix_filters';
+
 const DEFAULT_FILTERS: FilterState = {
   genres: [],
   minRating: 0,
@@ -42,8 +44,22 @@ const DEFAULT_FILTERS: FilterState = {
   certification: '' as const,
 };
 
+function loadFilters(): FilterState {
+  try {
+    const saved = JSON.parse(localStorage.getItem(FILTERS_KEY) || '{}');
+    return { ...DEFAULT_FILTERS, ...saved };
+  } catch { return DEFAULT_FILTERS; }
+}
+
+function saveFilters(f: FilterState) {
+  localStorage.setItem(FILTERS_KEY, JSON.stringify(f));
+}
+
 export function MovieBrowser({ settings, user, resetKey, watched, markWatched, unmarkWatched, isWatched }: Props) {
-  const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
+  const [filters, setFilters] = useState<FilterState>(loadFilters);
+
+  // Ulož filtry při každé změně
+  useEffect(() => { saveFilters(filters); }, [filters]);
   const [selectedMovie, setSelectedMovie] = useState<TMDBMovie | null>(null);
   const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useCloudWatchlist(user);
   const [searchInput, setSearchInput] = useState('');
@@ -66,6 +82,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
     setSearchInput('');
     setSearchQuery('');
     setFilters(DEFAULT_FILTERS);
+    saveFilters(DEFAULT_FILTERS);
     setMobileFilterOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [resetKey]);
