@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Globe, Search } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { REGIONS } from '../../utils/constants';
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export function RegionStep({ onNext, onBack, initial = 'CZ' }: Props) {
+  const { t } = useTranslation();
   const [region, setRegion] = useState(initial);
   const [search, setSearch] = useState('');
 
@@ -26,8 +28,8 @@ export function RegionStep({ onNext, onBack, initial = 'CZ' }: Props) {
           <Globe className="w-5 h-5 text-red-400" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-white">Tvoje země</h2>
-          <p className="text-sm text-gray-400">Filtruje dostupnost na streamovacích službách</p>
+          <h2 className="text-lg font-semibold text-white">{t('region.title')}</h2>
+          <p className="text-sm text-gray-400">{t('region.subtitle')}</p>
         </div>
       </div>
 
@@ -37,7 +39,7 @@ export function RegionStep({ onNext, onBack, initial = 'CZ' }: Props) {
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Hledat zemi..."
+          placeholder={t('region.searchPlaceholder')}
           className="w-full bg-gray-800 text-white placeholder-gray-500 text-sm rounded-lg pl-9 pr-4 py-2.5 border border-gray-700 focus:outline-none focus:border-red-500 transition-colors"
         />
       </div>
@@ -58,7 +60,7 @@ export function RegionStep({ onNext, onBack, initial = 'CZ' }: Props) {
           </button>
         ))}
         {filtered.length === 0 && (
-          <p className="col-span-2 text-center text-sm text-gray-500 py-4">Žádná země nenalezena</p>
+          <p className="col-span-2 text-center text-sm text-gray-500 py-4">{t('region.notFound')}</p>
         )}
       </div>
 
@@ -68,14 +70,14 @@ export function RegionStep({ onNext, onBack, initial = 'CZ' }: Props) {
             onClick={onBack}
             className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-3 rounded-lg transition-colors"
           >
-            Zpět
+            {t('common.back')}
           </button>
         )}
         <button
           onClick={() => onNext(region)}
           className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-lg transition-colors"
         >
-          Pokračovat
+          {t('common.continue')}
         </button>
       </div>
     </div>

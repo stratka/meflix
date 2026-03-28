@@ -1,4 +1,5 @@
 import { Star, Eye } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { TMDBMovie } from '../../types/tmdb';
 import type { StreamingService } from '../../types/app';
 import { TMDB_IMAGE_BASE } from '../../utils/constants';
@@ -13,6 +14,8 @@ interface Props {
 }
 
 export function MovieCard({ movie, onClick, isWatched, watchedDate, dimmed, availableOn }: Props) {
+  const { t, i18n } = useTranslation();
+
   const posterUrl = movie.poster_path
     ? `${TMDB_IMAGE_BASE}/w342${movie.poster_path}`
     : null;
@@ -62,7 +65,9 @@ export function MovieCard({ movie, onClick, isWatched, watchedDate, dimmed, avai
           <div className="absolute bottom-2 left-2 bg-green-600/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
             <Eye className="w-3 h-3 text-white" />
             <span className="text-xs font-bold text-white">
-              {watchedDate ? new Date(watchedDate).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', year: '2-digit' }) : 'Viděno'}
+              {watchedDate
+                ? new Date(watchedDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'numeric', year: '2-digit' })
+                : t('watched.badge')}
             </span>
           </div>
         )}

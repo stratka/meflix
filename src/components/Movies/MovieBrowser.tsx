@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { AlertCircle, RefreshCw, Search, X, ArrowLeft, SlidersHorizontal } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { User } from '@supabase/supabase-js';
 import type { TMDBMovie } from '../../types/tmdb';
 import type { AppSettings, FilterState, WatchedMovies } from '../../types/app';
@@ -57,9 +58,9 @@ function saveFilters(f: FilterState) {
 }
 
 export function MovieBrowser({ settings, user, resetKey, watched, markWatched, unmarkWatched, isWatched }: Props) {
+  const { t } = useTranslation();
   const [filters, setFilters] = useState<FilterState>(loadFilters);
 
-  // Ulož filtry při každé změně
   useEffect(() => { saveFilters(filters); }, [filters]);
   const [selectedMovie, setSelectedMovie] = useState<TMDBMovie | null>(null);
   const { watchlist, isInWatchlist, addToWatchlist, removeFromWatchlist } = useCloudWatchlist(user);
@@ -72,14 +73,12 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
   const loaderRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  // Schovej klávesnici při scrollování
   useEffect(() => {
     const onScroll = () => { if (document.activeElement === searchRef.current) searchRef.current?.blur(); };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Klik na logo — reset search + scroll nahoru (filtry zachovej)
   useEffect(() => {
     if (resetKey === 0 || resetKey === undefined) return;
     setSearchInput('');
@@ -88,7 +87,6 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [resetKey]);
 
-  // Načti filmy přímo podle ID když je aktivní filtr "jen shlédnuté" nebo "jen chci vidět"
   const idMode = filters.watchlistFilter === 'only' || filters.watchedFilter === 'only';
   useEffect(() => {
     if (!idMode) { setIdMovies([]); return; }
@@ -111,7 +109,6 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
 
   const { genres } = useGenres();
 
-  // Debounce search — čekej 400ms po posledním stisku klávesy
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchQuery(searchInput);
@@ -119,7 +116,6 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  // Infinite scroll
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
@@ -170,7 +166,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
               type="text"
               value={searchInput}
               onChange={e => setSearchInput(e.target.value)}
-              placeholder="Hledat film…"
+              placeholder={t('browser.searchPlaceholder')}
               className="w-full bg-gray-800 text-white placeholder-gray-500 text-sm rounded-lg pl-9 pr-8 py-2 border border-gray-700 focus:outline-none focus:border-gray-500 transition-colors"
             />
             {searchInput && (
@@ -183,7 +179,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
             )}
           </div>
 
-          {/* Mobile filter toggle + reset — in sticky header */}
+          {/* Mobile filter toggle + reset */}
           {!isSearching && (
             <div className="lg:hidden flex items-center gap-2 flex-shrink-0">
               <button
@@ -191,7 +187,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                 className="flex items-center gap-2 px-3 py-2 bg-gray-800 rounded-lg text-sm text-white"
               >
                 <SlidersHorizontal className="w-4 h-4" />
-                Filtry
+                {t('browser.filters')}
                 {activeFilterCount > 0 && (
                   <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
                     {activeFilterCount}
@@ -203,13 +199,13 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                   onClick={resetFilters}
                   className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors"
                 >
-                  Resetovat
+                  {t('browser.reset')}
                 </button>
               )}
             </div>
           )}
 
-          {/* Service badges — kliknutím filtruješ */}
+          {/* Service badges */}
           {!isSearching && (
             <div className="flex items-center gap-2 flex-wrap">
               {userServicesList.map(s => {
@@ -224,7 +220,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                       setFilters({ ...filters, services: next });
                     }}
                     className="transition-all hover:scale-105 active:scale-95"
-                    title={active ? `Zrušit filtr ${s.name}` : `Filtrovat jen ${s.name}`}
+                    title={active ? t('browser.filterRemove', { name: s.name }) : t('browser.filterOnly', { name: s.name })}
                   >
                     <span
                       className="inline-block rounded-full font-semibold text-xs px-2 py-0.5 transition-colors"
@@ -244,7 +240,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                   onClick={() => setFilters({ ...filters, services: [] })}
                   className="text-xs text-gray-500 hover:text-white px-2 py-1 rounded transition-colors"
                 >
-                  × vše
+                  {t('browser.clearAll')}
                 </button>
               )}
             </div>
@@ -256,7 +252,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
               onClick={resetFilters}
               className="hidden lg:block px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-lg transition-colors"
             >
-              Resetovat filtry ({activeFilterCount})
+              {t('browser.resetFilters', { count: activeFilterCount })}
             </button>
           )}
 
@@ -264,8 +260,8 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
           {(idMode ? idMovies.length > 0 : totalResults > 0) && (
             <span className="text-sm text-gray-500 ml-auto">
               {isSearching
-                ? `${totalResults.toLocaleString()} výsledků`
-                : `${(idMode ? idMovies.length : totalResults).toLocaleString()} filmů`}
+                ? t('browser.results', { count: totalResults })
+                : t('browser.movies', { count: idMode ? idMovies.length : totalResults })}
             </span>
           )}
         </div>
@@ -273,7 +269,6 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
 
       {/* Layout */}
       <div className="max-w-7xl mx-auto lg:flex lg:gap-6 lg:p-6 p-0">
-        {/* Filters — skryj při hledání */}
         {!isSearching && (
           <FilterPanel
             filters={filters}
@@ -291,7 +286,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
               <span className="text-sm flex-1">{error}</span>
               <button onClick={() => setFilters({ ...filters })} className="flex items-center gap-1 text-xs hover:text-white">
-                <RefreshCw className="w-3 h-3" /> Zkusit znovu
+                <RefreshCw className="w-3 h-3" /> {t('browser.tryAgain')}
               </button>
             </div>
           )}
@@ -327,17 +322,16 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                 {!idMode && loadingMore && <MovieSkeletonGrid count={10} />}
               </div>
 
-              {/* Infinite scroll trigger */}
               {!idMode && <div ref={loaderRef} className="h-8 mt-4" />}
 
               {!idMode && !hasMore && movies.length > 0 && (
                 <p className="text-center text-sm text-gray-600 pb-8">
-                  Zobrazeno všech {movies.length} filmů
+                  {t('browser.allShown', { count: movies.length })}
                 </p>
               )}
               {idMode && (
                 <p className="text-center text-sm text-gray-600 pb-8">
-                  Celkem {idMovies.length} filmů
+                  {t('browser.total', { count: idMovies.length })}
                 </p>
               )}
             </>
@@ -345,12 +339,12 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
         </div>
       </div>
 
-      {/* Back to browse button — vymaže hledání */}
+      {/* Back to browse button */}
       {isSearching && (
         <button
           onClick={() => { setSearchInput(''); setSearchQuery(''); }}
           className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
-          aria-label="Zpět na úvodní stranu"
+          aria-label={t('modal.back')}
         >
           <ArrowLeft className="w-5 h-5" />
         </button>

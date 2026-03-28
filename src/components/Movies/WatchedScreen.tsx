@@ -1,4 +1,5 @@
 import { ArrowLeft, Eye, Trash2, Film } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { WatchedMovies } from '../../types/app';
 
 interface Props {
@@ -7,16 +8,18 @@ interface Props {
   onClose: () => void;
 }
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('cs-CZ', {
-    day: 'numeric', month: 'long', year: 'numeric',
-  });
-}
-
 export function WatchedScreen({ watched, onUnmark, onClose }: Props) {
+  const { t, i18n } = useTranslation();
+
   const entries = Object.entries(watched)
     .map(([id, entry]) => ({ id: Number(id), ...entry }))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleDateString(i18n.language, {
+      day: 'numeric', month: 'long', year: 'numeric',
+    });
+  }
 
   return (
     <div className="fixed inset-0 bg-gray-950 z-50 flex flex-col">
@@ -30,9 +33,9 @@ export function WatchedScreen({ watched, onUnmark, onClose }: Props) {
         </button>
         <div className="flex items-center gap-2">
           <Eye className="w-5 h-5 text-red-500" />
-          <h1 className="text-lg font-bold text-white">Shlédnuté filmy</h1>
+          <h1 className="text-lg font-bold text-white">{t('watched.title')}</h1>
         </div>
-        <span className="ml-auto text-sm text-gray-500">{entries.length} filmů</span>
+        <span className="ml-auto text-sm text-gray-500">{t('browser.movies', { count: entries.length })}</span>
       </div>
 
       {/* List */}
@@ -40,8 +43,8 @@ export function WatchedScreen({ watched, onUnmark, onClose }: Props) {
         {entries.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full gap-4 text-gray-500">
             <Film className="w-16 h-16 opacity-30" />
-            <p className="text-lg">Zatím žádné shlédnuté filmy</p>
-            <p className="text-sm text-gray-600">Označuj filmy jako shlédnuté v detailu filmu</p>
+            <p className="text-lg">{t('watched.empty')}</p>
+            <p className="text-sm text-gray-600">{t('watched.emptyHint')}</p>
           </div>
         ) : (
           <ul className="max-w-2xl mx-auto px-4 py-4 flex flex-col gap-2">
@@ -52,12 +55,12 @@ export function WatchedScreen({ watched, onUnmark, onClose }: Props) {
               >
                 <div className="flex-1 min-w-0">
                   <p className="text-white font-medium truncate">{title}</p>
-                  <p className="text-sm text-gray-500 mt-0.5">Shlédnuto {formatDate(date)}</p>
+                  <p className="text-sm text-gray-500 mt-0.5">{t('watched.watchedOn', { date: formatDate(date) })}</p>
                 </div>
                 <button
                   onClick={() => onUnmark(id)}
                   className="w-9 h-9 flex items-center justify-center text-gray-600 hover:text-red-400 hover:bg-gray-800 rounded-lg transition-colors flex-shrink-0"
-                  title="Odebrat ze shlédnutých"
+                  title={t('watched.remove')}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

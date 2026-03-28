@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Search, X, ChevronDown, SlidersHorizontal, Eye, Check, Bookmark } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { Genre } from '../../types/tmdb';
 import type { FilterState, SortOption } from '../../types/app';
 import { SORT_OPTIONS } from '../../utils/constants';
@@ -15,35 +16,10 @@ interface Props {
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-const COUNTRIES = [
-  { code: '', name: 'Všechny země' },
-  { code: 'US', name: '🇺🇸 USA' },
-  { code: 'GB', name: '🇬🇧 Velká Británie' },
-  { code: 'FR', name: '🇫🇷 Francie' },
-  { code: 'DE', name: '🇩🇪 Německo' },
-  { code: 'IT', name: '🇮🇹 Itálie' },
-  { code: 'ES', name: '🇪🇸 Španělsko' },
-  { code: 'CZ', name: '🇨🇿 Česká republika' },
-  { code: 'SK', name: '🇸🇰 Slovensko' },
-  { code: 'PL', name: '🇵🇱 Polsko' },
-  { code: 'AT', name: '🇦🇹 Rakousko' },
-  { code: 'SE', name: '🇸🇪 Švédsko' },
-  { code: 'DK', name: '🇩🇰 Dánsko' },
-  { code: 'NO', name: '🇳🇴 Norsko' },
-  { code: 'JP', name: '🇯🇵 Japonsko' },
-  { code: 'KR', name: '🇰🇷 Jižní Korea' },
-  { code: 'IN', name: '🇮🇳 Indie' },
-  { code: 'CN', name: '🇨🇳 Čína' },
-  { code: 'AU', name: '🇦🇺 Austrálie' },
-  { code: 'CA', name: '🇨🇦 Kanada' },
-  { code: 'BR', name: '🇧🇷 Brazílie' },
-  { code: 'MX', name: '🇲🇽 Mexiko' },
-  { code: 'IR', name: '🇮🇷 Írán' },
-  { code: 'RU', name: '🇷🇺 Rusko' },
-  { code: 'TR', name: '🇹🇷 Turecko' },
-];
+const COUNTRY_CODES = ['', 'US', 'GB', 'FR', 'DE', 'IT', 'ES', 'CZ', 'SK', 'PL', 'AT', 'SE', 'DK', 'NO', 'JP', 'KR', 'IN', 'CN', 'AU', 'CA', 'BR', 'MX', 'IR', 'RU', 'TR'];
 
 export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMobileOpen, onMobileOpenChange }: Props) {
+  const { t, i18n } = useTranslation();
   const [internalMobileOpen, setInternalMobileOpen] = useState(false);
   const mobileOpen = externalMobileOpen !== undefined ? externalMobileOpen : internalMobileOpen;
   const setMobileOpen = (v: boolean) => { setInternalMobileOpen(v); onMobileOpenChange?.(v); };
@@ -52,6 +28,8 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
   const [personResults, setPersonResults] = useState<{ id: number; name: string; dept: string }[]>([]);
   const [personSearchLoading, setPersonSearchLoading] = useState(false);
   const personTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const countryDisplayNames = new Intl.DisplayNames([i18n.language], { type: 'region' });
 
   // Person search with debounce
   useEffect(() => {
@@ -130,13 +108,13 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Shlédnuté filmy */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> Shlédnuté filmy</span>
+          <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> {t('filter.watched')}</span>
         </label>
         <div className="flex rounded-lg overflow-hidden border border-gray-700">
           {([
-            { value: 'all', label: 'Vše' },
-            { value: 'hide', label: 'Skrýt' },
-            { value: 'only', label: 'Jen shlédnuté' },
+            { value: 'all', label: t('filter.all') },
+            { value: 'hide', label: t('filter.hide') },
+            { value: 'only', label: t('filter.onlyWatched') },
           ] as const).map(opt => (
             <button
               key={opt.value}
@@ -156,13 +134,13 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Chci vidět */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          <span className="flex items-center gap-1"><Bookmark className="w-3.5 h-3.5" /> Chci vidět</span>
+          <span className="flex items-center gap-1"><Bookmark className="w-3.5 h-3.5" /> {t('filter.watchlist')}</span>
         </label>
         <div className="flex rounded-lg overflow-hidden border border-gray-700">
           {([
-            { value: 'all', label: 'Vše' },
-            { value: 'hide', label: 'Skrýt' },
-            { value: 'only', label: 'Jen chci vidět' },
+            { value: 'all', label: t('filter.all') },
+            { value: 'hide', label: t('filter.hide') },
+            { value: 'only', label: t('filter.onlyWatchlist') },
           ] as const).map(opt => (
             <button
               key={opt.value}
@@ -182,7 +160,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Certification / věkové hodnocení */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          Věkové hodnocení
+          {t('filter.ageRating')}
         </label>
         <div className="relative">
           <select
@@ -190,10 +168,10 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
             onChange={e => onChange({ ...filters, certification: e.target.value as FilterState['certification'] })}
             className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8"
           >
-            <option value="">Vše</option>
-            <option value="G">Pro nejmenší (G)</option>
-            <option value="PG">Děti 7+ (G, PG)</option>
-            <option value="PG-13">Mládež 12+ (G, PG, PG-13)</option>
+            <option value="">{t('filter.ratingAll')}</option>
+            <option value="G">{t('filter.forKids')}</option>
+            <option value="PG">{t('filter.children')}</option>
+            <option value="PG-13">{t('filter.youth')}</option>
           </select>
           <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
@@ -202,7 +180,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Media type */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          Typ obsahu
+          {t('filter.contentType')}
         </label>
         <div className="flex rounded-lg overflow-hidden border border-gray-700">
           {(['movie', 'tv'] as const).map(type => (
@@ -215,7 +193,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
                   : 'bg-gray-800 text-gray-400 hover:text-white'
               }`}
             >
-              {type === 'movie' ? '🎬 Filmy' : '📺 Seriály'}
+              {type === 'movie' ? t('filter.movies') : t('filter.series')}
             </button>
           ))}
         </div>
@@ -224,7 +202,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Sort */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          Řazení
+          {t('filter.sort')}
         </label>
         <div className="relative">
           <select
@@ -233,7 +211,9 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
             className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8"
           >
             {SORT_OPTIONS.map(o => (
-              <option key={o.value} value={o.value}>{o.label}</option>
+              <option key={o.value} value={o.value}>
+                {t(`sort.${o.value.replace(/\./g, '_')}`)}
+              </option>
             ))}
           </select>
           <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -243,7 +223,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Person search */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          Herec / Režisér
+          {t('filter.personSearch')}
         </label>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
@@ -251,7 +231,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
             type="text"
             value={personQuery}
             onChange={e => setPersonQuery(e.target.value)}
-            placeholder="Jméno osoby..."
+            placeholder={t('filter.personPlaceholder')}
             className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-9 pr-9 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500"
           />
           {(personQuery || filters.personId) && (
@@ -278,11 +258,11 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
           </div>
         )}
         {personSearchLoading && (
-          <p className="text-xs text-gray-500 mt-1">Hledám...</p>
+          <p className="text-xs text-gray-500 mt-1">{t('filter.searching')}</p>
         )}
         {filters.personId && (
           <p className="text-xs text-green-400 mt-1">
-            Filtrováno podle: <strong>{filters.personName}</strong>
+            {t('filter.filteredBy', { name: filters.personName })}
           </p>
         )}
       </div>
@@ -290,7 +270,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Min rating */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          Minimální hodnocení: <span className="text-white">{filters.minRating > 0 ? filters.minRating.toFixed(1) : 'vše'}</span>
+          {t('filter.minRating', { value: filters.minRating > 0 ? filters.minRating.toFixed(1) : t('filter.minRatingAll') })}
         </label>
         <input
           type="range"
@@ -302,7 +282,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
           className="w-full accent-red-500"
         />
         <div className="flex justify-between text-xs text-gray-500 mt-1">
-          <span>Vše</span>
+          <span>{t('filter.ratingAll')}</span>
           <span>9.0</span>
         </div>
       </div>
@@ -310,7 +290,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Origin country */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          Země původu
+          {t('filter.originCountry')}
         </label>
         <div className="relative">
           <select
@@ -318,8 +298,10 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
             onChange={e => onChange({ ...filters, originCountry: e.target.value })}
             className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8"
           >
-            {COUNTRIES.map(c => (
-              <option key={c.code} value={c.code}>{c.name}</option>
+            {COUNTRY_CODES.map(code => (
+              <option key={code} value={code}>
+                {code === '' ? t('filter.allCountries') : countryDisplayNames.of(code) ?? code}
+              </option>
             ))}
           </select>
           <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -329,7 +311,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Year range */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          Rok vydání: <span className="text-white">{filters.yearFrom} – {filters.yearTo}</span>
+          {t('filter.yearRange', { from: filters.yearFrom, to: filters.yearTo })}
         </label>
         <div className="relative mt-3 mb-1">
           {/* Track */}
@@ -370,7 +352,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Genres */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          Žánr
+          {t('filter.genre')}
         </label>
         <div className="flex flex-wrap gap-2">
           {genres.map(genre => {
@@ -403,7 +385,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
           <button
             onClick={() => setMobileOpen(false)}
             className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
-            aria-label="Zavřít filtry"
+            aria-label={t('filter.closeFilters')}
           >
             <Check className="w-5 h-5" />
           </button>
@@ -416,7 +398,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
         <div className="sticky top-4 bg-gray-900 border border-gray-800 rounded-xl p-4 max-h-[calc(100vh-8rem)] overflow-y-auto">
           <h2 className="font-semibold text-white flex items-center gap-2 mb-4">
             <SlidersHorizontal className="w-4 h-4" />
-            Filtry
+            {t('filter.title')}
             {activeFilterCount > 0 && (
               <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
                 {activeFilterCount}

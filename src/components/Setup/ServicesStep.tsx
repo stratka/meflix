@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { STREAMING_SERVICES, createDynamicService } from '../../utils/constants';
 import { fetchRegionProviders } from '../../utils/tmdb';
 import type { StreamingService } from '../../types/app';
@@ -30,6 +31,7 @@ function ServiceButton({ service, selected, onToggle }: { service: StreamingServ
 }
 
 export function ServicesStep({ onNext, onBack, initial = [], region }: Props) {
+  const { t } = useTranslation();
   const [selected, setSelected] = useState<string[]>(initial);
   const [localServices, setLocalServices] = useState<StreamingService[]>([]);
   const [loadingLocal, setLoadingLocal] = useState(true);
@@ -61,8 +63,8 @@ export function ServicesStep({ onNext, onBack, initial = [], region }: Props) {
   return (
     <div>
       <div className="mb-4">
-        <h2 className="text-lg font-semibold text-white">Tvoje služby</h2>
-        <p className="text-sm text-gray-400">Služby dostupné ve tvém regionu</p>
+        <h2 className="text-lg font-semibold text-white">{t('services.title')}</h2>
+        <p className="text-sm text-gray-400">{t('services.subtitle')}</p>
       </div>
 
       {loadingLocal ? (
@@ -83,7 +85,7 @@ export function ServicesStep({ onNext, onBack, initial = [], region }: Props) {
           ))}
         </div>
       ) : (
-        <p className="text-sm text-gray-500 mb-4">Nepodařilo se načíst služby pro tento region.</p>
+        <p className="text-sm text-gray-500 mb-4">{t('services.loadError')}</p>
       )}
 
       {foreignServices.length > 0 && (
@@ -93,7 +95,7 @@ export function ServicesStep({ onNext, onBack, initial = [], region }: Props) {
             className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-3"
           >
             {showForeign ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-            Přidat zahraniční služby
+            {t('services.addForeign')}
           </button>
           {showForeign && (
             <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
@@ -115,13 +117,13 @@ export function ServicesStep({ onNext, onBack, initial = [], region }: Props) {
           onClick={onBack}
           className="flex-1 bg-gray-800 hover:bg-gray-700 text-gray-300 font-medium py-3 rounded-lg transition-colors"
         >
-          Zpět
+          {t('common.back')}
         </button>
         <button
           onClick={() => onNext(selected)}
           className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-lg transition-colors"
         >
-          Hotovo!
+          {t('common.done')}
         </button>
       </div>
     </div>

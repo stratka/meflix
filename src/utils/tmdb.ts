@@ -7,8 +7,24 @@ import type {
 } from '../types/tmdb';
 import type { FilterState } from '../types/app';
 import { STREAMING_SERVICES, getAllTmdbIds, getTmdbIdFromServiceId } from './constants';
+import i18n from '../i18n';
 
 const CURRENT_YEAR = new Date().getFullYear();
+
+const TMDB_LANG_MAP: Record<string, string> = {
+  zh: 'zh-CN',
+  no: 'nb-NO',
+  ms: 'ms-MY',
+  hi: 'hi-IN',
+  ar: 'ar-SA',
+  uk: 'uk-UA',
+};
+
+function getTmdbLanguage(): string {
+  const lang = i18n.language?.split('-')[0] || 'en';
+  if (TMDB_LANG_MAP[lang]) return TMDB_LANG_MAP[lang];
+  return `${lang}-${lang.toUpperCase()}`;
+}
 
 // Builds /api/tmdb?_path=<tmdbPath>&<otherParams>
 function buildUrl(tmdbPath: string, params?: URLSearchParams): string {
@@ -27,7 +43,7 @@ async function tmdbFetch<T>(url: string): Promise<T> {
 }
 
 export async function fetchGenres(): Promise<TMDBGenresResponse> {
-  return tmdbFetch<TMDBGenresResponse>(buildUrl('genre/movie/list', new URLSearchParams({ language: 'cs-CZ' })));
+  return tmdbFetch<TMDBGenresResponse>(buildUrl('genre/movie/list', new URLSearchParams({ language: getTmdbLanguage() })));
 }
 
 /** Vrátí seznam providerů dostupných v daném regionu (ID + název + logo) */
@@ -67,7 +83,7 @@ export async function discoverMovies(
     sort_by: filters.sortBy,
     'vote_count.gte': '5',
     page: String(page),
-    language: 'cs-CZ',
+    language: getTmdbLanguage(),
   });
 
   if (filterServiceIds.length > 0) {
@@ -114,9 +130,9 @@ export async function fetchMovieDetail(
   mediaType: 'movie' | 'tv' = 'movie'
 ): Promise<TMDBMovieDetail> {
   const params = new URLSearchParams({
-    language: 'cs-CZ',
+    language: getTmdbLanguage(),
     append_to_response: 'credits,watch/providers,videos',
-    include_video_language: 'cs,en',
+    include_video_language: `${i18n.language?.split('-')[0] || 'en'},en`,
   });
   const endpoint = mediaType === 'tv' ? `tv/${movieId}` : `movie/${movieId}`;
   const data = await tmdbFetch<any>(buildUrl(endpoint, params));
@@ -135,7 +151,7 @@ export async function searchMovies(
   query: string,
   page: number = 1
 ): Promise<TMDBDiscoverResponse> {
-  const params = new URLSearchParams({ query, language: 'cs-CZ', page: String(page) });
+  const params = new URLSearchParams({ query, language: getTmdbLanguage(), page: String(page) });
   const raw = await tmdbFetch<any>(buildUrl('search/multi', params));
   // Filtruj jen filmy a seriály, mapuj TV pole na movie pole
   raw.results = (raw.results || [])
@@ -158,6 +174,6 @@ export async function fetchMovieWatchProviders(
 }
 
 export async function searchPerson(query: string): Promise<TMDBSearchPersonResponse> {
-  const params = new URLSearchParams({ query, language: 'cs-CZ' });
+  const params = new URLSearchParams({ query, language: getTmdbLanguage() });
   return tmdbFetch<TMDBSearchPersonResponse>(buildUrl('search/person', params));
 }

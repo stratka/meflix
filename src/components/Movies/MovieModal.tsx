@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Star, Clock, ExternalLink, Play, Youtube, Eye, ArrowLeft, Bookmark, BookmarkCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { TMDBMovie, TMDBMovieDetail, Provider } from '../../types/tmdb';
 import type { AppSettings, StreamingService, WatchedEntry } from '../../types/app';
 import { fetchMovieDetail } from '../../utils/tmdb';
@@ -22,19 +23,19 @@ interface Props {
 }
 
 export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatched, onUnmarkWatched, onPersonClick, isInWatchlist, onToggleWatchlist }: Props) {
+  const { t, i18n } = useTranslation();
   const [detail, setDetail] = useState<TMDBMovieDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [showTrailer, setShowTrailer] = useState(false);
   const [directLinks, setDirectLinks] = useState<DirectStreamingLinks>({});
 
-  // Swipe-to-dismiss (pouze mobil)
   const dragY = useRef(0);
   const scrollY = useRef(0);
   const sheetRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const startY = useRef<number | null>(null);
   const DISMISS_THRESHOLD = 150;
-  const DISMISS_VELOCITY = 0.5; // px/ms
+  const DISMISS_VELOCITY = 0.5;
 
   const applyDrag = (dy: number) => {
     if (!sheetRef.current || !overlayRef.current) return;
@@ -103,7 +104,6 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
       .finally(() => setLoading(false));
   }, [movie.id, settings.region]);
 
-  // Fetch direct streaming links via server proxy
   useEffect(() => {
     fetchJustWatchLinks(movie.id, settings.region, movie.title, movie.media_type ?? 'movie')
       .then(links => setDirectLinks(links))
@@ -131,11 +131,9 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
 
   const year = movie.release_date?.slice(0, 4);
 
-  // Get available providers for user's region
   const regionProviders = detail?.watch_providers?.results?.[settings.region];
   const flatrate: Provider[] = regionProviders?.flatrate || [];
 
-  // Match providers with user's selected streaming services
   const userServices: { service: StreamingService; provider: Provider; watchLink: string }[] = [];
   for (const provider of flatrate) {
     const service = getServiceByTmdbId(provider.provider_id)
@@ -146,11 +144,11 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
     }
   }
 
-  // Other available services not in user's list
   const otherServices: { service: StreamingService; provider: Provider }[] = [];
   for (const provider of flatrate) {
-    const service = getServiceByTmdbId(provider.provider_id);
-    if (service && !settings.selectedServices.includes(service.id)) {
+    const service = getServiceByTmdbId(provider.provider_id)
+      ?? createDynamicService(provider.provider_id, provider.provider_name);
+    if (!settings.selectedServices.includes(service.id)) {
       otherServices.push({ service, provider });
     }
   }
@@ -159,7 +157,6 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
   const createdBy = detail?.created_by?.[0];
   const topCast = detail?.credits?.cast?.slice(0, 8) || [];
 
-  // Najdi nejlepší trailer — preferuj oficiální YouTube trailer
   const trailer = detail?.videos?.results?.find(
     v => v.site === 'YouTube' && v.type === 'Trailer' && v.official
   ) ?? detail?.videos?.results?.find(
@@ -181,7 +178,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
-        {/* Drag handle — pouze mobil */}
+        {/* Drag handle */}
         <div className="sm:hidden flex justify-center pt-3 pb-1 flex-shrink-0">
           <div className="w-10 h-1 bg-gray-600 rounded-full" />
         </div>
@@ -190,7 +187,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
         <button
           onClick={onClose}
           className="fixed bottom-6 right-6 z-[60] w-12 h-12 bg-red-600 hover:bg-red-700 rounded-full flex items-center justify-center text-white transition-colors shadow-lg"
-          aria-label="Zpět"
+          aria-label={t('modal.back')}
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
@@ -203,11 +200,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
           {/* Backdrop */}
           <div className="relative h-48 sm:h-64 bg-gray-800">
             {backdropUrl && (
-              <img
-                src={backdropUrl}
-                alt=""
-                className="w-full h-full object-cover"
-              />
+              <img src={backdropUrl} alt="" className="w-full h-full object-cover" />
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent" />
           </div>
@@ -240,7 +233,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
                           </a>
                           <button
                             onClick={() => watchedEntry ? onUnmarkWatched(movie.id) : onMarkWatched(movie.id, movie.title)}
-                            title={watchedEntry ? 'Viděno – klikni pro zrušení' : 'Označit jako viděno'}
+                            title={watchedEntry ? t('modal.unmarkWatched') : t('modal.markWatched')}
                             className={`w-7 flex-shrink-0 flex items-center justify-center rounded-lg transition-colors ${watchedEntry ? 'bg-green-600/30 text-green-400' : 'bg-gray-800 text-gray-500 hover:text-white hover:bg-gray-700'}`}
                           >
                             <Eye className="w-3.5 h-3.5" />
@@ -248,7 +241,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
                           {onToggleWatchlist && (
                             <button
                               onClick={() => onToggleWatchlist(movie.id, movie.title)}
-                              title={isInWatchlist ? 'Odebrat z chci vidět' : 'Chci vidět'}
+                              title={isInWatchlist ? t('modal.removeWatchlist') : t('modal.addWatchlist')}
                               className={`w-7 flex-shrink-0 flex items-center justify-center rounded-lg transition-colors ${isInWatchlist ? 'bg-blue-600/30 text-blue-400' : 'bg-gray-800 text-gray-500 hover:text-white hover:bg-gray-700'}`}
                             >
                               {isInWatchlist ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
@@ -280,14 +273,14 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
                       <span>·</span>
                       <span className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
-                        {detail.episode_run_time[0]} min / díl
+                        {detail.episode_run_time[0]} {t('modal.minPerEpisode')}
                       </span>
                     </>
                   )}
                   {detail?.number_of_seasons && (
                     <>
                       <span>·</span>
-                      <span>{detail.number_of_seasons} {detail.number_of_seasons === 1 ? 'sezóna' : detail.number_of_seasons < 5 ? 'sezóny' : 'sezón'}</span>
+                      <span>{t('modal.seasons', { count: detail.number_of_seasons })}</span>
                     </>
                   )}
                   <span>·</span>
@@ -336,7 +329,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
                   className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors"
                 >
                   <Youtube className="w-4 h-4" />
-                  Přehrát trailer
+                  {t('modal.playTrailer')}
                 </button>
               )}
               {!loading && trailer && showTrailer && (
@@ -353,7 +346,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
               {!loading && !trailer && (
                 <div className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-gray-500 text-sm font-semibold rounded-lg cursor-not-allowed w-fit">
                   <Youtube className="w-4 h-4" />
-                  Trailer není k dispozici
+                  {t('modal.noTrailer')}
                 </div>
               )}
             </div>
@@ -361,7 +354,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
             {/* Director / Creator */}
             {(director || createdBy) && (
               <p className="mt-3 text-sm text-gray-400">
-                <span className="text-gray-500">{createdBy && !director ? 'Tvůrce: ' : 'Režie: '}</span>
+                <span className="text-gray-500">{createdBy && !director ? t('modal.creator') : t('modal.director')} </span>
                 <button
                   onClick={() => {
                     const p = director ?? createdBy!;
@@ -378,7 +371,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
             {/* Cast */}
             {topCast.length > 0 && (
               <div className="mt-4">
-                <p className="text-sm text-gray-500 mb-2">Obsazení</p>
+                <p className="text-sm text-gray-500 mb-2">{t('modal.cast')}</p>
                 <div className="flex flex-wrap gap-2">
                   {topCast.map(actor => (
                     <button
@@ -393,19 +386,24 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
               </div>
             )}
 
-
-            {/* Viděno — datum zobrazíme pokud je označeno */}
+            {/* Watched date */}
             {watchedEntry && (
               <div className="mt-4 flex items-center gap-1.5 text-xs text-green-400">
                 <Eye className="w-3.5 h-3.5" />
-                <span>Viděno {new Date(watchedEntry.date).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                <span>
+                  {t('modal.watchedOn', {
+                    date: new Date(watchedEntry.date).toLocaleDateString(i18n.language, {
+                      day: 'numeric', month: 'long', year: 'numeric',
+                    }),
+                  })}
+                </span>
               </div>
             )}
 
             {/* Also on (other services) */}
             {otherServices.length > 0 && (
               <div className="mt-4">
-                <p className="text-sm text-gray-500 mb-2">Také dostupné na</p>
+                <p className="text-sm text-gray-500 mb-2">{t('modal.alsoOn')}</p>
                 <div className="flex flex-wrap gap-2">
                   {otherServices.map(({ service }) => (
                     <ServiceBadge key={service.id} service={service} size="sm" />
@@ -417,7 +415,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
             {/* Not available */}
             {!loading && flatrate.length === 0 && (
               <div className="mt-6 p-3 bg-gray-800 rounded-lg text-sm text-gray-400 text-center">
-                Tento film není momentálně dostupný na žádné streamovací službě ve tvém regionu.
+                {t('modal.notAvailable')}
               </div>
             )}
 
@@ -429,7 +427,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
                 rel="noopener noreferrer"
                 className="text-xs text-gray-500 hover:text-gray-400 flex items-center gap-1"
               >
-                Zobrazit na TMDB <ExternalLink className="w-3 h-3" />
+                {t('modal.viewOnTMDB')} <ExternalLink className="w-3 h-3" />
               </a>
             </div>
           </div>

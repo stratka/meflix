@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, Settings, LogIn, LogOut, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import type { AppSettings } from '../../types/app';
 import { RegionStep } from '../Setup/RegionStep';
@@ -17,6 +18,7 @@ interface Props {
 type Tab = 'services' | 'region';
 
 export function SettingsPanel({ settings, onSave, onClose, user, onSignIn, onSignOut }: Props) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>('services');
   const [draft, setDraft] = useState<AppSettings>({ ...settings });
 
@@ -34,8 +36,8 @@ export function SettingsPanel({ settings, onSave, onClose, user, onSignIn, onSig
   }
 
   const TABS: { id: Tab; label: string }[] = [
-    { id: 'services', label: 'Služby' },
-    { id: 'region', label: 'Region' },
+    { id: 'services', label: t('settings.tabServices') },
+    { id: 'region', label: t('settings.tabRegion') },
   ];
 
   return (
@@ -45,7 +47,7 @@ export function SettingsPanel({ settings, onSave, onClose, user, onSignIn, onSig
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800">
           <div className="flex items-center gap-2">
             <Settings className="w-5 h-5 text-gray-400" />
-            <h2 className="text-lg font-semibold text-white">Nastavení</h2>
+            <h2 className="text-lg font-semibold text-white">{t('settings.title')}</h2>
           </div>
           <button
             onClick={onClose}
@@ -100,7 +102,7 @@ export function SettingsPanel({ settings, onSave, onClose, user, onSignIn, onSig
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-300 text-sm rounded-lg transition-colors"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                Odhlásit
+                {t('settings.signOut')}
               </button>
             </div>
           ) : (
@@ -109,7 +111,7 @@ export function SettingsPanel({ settings, onSave, onClose, user, onSignIn, onSig
               className="w-full flex items-center justify-center gap-2 py-2.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors"
             >
               <LogIn className="w-4 h-4" />
-              Přihlásit se / Registrovat
+              {t('settings.signInRegister')}
             </button>
           )}
         </div>
