@@ -13,7 +13,7 @@ const ms = {
     searchPlaceholder: 'Cari filem…', filters: 'Penapis', reset: 'Set semula',
     resetFilters: 'Set semula penapis ({{count}})', results: '{{count, number}} keputusan',
     movies: '{{count, number}} filem', allShown: 'Semua {{count}} filem dipaparkan',
-    total: 'Jumlah {{count}} filem', tryAgain: 'Cuba lagi',
+    total: 'Jumlah {{count}} filem', tryAgain: 'Cuba lagi', noServices: 'Tiada perkhidmatan dipilih – semua filem dipaparkan',
     clearAll: '× Semua', filterRemove: 'Buang penapis {{name}}', filterOnly: 'Tapis hanya {{name}}',
   },
   filter: {

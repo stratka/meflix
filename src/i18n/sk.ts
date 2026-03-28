@@ -13,7 +13,7 @@ const sk = {
     searchPlaceholder: 'Hľadať film…', filters: 'Filtre', reset: 'Resetovať',
     resetFilters: 'Resetovať filtre ({{count}})', results: '{{count, number}} výsledkov',
     movies: '{{count, number}} filmov', allShown: 'Zobrazených všetkých {{count}} filmov',
-    total: 'Spolu {{count}} filmov', tryAgain: 'Skúsiť znova',
+    total: 'Spolu {{count}} filmov', tryAgain: 'Skúsiť znova', noServices: 'Žiadna služba nie je vybraná – zobrazujú sa všetky filmy',
     clearAll: '× všetko', filterRemove: 'Zrušiť filter {{name}}', filterOnly: 'Filtrovať len {{name}}',
   },
   filter: {

@@ -13,7 +13,7 @@ const tr = {
     searchPlaceholder: 'Film ara…', filters: 'Filtreler', reset: 'Sıfırla',
     resetFilters: 'Filtreleri sıfırla ({{count}})', results: '{{count, number}} sonuç',
     movies: '{{count, number}} film', allShown: 'Tüm {{count}} film gösterildi',
-    total: 'Toplam {{count}} film', tryAgain: 'Tekrar dene',
+    total: 'Toplam {{count}} film', tryAgain: 'Tekrar dene', noServices: 'Hizmet seçilmedi – tüm filmler gösteriliyor',
     clearAll: '× Tümü', filterRemove: '{{name}} filtresini kaldır', filterOnly: 'Yalnızca {{name}} filtrele',
   },
   filter: {

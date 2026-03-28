@@ -13,7 +13,7 @@ const hu = {
     searchPlaceholder: 'Film keresése…', filters: 'Szűrők', reset: 'Visszaállítás',
     resetFilters: 'Szűrők visszaállítása ({{count}})', results: '{{count, number}} eredmény',
     movies: '{{count, number}} film', allShown: 'Mind a {{count}} film megjelenítve',
-    total: 'Összesen {{count}} film', tryAgain: 'Próbáld újra',
+    total: 'Összesen {{count}} film', tryAgain: 'Próbáld újra', noServices: 'Nincs kiválasztott szolgáltatás – az összes film megjelenik',
     clearAll: '× Mind', filterRemove: '{{name}} szűrő eltávolítása', filterOnly: 'Csak {{name}} szűrése',
   },
   filter: {

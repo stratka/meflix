@@ -13,7 +13,7 @@ const ro = {
     searchPlaceholder: 'Caută film…', filters: 'Filtre', reset: 'Resetează',
     resetFilters: 'Resetează filtrele ({{count}})', results: '{{count, number}} rezultate',
     movies: '{{count, number}} filme', allShown: 'Toate cele {{count}} filme afișate',
-    total: 'Total {{count}} filme', tryAgain: 'Încearcă din nou',
+    total: 'Total {{count}} filme', tryAgain: 'Încearcă din nou', noServices: 'Niciun serviciu selectat – sunt afișate toate filmele',
     clearAll: '× Tot', filterRemove: 'Elimină filtrul {{name}}', filterOnly: 'Filtrează doar {{name}}',
   },
   filter: {

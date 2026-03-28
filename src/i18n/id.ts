@@ -13,7 +13,7 @@ const id = {
     searchPlaceholder: 'Cari film…', filters: 'Filter', reset: 'Atur ulang',
     resetFilters: 'Atur ulang filter ({{count}})', results: '{{count, number}} hasil',
     movies: '{{count, number}} film', allShown: 'Semua {{count}} film ditampilkan',
-    total: 'Total {{count}} film', tryAgain: 'Coba lagi',
+    total: 'Total {{count}} film', tryAgain: 'Coba lagi', noServices: 'Tidak ada layanan dipilih – semua film ditampilkan',
     clearAll: '× Semua', filterRemove: 'Hapus filter {{name}}', filterOnly: 'Filter hanya {{name}}',
   },
   filter: {

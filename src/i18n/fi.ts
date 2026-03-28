@@ -13,7 +13,7 @@ const fi = {
     searchPlaceholder: 'Hae elokuvaa…', filters: 'Suodattimet', reset: 'Nollaa',
     resetFilters: 'Nollaa suodattimet ({{count}})', results: '{{count, number}} tulosta',
     movies: '{{count, number}} elokuvaa', allShown: 'Kaikki {{count}} elokuvaa näytetty',
-    total: 'Yhteensä {{count}} elokuvaa', tryAgain: 'Yritä uudelleen',
+    total: 'Yhteensä {{count}} elokuvaa', tryAgain: 'Yritä uudelleen', noServices: 'Ei palvelua valittu – kaikki elokuvat näytetään',
     clearAll: '× Kaikki', filterRemove: 'Poista suodatin {{name}}', filterOnly: 'Suodata vain {{name}}',
   },
   filter: {

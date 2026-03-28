@@ -110,27 +110,10 @@ export function useMovies(
           setPage(pageNum);
         } else {
           const data = await discoverMovies(region, selectedServices, filters, pageNum);
-          if (selectedServices.length === 0) {
-            const { all, unavailableIds: newUnavailable, movieProviders: newProviders } = await checkAvailability(data.results, region, []);
-            setMovies(prev => (replace ? all : [...prev, ...all]));
-            setUnavailableIds(prev => {
-              if (replace) return newUnavailable;
-              const merged = new Set(prev);
-              newUnavailable.forEach(id => merged.add(id));
-              return merged;
-            });
-            setMovieProviders(prev => {
-              if (replace) return newProviders;
-              const merged = new Map(prev);
-              newProviders.forEach((v, k) => merged.set(k, v));
-              return merged;
-            });
-          } else {
-            setMovies(prev => (replace ? data.results : [...prev, ...data.results]));
-            if (replace) {
-              setUnavailableIds(new Set());
-              setMovieProviders(new Map());
-            }
+          setMovies(prev => (replace ? data.results : [...prev, ...data.results]));
+          if (replace) {
+            setUnavailableIds(new Set());
+            setMovieProviders(new Map());
           }
           setTotalPages(data.total_pages);
           setTotalResults(data.total_results);

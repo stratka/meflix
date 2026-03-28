@@ -13,7 +13,7 @@ const it = {
     searchPlaceholder: 'Cerca film…', filters: 'Filtri', reset: 'Reimposta',
     resetFilters: 'Reimposta filtri ({{count}})', results: '{{count, number}} risultati',
     movies: '{{count, number}} film', allShown: 'Tutti i {{count}} film mostrati',
-    total: 'Totale {{count}} film', tryAgain: 'Riprova',
+    total: 'Totale {{count}} film', tryAgain: 'Riprova', noServices: 'Nessun servizio selezionato – tutti i film sono mostrati',
     clearAll: '× Tutto', filterRemove: 'Rimuovi filtro {{name}}', filterOnly: 'Filtra solo {{name}}',
   },
   filter: {

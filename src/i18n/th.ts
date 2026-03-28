@@ -13,7 +13,7 @@ const th = {
     searchPlaceholder: 'ค้นหาภาพยนตร์…', filters: 'ตัวกรอง', reset: 'รีเซ็ต',
     resetFilters: 'รีเซ็ตตัวกรอง ({{count}})', results: '{{count, number}} ผลลัพธ์',
     movies: '{{count, number}} เรื่อง', allShown: 'แสดงทั้งหมด {{count}} เรื่อง',
-    total: 'ทั้งหมด {{count}} เรื่อง', tryAgain: 'ลองอีกครั้ง',
+    total: 'ทั้งหมด {{count}} เรื่อง', tryAgain: 'ลองอีกครั้ง', noServices: 'ไม่ได้เลือกบริการ – แสดงภาพยนตร์ทั้งหมด',
     clearAll: '× ทั้งหมด', filterRemove: 'ลบตัวกรอง {{name}}', filterOnly: 'กรองเฉพาะ {{name}}',
   },
   filter: {

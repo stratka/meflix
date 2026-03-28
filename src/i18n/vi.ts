@@ -13,7 +13,7 @@ const vi = {
     searchPlaceholder: 'Tìm phim…', filters: 'Bộ lọc', reset: 'Đặt lại',
     resetFilters: 'Đặt lại bộ lọc ({{count}})', results: '{{count, number}} kết quả',
     movies: '{{count, number}} phim', allShown: 'Hiển thị tất cả {{count}} phim',
-    total: 'Tổng {{count}} phim', tryAgain: 'Thử lại',
+    total: 'Tổng {{count}} phim', tryAgain: 'Thử lại', noServices: 'Chưa chọn dịch vụ – hiển thị tất cả phim',
     clearAll: '× Tất cả', filterRemove: 'Xóa bộ lọc {{name}}', filterOnly: 'Chỉ lọc {{name}}',
   },
   filter: {

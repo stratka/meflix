@@ -281,6 +281,12 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
 
         {/* Movie grid */}
         <div className="flex-1 min-w-0 px-4 lg:px-0 pt-4 lg:pt-0">
+          {settings.selectedServices.length === 0 && (
+            <div className="flex items-center gap-3 p-4 bg-yellow-900/30 border border-yellow-800/50 rounded-xl text-yellow-300 mb-4">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+              <span className="text-sm">{t('browser.noServices')}</span>
+            </div>
+          )}
           {error && (
             <div className="flex items-center gap-3 p-4 bg-red-900/30 border border-red-800/50 rounded-xl text-red-300 mb-4">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />

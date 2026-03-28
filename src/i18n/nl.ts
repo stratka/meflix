@@ -13,7 +13,7 @@ const nl = {
     searchPlaceholder: 'Film zoeken…', filters: 'Filters', reset: 'Resetten',
     resetFilters: 'Filters resetten ({{count}})', results: '{{count, number}} resultaten',
     movies: '{{count, number}} films', allShown: 'Alle {{count}} films weergegeven',
-    total: 'Totaal {{count}} films', tryAgain: 'Opnieuw proberen',
+    total: 'Totaal {{count}} films', tryAgain: 'Opnieuw proberen', noServices: 'Geen dienst geselecteerd – alle films worden weergegeven',
     clearAll: '× Alles', filterRemove: 'Filter {{name}} verwijderen', filterOnly: 'Alleen {{name}} filteren',
   },
   filter: {

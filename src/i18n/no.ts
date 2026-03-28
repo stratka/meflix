@@ -13,7 +13,7 @@ const no = {
     searchPlaceholder: 'Søk film…', filters: 'Filtre', reset: 'Tilbakestill',
     resetFilters: 'Tilbakestill filtre ({{count}})', results: '{{count, number}} resultater',
     movies: '{{count, number}} filmer', allShown: 'Alle {{count}} filmer vist',
-    total: 'Totalt {{count}} filmer', tryAgain: 'Prøv igjen',
+    total: 'Totalt {{count}} filmer', tryAgain: 'Prøv igjen', noServices: 'Ingen tjeneste valgt – alle filmer vises',
     clearAll: '× Alle', filterRemove: 'Fjern filter {{name}}', filterOnly: 'Filtrer bare {{name}}',
   },
   filter: {

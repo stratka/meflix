@@ -44,7 +44,7 @@ const cs = {
     movies: '{{count, number}} filmů',
     allShown: 'Zobrazeno všech {{count}} filmů',
     total: 'Celkem {{count}} filmů',
-    tryAgain: 'Zkusit znovu',
+    tryAgain: 'Zkusit znovu', noServices: 'Není vybrána žádná služba – zobrazují se všechny filmy',
     clearAll: '× vše',
     filterRemove: 'Zrušit filtr {{name}}',
     filterOnly: 'Filtrovat jen {{name}}',

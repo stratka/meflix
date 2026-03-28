@@ -13,7 +13,7 @@ const uk = {
     searchPlaceholder: 'Пошук фільму…', filters: 'Фільтри', reset: 'Скинути',
     resetFilters: 'Скинути фільтри ({{count}})', results: '{{count, number}} результатів',
     movies: '{{count, number}} фільмів', allShown: 'Показано всі {{count}} фільмів',
-    total: 'Всього {{count}} фільмів', tryAgain: 'Спробувати знову',
+    total: 'Всього {{count}} фільмів', tryAgain: 'Спробувати знову', noServices: 'Служба не вибрана – відображаються всі фільми',
     clearAll: '× Все', filterRemove: 'Прибрати фільтр {{name}}', filterOnly: 'Фільтрувати лише {{name}}',
   },
   filter: {

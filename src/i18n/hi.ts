@@ -13,7 +13,7 @@ const hi = {
     searchPlaceholder: 'फ़िल्म खोजें…', filters: 'फ़िल्टर', reset: 'रीसेट',
     resetFilters: 'फ़िल्टर रीसेट करें ({{count}})', results: '{{count, number}} परिणाम',
     movies: '{{count, number}} फ़िल्में', allShown: 'सभी {{count}} फ़िल्में दिखाई गईं',
-    total: 'कुल {{count}} फ़िल्में', tryAgain: 'फिर प्रयास करें',
+    total: 'कुल {{count}} फ़िल्में', tryAgain: 'फिर प्रयास करें', noServices: 'कोई सेवा नहीं चुनी – सभी फ़िल्में दिखाई जा रही हैं',
     clearAll: '× सभी', filterRemove: '{{name}} फ़िल्टर हटाएं', filterOnly: 'केवल {{name}} फ़िल्टर करें',
   },
   filter: {

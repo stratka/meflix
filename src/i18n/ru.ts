@@ -13,7 +13,7 @@ const ru = {
     searchPlaceholder: 'Поиск фильма…', filters: 'Фильтры', reset: 'Сбросить',
     resetFilters: 'Сбросить фильтры ({{count}})', results: '{{count, number}} результатов',
     movies: '{{count, number}} фильмов', allShown: 'Показано все {{count}} фильмов',
-    total: 'Всего {{count}} фильмов', tryAgain: 'Попробовать снова',
+    total: 'Всего {{count}} фильмов', tryAgain: 'Попробовать снова', noServices: 'Служба не выбрана – отображаются все фильмы',
     clearAll: '× Всё', filterRemove: 'Убрать фильтр {{name}}', filterOnly: 'Фильтровать только {{name}}',
   },
   filter: {

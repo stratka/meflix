@@ -13,7 +13,7 @@ const el = {
     searchPlaceholder: 'Αναζήτηση ταινίας…', filters: 'Φίλτρα', reset: 'Επαναφορά',
     resetFilters: 'Επαναφορά φίλτρων ({{count}})', results: '{{count, number}} αποτελέσματα',
     movies: '{{count, number}} ταινίες', allShown: 'Εμφανίστηκαν όλες οι {{count}} ταινίες',
-    total: 'Σύνολο {{count}} ταινίες', tryAgain: 'Δοκιμάστε ξανά',
+    total: 'Σύνολο {{count}} ταινίες', tryAgain: 'Δοκιμάστε ξανά', noServices: 'Δεν επιλέχθηκε υπηρεσία – εμφανίζονται όλες οι ταινίες',
     clearAll: '× Όλα', filterRemove: 'Αφαίρεση φίλτρου {{name}}', filterOnly: 'Φιλτράρισμα μόνο {{name}}',
   },
   filter: {

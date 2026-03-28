@@ -13,7 +13,7 @@ const zh = {
     searchPlaceholder: '搜索电影…', filters: '筛选', reset: '重置',
     resetFilters: '重置筛选 ({{count}})', results: '{{count, number}} 个结果',
     movies: '{{count, number}} 部电影', allShown: '共显示 {{count}} 部电影',
-    total: '共 {{count}} 部电影', tryAgain: '重试',
+    total: '共 {{count}} 部电影', tryAgain: '重试', noServices: '未选择服务 – 显示所有电影',
     clearAll: '× 全部', filterRemove: '移除 {{name}} 筛选', filterOnly: '仅筛选 {{name}}',
   },
   filter: {

@@ -13,7 +13,7 @@ const sv = {
     searchPlaceholder: 'Sök film…', filters: 'Filter', reset: 'Återställ',
     resetFilters: 'Återställ filter ({{count}})', results: '{{count, number}} resultat',
     movies: '{{count, number}} filmer', allShown: 'Alla {{count}} filmer visade',
-    total: 'Totalt {{count}} filmer', tryAgain: 'Försök igen',
+    total: 'Totalt {{count}} filmer', tryAgain: 'Försök igen', noServices: 'Ingen tjänst vald – alla filmer visas',
     clearAll: '× Alla', filterRemove: 'Ta bort filter {{name}}', filterOnly: 'Filtrera bara {{name}}',
   },
   filter: {

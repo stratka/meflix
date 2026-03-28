@@ -13,7 +13,7 @@ const ko = {
     searchPlaceholder: '영화 검색…', filters: '필터', reset: '초기화',
     resetFilters: '필터 초기화 ({{count}})', results: '{{count, number}}개 결과',
     movies: '{{count, number}}편', allShown: '전체 {{count}}편 표시됨',
-    total: '총 {{count}}편', tryAgain: '다시 시도',
+    total: '총 {{count}}편', tryAgain: '다시 시도', noServices: '서비스 미선택 – 모든 영화가 표시됩니다',
     clearAll: '× 전체', filterRemove: '{{name}} 필터 제거', filterOnly: '{{name}}만 필터링',
   },
   filter: {

@@ -44,7 +44,7 @@ const ja = {
     movies: '{{count, number}}本',
     allShown: '全{{count}}本を表示',
     total: '合計{{count}}本',
-    tryAgain: '再試行',
+    tryAgain: '再試行', noServices: 'サービス未選択 – すべての映画を表示中',
     clearAll: '× すべて解除',
     filterRemove: '{{name}}のフィルターを解除',
     filterOnly: '{{name}}のみ表示',

@@ -13,7 +13,7 @@ const ar = {
     searchPlaceholder: 'ابحث عن فيلم…', filters: 'فلاتر', reset: 'إعادة تعيين',
     resetFilters: 'إعادة تعيين الفلاتر ({{count}})', results: '{{count, number}} نتيجة',
     movies: '{{count, number}} فيلم', allShown: 'عرض جميع الأفلام الـ {{count}}',
-    total: 'الإجمالي {{count}} فيلم', tryAgain: 'حاول مجدداً',
+    total: 'الإجمالي {{count}} فيلم', tryAgain: 'حاول مجدداً', noServices: 'لم يتم اختيار أي خدمة – تُعرض جميع الأفلام',
     clearAll: '× الكل', filterRemove: 'إزالة فلتر {{name}}', filterOnly: 'تصفية {{name}} فقط',
   },
   filter: {
