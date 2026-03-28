@@ -32,7 +32,7 @@ const no = {
   modal: {
     playTrailer: 'Spill trailer', noTrailer: 'Ingen trailer tilgjengelig',
     director: 'Regi:', creator: 'Skapt av:', cast: 'Rollebesetning',
-    watchedOn: 'Sett {{date}}', alsoOn: 'Også tilgjengelig på',
+    watchedOn: 'Sett {{date}}', alsoOn: 'Også tilgjengelig på', availableOn: 'Tilgjengelig på',
     notAvailable: 'Denne filmen er for øyeblikket ikke tilgjengelig på noen strømmetjeneste i din region.',
     viewOnTMDB: 'Vis på TMDB', markWatched: 'Merk som sett',
     unmarkWatched: 'Sett – klikk for å fjerne', addWatchlist: 'Legg til i liste',

@@ -32,7 +32,7 @@ const vi = {
   modal: {
     playTrailer: 'Xem trailer', noTrailer: 'Không có trailer',
     director: 'Đạo diễn:', creator: 'Người tạo:', cast: 'Diễn viên',
-    watchedOn: 'Đã xem {{date}}', alsoOn: 'Cũng có trên',
+    watchedOn: 'Đã xem {{date}}', alsoOn: 'Cũng có trên', availableOn: 'Có thể xem trên',
     notAvailable: 'Bộ phim này hiện không có trên bất kỳ dịch vụ streaming nào ở khu vực của bạn.',
     viewOnTMDB: 'Xem trên TMDB', markWatched: 'Đánh dấu đã xem',
     unmarkWatched: 'Đã xem – nhấp để hủy', addWatchlist: 'Thêm vào danh sách',

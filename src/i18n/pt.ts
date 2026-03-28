@@ -32,7 +32,7 @@ const pt = {
   modal: {
     playTrailer: 'Reproduzir trailer', noTrailer: 'Trailer não disponível',
     director: 'Diretor:', creator: 'Criador:', cast: 'Elenco',
-    watchedOn: 'Assistido em {{date}}', alsoOn: 'Também disponível em',
+    watchedOn: 'Assistido em {{date}}', alsoOn: 'Também disponível em', availableOn: 'Disponível em',
     notAvailable: 'Este filme não está disponível em nenhum serviço de streaming na sua região.',
     viewOnTMDB: 'Ver no TMDB', markWatched: 'Marcar como assistido',
     unmarkWatched: 'Assistido – clique para desmarcar', addWatchlist: 'Adicionar à lista',

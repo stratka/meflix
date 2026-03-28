@@ -32,7 +32,7 @@ const th = {
   modal: {
     playTrailer: 'เล่นตัวอย่าง', noTrailer: 'ไม่มีตัวอย่าง',
     director: 'ผู้กำกับ:', creator: 'ผู้สร้าง:', cast: 'นักแสดง',
-    watchedOn: 'ดูเมื่อ {{date}}', alsoOn: 'ดูได้บน',
+    watchedOn: 'ดูเมื่อ {{date}}', alsoOn: 'ดูได้บน', availableOn: 'ดูได้ที่',
     notAvailable: 'ภาพยนตร์เรื่องนี้ไม่มีบริการสตรีมมิ่งในภูมิภาคของคุณในขณะนี้',
     viewOnTMDB: 'ดูบน TMDB', markWatched: 'ทำเครื่องหมายว่าดูแล้ว',
     unmarkWatched: 'ดูแล้ว – คลิกเพื่อยกเลิก', addWatchlist: 'เพิ่มในรายการ',

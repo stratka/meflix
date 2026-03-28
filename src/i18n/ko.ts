@@ -32,7 +32,7 @@ const ko = {
   modal: {
     playTrailer: '예고편 재생', noTrailer: '예고편 없음',
     director: '감독:', creator: '제작:', cast: '출연진',
-    watchedOn: '{{date}} 시청', alsoOn: '다른 서비스에서도 보기',
+    watchedOn: '{{date}} 시청', alsoOn: '다른 서비스에서도 보기', availableOn: '시청 가능한 서비스',
     notAvailable: '이 영화는 현재 내 지역의 스트리밍 서비스에서 제공되지 않습니다.',
     viewOnTMDB: 'TMDB에서 보기', markWatched: '시청 완료로 표시',
     unmarkWatched: '시청 완료 – 클릭하여 취소', addWatchlist: '목록에 추가',

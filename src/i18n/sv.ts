@@ -32,7 +32,7 @@ const sv = {
   modal: {
     playTrailer: 'Spela trailer', noTrailer: 'Ingen trailer tillgänglig',
     director: 'Regi:', creator: 'Skapad av:', cast: 'Rollbesättning',
-    watchedOn: 'Sedd {{date}}', alsoOn: 'Finns också på',
+    watchedOn: 'Sedd {{date}}', alsoOn: 'Finns också på', availableOn: 'Tillgänglig på',
     notAvailable: 'Den här filmen är för närvarande inte tillgänglig på någon streamingtjänst i din region.',
     viewOnTMDB: 'Visa på TMDB', markWatched: 'Markera som sedd',
     unmarkWatched: 'Sedd – klicka för att ta bort', addWatchlist: 'Lägg till i lista',

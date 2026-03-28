@@ -91,7 +91,7 @@ const en = {
     creator: 'Creator:',
     cast: 'Cast',
     watchedOn: 'Watched {{date}}',
-    alsoOn: 'Also available on',
+    alsoOn: 'Also available on', availableOn: 'Available on',
     notAvailable: 'This movie is not currently available on any streaming service in your region.',
     viewOnTMDB: 'View on TMDB',
     markWatched: 'Mark as watched',

@@ -91,7 +91,7 @@ const ja = {
     creator: '制作:',
     cast: 'キャスト',
     watchedOn: '{{date}}に視聴',
-    alsoOn: '他に視聴できるサービス',
+    alsoOn: '他に視聴できるサービス', availableOn: '視聴可能なサービス',
     notAvailable: 'この作品はお住まいの地域のストリーミングサービスでは現在配信されていません。',
     viewOnTMDB: 'TMDBで見る',
     markWatched: '視聴済みにする',

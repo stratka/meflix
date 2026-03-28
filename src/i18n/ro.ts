@@ -32,7 +32,7 @@ const ro = {
   modal: {
     playTrailer: 'Redă trailer', noTrailer: 'Trailer indisponibil',
     director: 'Regie:', creator: 'Creat de:', cast: 'Distribuție',
-    watchedOn: 'Văzut pe {{date}}', alsoOn: 'Disponibil și pe',
+    watchedOn: 'Văzut pe {{date}}', alsoOn: 'Disponibil și pe', availableOn: 'Disponibil pe',
     notAvailable: 'Acest film nu este disponibil momentan pe niciun serviciu de streaming în regiunea ta.',
     viewOnTMDB: 'Vezi pe TMDB', markWatched: 'Marchează ca văzut',
     unmarkWatched: 'Văzut – apasă pentru eliminare', addWatchlist: 'Adaugă la listă',

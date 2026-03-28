@@ -32,7 +32,7 @@ const ru = {
   modal: {
     playTrailer: 'Смотреть трейлер', noTrailer: 'Трейлер недоступен',
     director: 'Режиссёр:', creator: 'Создатель:', cast: 'В ролях',
-    watchedOn: 'Просмотрено {{date}}', alsoOn: 'Также доступно на',
+    watchedOn: 'Просмотрено {{date}}', alsoOn: 'Также доступно на', availableOn: 'Доступно на',
     notAvailable: 'Этот фильм сейчас недоступен ни на одном стриминговом сервисе в твоём регионе.',
     viewOnTMDB: 'Открыть на TMDB', markWatched: 'Отметить как просмотренное',
     unmarkWatched: 'Просмотрено – нажми для отмены', addWatchlist: 'Добавить в список',

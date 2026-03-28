@@ -32,7 +32,7 @@ const hi = {
   modal: {
     playTrailer: 'ट्रेलर चलाएं', noTrailer: 'ट्रेलर उपलब्ध नहीं',
     director: 'निर्देशक:', creator: 'निर्माता:', cast: 'कलाकार',
-    watchedOn: '{{date}} को देखा', alsoOn: 'यहां भी उपलब्ध',
+    watchedOn: '{{date}} को देखा', alsoOn: 'यहां भी उपलब्ध', availableOn: 'उपलब्ध है',
     notAvailable: 'यह फ़िल्म अभी आपके क्षेत्र में किसी स्ट्रीमिंग सेवा पर उपलब्ध नहीं है।',
     viewOnTMDB: 'TMDB पर देखें', markWatched: 'देखी गई के रूप में चिह्नित करें',
     unmarkWatched: 'देखी गई – हटाने के लिए क्लिक करें', addWatchlist: 'सूची में जोड़ें',

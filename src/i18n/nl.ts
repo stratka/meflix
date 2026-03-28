@@ -32,7 +32,7 @@ const nl = {
   modal: {
     playTrailer: 'Trailer afspelen', noTrailer: 'Geen trailer beschikbaar',
     director: 'Regie:', creator: 'Gemaakt door:', cast: 'Cast',
-    watchedOn: 'Bekeken op {{date}}', alsoOn: 'Ook beschikbaar op',
+    watchedOn: 'Bekeken op {{date}}', alsoOn: 'Ook beschikbaar op', availableOn: 'Beschikbaar op',
     notAvailable: 'Deze film is momenteel niet beschikbaar op een streamingdienst in jouw regio.',
     viewOnTMDB: 'Bekijk op TMDB', markWatched: 'Als bekeken markeren',
     unmarkWatched: 'Bekeken – klik om te verwijderen', addWatchlist: 'Toevoegen aan lijst',

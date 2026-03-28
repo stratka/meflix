@@ -32,7 +32,7 @@ const fi = {
   modal: {
     playTrailer: 'Toista traileri', noTrailer: 'Traileria ei saatavilla',
     director: 'Ohjaaja:', creator: 'Luoja:', cast: 'Näyttelijät',
-    watchedOn: 'Katsottu {{date}}', alsoOn: 'Saatavilla myös',
+    watchedOn: 'Katsottu {{date}}', alsoOn: 'Saatavilla myös', availableOn: 'Saatavilla',
     notAvailable: 'Tämä elokuva ei ole tällä hetkellä saatavilla millään suoratoistopalvelulla alueellasi.',
     viewOnTMDB: 'Näytä TMDB:ssä', markWatched: 'Merkitse katsotuksi',
     unmarkWatched: 'Katsottu – napsauta poistaaksesi', addWatchlist: 'Lisää listalle',

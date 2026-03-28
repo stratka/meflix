@@ -32,7 +32,7 @@ const ms = {
   modal: {
     playTrailer: 'Main treler', noTrailer: 'Tiada treler',
     director: 'Pengarah:', creator: 'Pencipta:', cast: 'Pelakon',
-    watchedOn: 'Ditonton {{date}}', alsoOn: 'Juga tersedia di',
+    watchedOn: 'Ditonton {{date}}', alsoOn: 'Juga tersedia di', availableOn: 'Tersedia di',
     notAvailable: 'Filem ini kini tidak tersedia pada mana-mana perkhidmatan penstriman di wilayah anda.',
     viewOnTMDB: 'Lihat di TMDB', markWatched: 'Tandakan sebagai ditonton',
     unmarkWatched: 'Ditonton – klik untuk batal', addWatchlist: 'Tambah ke senarai',

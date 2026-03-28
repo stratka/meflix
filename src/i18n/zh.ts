@@ -32,7 +32,7 @@ const zh = {
   modal: {
     playTrailer: '播放预告片', noTrailer: '暂无预告片',
     director: '导演:', creator: '创作者:', cast: '演员表',
-    watchedOn: '{{date}} 观看', alsoOn: '也可在以下平台观看',
+    watchedOn: '{{date}} 观看', alsoOn: '也可在以下平台观看', availableOn: '可观看平台',
     notAvailable: '该影片目前在您所在地区的任何流媒体服务上均不可用。',
     viewOnTMDB: '在TMDB上查看', markWatched: '标记为已观看',
     unmarkWatched: '已观看 – 点击取消', addWatchlist: '添加到想看列表',

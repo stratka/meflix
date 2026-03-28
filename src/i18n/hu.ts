@@ -32,7 +32,7 @@ const hu = {
   modal: {
     playTrailer: 'Előzetes lejátszása', noTrailer: 'Nincs előzetes',
     director: 'Rendező:', creator: 'Alkotó:', cast: 'Szereplők',
-    watchedOn: 'Megnézve: {{date}}', alsoOn: 'Elérhető még',
+    watchedOn: 'Megnézve: {{date}}', alsoOn: 'Elérhető még', availableOn: 'Elérhető itt',
     notAvailable: 'Ez a film jelenleg nem érhető el egyetlen streamingszolgáltatáson sem a régiódban.',
     viewOnTMDB: 'Megtekintés a TMDB-n', markWatched: 'Megnézettnek jelölés',
     unmarkWatched: 'Megnézett – kattints az eltávolításhoz', addWatchlist: 'Hozzáadás a listához',

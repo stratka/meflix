@@ -32,7 +32,7 @@ const el = {
   modal: {
     playTrailer: 'Αναπαραγωγή τρέιλερ', noTrailer: 'Δεν υπάρχει τρέιλερ',
     director: 'Σκηνοθεσία:', creator: 'Δημιουργός:', cast: 'Διανομή',
-    watchedOn: 'Είδα {{date}}', alsoOn: 'Διαθέσιμο επίσης στο',
+    watchedOn: 'Είδα {{date}}', alsoOn: 'Διαθέσιμο επίσης στο', availableOn: 'Διαθέσιμο στο',
     notAvailable: 'Αυτή η ταινία δεν είναι διαθέσιμη σε καμία υπηρεσία streaming στην περιοχή σου.',
     viewOnTMDB: 'Προβολή στο TMDB', markWatched: 'Σήμανση ως ειδωμένο',
     unmarkWatched: 'Ειδωμένο – κλικ για αφαίρεση', addWatchlist: 'Προσθήκη στη λίστα',

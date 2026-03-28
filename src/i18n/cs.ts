@@ -91,7 +91,7 @@ const cs = {
     creator: 'Tvůrce:',
     cast: 'Obsazení',
     watchedOn: 'Viděno {{date}}',
-    alsoOn: 'Také dostupné na',
+    alsoOn: 'Také dostupné na', availableOn: 'Dostupné na',
     notAvailable: 'Tento film není momentálně dostupný na žádné streamovací službě ve tvém regionu.',
     viewOnTMDB: 'Zobrazit na TMDB',
     markWatched: 'Označit jako viděno',

@@ -32,7 +32,7 @@ const tr = {
   modal: {
     playTrailer: 'Fragmanı oynat', noTrailer: 'Fragman mevcut değil',
     director: 'Yönetmen:', creator: 'Yapımcı:', cast: 'Oyuncular',
-    watchedOn: '{{date}} tarihinde izlendi', alsoOn: 'Ayrıca şurada mevcut',
+    watchedOn: '{{date}} tarihinde izlendi', alsoOn: 'Ayrıca şurada mevcut', availableOn: 'Mevcut olduğu yerler',
     notAvailable: 'Bu film şu anda bölgende hiçbir yayın hizmetinde mevcut değil.',
     viewOnTMDB: "TMDB'de görüntüle", markWatched: 'İzlendi olarak işaretle',
     unmarkWatched: 'İzlendi – kaldırmak için tıkla', addWatchlist: 'Listeye ekle',

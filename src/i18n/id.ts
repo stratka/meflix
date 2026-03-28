@@ -32,7 +32,7 @@ const id = {
   modal: {
     playTrailer: 'Putar trailer', noTrailer: 'Trailer tidak tersedia',
     director: 'Sutradara:', creator: 'Pembuat:', cast: 'Pemeran',
-    watchedOn: 'Ditonton {{date}}', alsoOn: 'Juga tersedia di',
+    watchedOn: 'Ditonton {{date}}', alsoOn: 'Juga tersedia di', availableOn: 'Tersedia di',
     notAvailable: 'Film ini saat ini tidak tersedia di layanan streaming mana pun di wilayah Anda.',
     viewOnTMDB: 'Lihat di TMDB', markWatched: 'Tandai sudah ditonton',
     unmarkWatched: 'Ditonton – klik untuk batalkan', addWatchlist: 'Tambahkan ke daftar',

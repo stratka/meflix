@@ -32,7 +32,7 @@ const sk = {
   modal: {
     playTrailer: 'Prehrať trailer', noTrailer: 'Trailer nie je k dispozícii',
     director: 'Réžia:', creator: 'Tvorca:', cast: 'Obsadenie',
-    watchedOn: 'Videné {{date}}', alsoOn: 'Tiež dostupné na',
+    watchedOn: 'Videné {{date}}', alsoOn: 'Tiež dostupné na', availableOn: 'Dostupné na',
     notAvailable: 'Tento film nie je momentálne dostupný na žiadnej streamovacej službe vo tvojom regióne.',
     viewOnTMDB: 'Zobraziť na TMDB', markWatched: 'Označiť ako videné',
     unmarkWatched: 'Videné – klikni pre zrušenie', addWatchlist: 'Chcem vidieť',

@@ -32,7 +32,7 @@ const fr = {
   modal: {
     playTrailer: 'Lire la bande-annonce', noTrailer: 'Bande-annonce indisponible',
     director: 'Réalisateur :', creator: 'Créateur :', cast: 'Distribution',
-    watchedOn: 'Vu le {{date}}', alsoOn: 'Aussi disponible sur',
+    watchedOn: 'Vu le {{date}}', alsoOn: 'Aussi disponible sur', availableOn: 'Disponible sur',
     notAvailable: "Ce film n'est actuellement disponible sur aucun service de streaming dans votre région.",
     viewOnTMDB: 'Voir sur TMDB', markWatched: 'Marquer comme vu',
     unmarkWatched: 'Vu – cliquer pour annuler', addWatchlist: 'Ajouter à la liste',

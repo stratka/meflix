@@ -32,7 +32,7 @@ const ar = {
   modal: {
     playTrailer: 'تشغيل المقطع الدعائي', noTrailer: 'لا يوجد مقطع دعائي',
     director: 'المخرج:', creator: 'المبدع:', cast: 'طاقم التمثيل',
-    watchedOn: 'تمت المشاهدة {{date}}', alsoOn: 'متاح أيضاً على',
+    watchedOn: 'تمت المشاهدة {{date}}', alsoOn: 'متاح أيضاً على', availableOn: 'متاح على',
     notAvailable: 'هذا الفيلم غير متاح حالياً على أي خدمة بث في منطقتك.',
     viewOnTMDB: 'عرض على TMDB', markWatched: 'وضع علامة كمُشاهَد',
     unmarkWatched: 'مُشاهَد – انقر للإلغاء', addWatchlist: 'إضافة إلى القائمة',

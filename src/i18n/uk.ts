@@ -32,7 +32,7 @@ const uk = {
   modal: {
     playTrailer: 'Дивитися трейлер', noTrailer: 'Трейлер недоступний',
     director: 'Режисер:', creator: 'Творець:', cast: 'У ролях',
-    watchedOn: 'Переглянуто {{date}}', alsoOn: 'Також доступно на',
+    watchedOn: 'Переглянуто {{date}}', alsoOn: 'Також доступно на', availableOn: 'Доступно на',
     notAvailable: 'Цей фільм наразі недоступний на жодному стримінговому сервісі у твоєму регіоні.',
     viewOnTMDB: 'Відкрити на TMDB', markWatched: 'Позначити як переглянуте',
     unmarkWatched: 'Переглянуто – натисни для скасування', addWatchlist: 'Додати до списку',

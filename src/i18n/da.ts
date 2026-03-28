@@ -32,7 +32,7 @@ const da = {
   modal: {
     playTrailer: 'Afspil trailer', noTrailer: 'Ingen trailer tilgængelig',
     director: 'Instruktør:', creator: 'Skabt af:', cast: 'Rollebesætning',
-    watchedOn: 'Set {{date}}', alsoOn: 'Findes også på',
+    watchedOn: 'Set {{date}}', alsoOn: 'Findes også på', availableOn: 'Tilgængelig på',
     notAvailable: 'Denne film er i øjeblikket ikke tilgængelig på nogen streamingtjeneste i din region.',
     viewOnTMDB: 'Se på TMDB', markWatched: 'Marker som set',
     unmarkWatched: 'Set – klik for at fjerne', addWatchlist: 'Tilføj til liste',

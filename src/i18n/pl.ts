@@ -32,7 +32,7 @@ const pl = {
   modal: {
     playTrailer: 'Odtwórz zwiastun', noTrailer: 'Brak zwiastunu',
     director: 'Reżyseria:', creator: 'Twórca:', cast: 'Obsada',
-    watchedOn: 'Obejrzano {{date}}', alsoOn: 'Dostępne również na',
+    watchedOn: 'Obejrzano {{date}}', alsoOn: 'Dostępne również na', availableOn: 'Dostępne na',
     notAvailable: 'Ten film nie jest obecnie dostępny na żadnym serwisie streamingowym w Twoim regionie.',
     viewOnTMDB: 'Zobacz na TMDB', markWatched: 'Oznacz jako obejrzane',
     unmarkWatched: 'Obejrzane – kliknij aby usunąć', addWatchlist: 'Dodaj do listy',
