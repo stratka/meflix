@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "Mimoovie",
   "short_name": "Mimoovie",
   "description": "Procházej filmy dostupné na tvých streamovacích službách",
@@ -19,6 +20,15 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Mimoovie"
     }
   ]
 }
