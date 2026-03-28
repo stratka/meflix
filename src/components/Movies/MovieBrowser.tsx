@@ -122,11 +122,11 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
   // Infinite scroll
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
-      if (entries[0].isIntersecting && hasMore && !loadingMore) {
+      if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
         loadMore();
       }
     },
-    [hasMore, loadingMore, loadMore]
+    [hasMore, loadingMore, loading, loadMore]
   );
 
   useEffect(() => {
