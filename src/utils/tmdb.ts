@@ -14,16 +14,11 @@ const CURRENT_YEAR = new Date().getFullYear();
 const TMDB_LANG_MAP: Record<string, string> = {
   zh: 'zh-CN',
   no: 'nb-NO',
-  ms: 'ms-MY',
-  hi: 'hi-IN',
-  ar: 'ar-SA',
-  uk: 'uk-UA',
 };
 
 function getTmdbLanguage(): string {
   const lang = i18n.language?.split('-')[0] || 'en';
-  if (TMDB_LANG_MAP[lang]) return TMDB_LANG_MAP[lang];
-  return `${lang}-${lang.toUpperCase()}`;
+  return TMDB_LANG_MAP[lang] ?? lang;
 }
 
 // Builds /api/tmdb?_path=<tmdbPath>&<otherParams>
