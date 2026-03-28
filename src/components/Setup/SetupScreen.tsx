@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Tv2 } from 'lucide-react';
 import type { AppSettings } from '../../types/app';
 import { RegionStep } from './RegionStep';
 import { ServicesStep } from './ServicesStep';
@@ -34,11 +33,8 @@ export function SetupScreen({ onComplete, initial }: Props) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-950">
       {/* Logo */}
-      <div className="mb-8 flex items-center gap-3">
-        <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center">
-          <Tv2 className="w-7 h-7 text-white" />
-        </div>
-        <span className="text-3xl font-bold text-white tracking-tight">MEFLIX</span>
+      <div className="mb-8">
+        <img src="/logo_mimoovie.png" alt="Mimoovie" className="h-12 w-auto" />
       </div>
 
       {/* Step indicator */}
@@ -73,6 +69,7 @@ export function SetupScreen({ onComplete, initial }: Props) {
             onNext={handleServices}
             onBack={() => setStep('region')}
             initial={draft.selectedServices}
+            region={draft.region!}
           />
         )}
       </div>

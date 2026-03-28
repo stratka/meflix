@@ -82,6 +82,7 @@ export function SettingsPanel({ settings, onSave, onClose, user, onSignIn, onSig
               onNext={handleServices}
               onBack={() => setTab('region')}
               initial={draft.selectedServices}
+              region={draft.region}
             />
           )}
         </div>

@@ -30,6 +30,13 @@ export async function fetchGenres(): Promise<TMDBGenresResponse> {
   return tmdbFetch<TMDBGenresResponse>(buildUrl('genre/movie/list', new URLSearchParams({ language: 'cs-CZ' })));
 }
 
+/** Vrátí seznam TMDB ID providerů dostupných v daném regionu */
+export async function fetchRegionProviderIds(region: string): Promise<Set<number>> {
+  const params = new URLSearchParams({ watch_region: region });
+  const data = await tmdbFetch<{ results: { provider_id: number }[] }>(buildUrl('watch/providers/movie', params));
+  return new Set(data.results.map(p => p.provider_id));
+}
+
 export async function discoverMovies(
   region: string,
   selectedServices: string[],
