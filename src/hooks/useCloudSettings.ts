@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { User } from '@supabase/supabase-js';
 import type { AppSettings } from '../types/app';
-import { supabase } from '../lib/supabase';
+import { supabase, supabaseEnabled } from '../lib/supabase';
 
 const LOCAL_KEY = 'streampicker-settings';
 
@@ -19,16 +19,29 @@ export function useCloudSettings(user: User | null) {
   // Load from Supabase on login
   useEffect(() => {
     if (!user) { setSynced(false); return; }
+    if (!supabaseEnabled) { setSynced(true); return; }
     supabase
       .from('user_settings')
       .select('region, selected_services')
       .eq('user_id', user.id)
       .single()
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         if (data) {
+          // Cloud má data → použij cloud
           const s: AppSettings = { region: data.region, selectedServices: data.selected_services };
           setSettingsState(s);
           localStorage.setItem(LOCAL_KEY, JSON.stringify(s));
+        } else {
+          // Cloud nemá data → nahraj lokální nastavení do cloudu
+          const local = loadLocal();
+          if (local.region) {
+            await supabase.from('user_settings').upsert({
+              user_id: user.id,
+              region: local.region,
+              selected_services: local.selectedServices,
+              updated_at: new Date().toISOString(),
+            });
+          }
         }
         setSynced(true);
       });
@@ -37,7 +50,7 @@ export function useCloudSettings(user: User | null) {
   const setSettings = useCallback(async (next: AppSettings) => {
     setSettingsState(next);
     localStorage.setItem(LOCAL_KEY, JSON.stringify(next));
-    if (!user) return;
+    if (!user || !supabaseEnabled) return;
     await supabase.from('user_settings').upsert({
       user_id: user.id,
       region: next.region,
