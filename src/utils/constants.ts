@@ -198,6 +198,18 @@ export const SORT_OPTIONS = [
   { value: 'title.asc', label: 'Název (A–Z)' },
 ] as const;
 
+/** Vytvoří dynamickou StreamingService pro provider který není v našem statickém seznamu */
+const DYNAMIC_COLORS = ['#374151','#1e3a5f','#3b1f5e','#1a3d2f','#4a1f1f'];
+export function createDynamicService(tmdbId: number, name: string): StreamingService {
+  return {
+    id: `tmdb-${tmdbId}`,
+    name,
+    tmdbId,
+    color: DYNAMIC_COLORS[tmdbId % DYNAMIC_COLORS.length],
+    textColor: '#fff',
+  };
+}
+
 export function getServiceById(id: string): StreamingService | undefined {
   return STREAMING_SERVICES.find(s => s.id === id);
 }
@@ -212,6 +224,13 @@ export function getServiceByTmdbId(tmdbId: number): StreamingService | undefined
 export function getAllTmdbIds(service: StreamingService): number[] {
   if (service.tmdbIds && service.tmdbIds.length > 0) return service.tmdbIds;
   return [service.tmdbId];
+}
+
+/** Vrátí TMDB ID z ID služby (podporuje i dynamický formát tmdb-{id}) */
+export function getTmdbIdFromServiceId(serviceId: string): number | null {
+  if (serviceId.startsWith('tmdb-')) return parseInt(serviceId.slice(5), 10) || null;
+  const s = STREAMING_SERVICES.find(s => s.id === serviceId);
+  return s ? s.tmdbId : null;
 }
 
 export function getWatchUrl(

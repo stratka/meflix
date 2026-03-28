@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { STREAMING_SERVICES } from '../../utils/constants';
-import { fetchRegionProviderIds } from '../../utils/tmdb';
+import { STREAMING_SERVICES, createDynamicService } from '../../utils/constants';
+import { fetchRegionProviders } from '../../utils/tmdb';
 import type { StreamingService } from '../../types/app';
 
 interface Props {
@@ -31,15 +31,23 @@ function ServiceButton({ service, selected, onToggle }: { service: StreamingServ
 
 export function ServicesStep({ onNext, onBack, initial = [], region }: Props) {
   const [selected, setSelected] = useState<string[]>(initial);
-  const [localIds, setLocalIds] = useState<Set<number>>(new Set());
+  const [localServices, setLocalServices] = useState<StreamingService[]>([]);
   const [loadingLocal, setLoadingLocal] = useState(true);
   const [showForeign, setShowForeign] = useState(false);
 
   useEffect(() => {
     setLoadingLocal(true);
-    fetchRegionProviderIds(region)
-      .then(ids => setLocalIds(ids))
-      .catch(() => setLocalIds(new Set()))
+    fetchRegionProviders(region)
+      .then(providers => {
+        const services = providers.map(p => {
+          const known = STREAMING_SERVICES.find(s =>
+            s.tmdbId === p.id || s.tmdbIds?.includes(p.id)
+          );
+          return known ?? createDynamicService(p.id, p.name);
+        });
+        setLocalServices(services);
+      })
+      .catch(() => setLocalServices([]))
       .finally(() => setLoadingLocal(false));
   }, [region]);
 
@@ -47,14 +55,8 @@ export function ServicesStep({ onNext, onBack, initial = [], region }: Props) {
     setSelected(prev => prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]);
   }
 
-  const localServices = STREAMING_SERVICES.filter(s =>
-    s.tmdbId && localIds.has(s.tmdbId) ||
-    s.tmdbIds?.some(id => localIds.has(id))
-  );
-
-  const foreignServices = STREAMING_SERVICES.filter(s =>
-    !localServices.includes(s)
-  );
+  const localIds = new Set(localServices.map(s => s.id));
+  const foreignServices = STREAMING_SERVICES.filter(s => !localIds.has(s.id));
 
   return (
     <div>
@@ -65,12 +67,12 @@ export function ServicesStep({ onNext, onBack, initial = [], region }: Props) {
 
       {loadingLocal ? (
         <div className="grid grid-cols-2 gap-2 mb-4">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <div key={i} className="h-11 rounded-lg bg-gray-800 animate-pulse" />
           ))}
         </div>
       ) : localServices.length > 0 ? (
-        <div className="grid grid-cols-2 gap-2 mb-4">
+        <div className="grid grid-cols-2 gap-2 mb-4 max-h-64 overflow-y-auto pr-1">
           {localServices.map(service => (
             <ServiceButton
               key={service.id}
@@ -94,7 +96,7 @@ export function ServicesStep({ onNext, onBack, initial = [], region }: Props) {
             Přidat zahraniční služby
           </button>
           {showForeign && (
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
               {foreignServices.map(service => (
                 <ServiceButton
                   key={service.id}

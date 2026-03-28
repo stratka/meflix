@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import type { TMDBMovie } from '../types/tmdb';
 import type { FilterState, StreamingService } from '../types/app';
 import { discoverMovies, searchMovies, fetchMovieWatchProviders } from '../utils/tmdb';
-import { STREAMING_SERVICES, getAllTmdbIds, getServiceByTmdbId } from '../utils/constants';
+import { STREAMING_SERVICES, getAllTmdbIds, getServiceByTmdbId, getTmdbIdFromServiceId } from '../utils/constants';
 
 
 interface UseMoviesResult {
@@ -21,7 +21,9 @@ interface UseMoviesResult {
 function getUserProviderIds(selectedServices: string[]): number[] {
   return selectedServices.flatMap(id => {
     const svc = STREAMING_SERVICES.find(s => s.id === id);
-    return svc ? getAllTmdbIds(svc) : [];
+    if (svc) return getAllTmdbIds(svc);
+    const tmdbId = getTmdbIdFromServiceId(id);
+    return tmdbId ? [tmdbId] : [];
   });
 }
 

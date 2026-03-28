@@ -1,4 +1,4 @@
-import { getServiceByTmdbId } from './constants';
+import { getServiceByTmdbId, createDynamicService } from './constants';
 import type { DirectStreamingLinks } from './streamingAvailability';
 
 const CACHE_VERSION = 'jw_v1';
@@ -58,14 +58,15 @@ export async function fetchJustWatchLinks(
     if (!res.ok) return {};
 
     const data = await res.json();
-    const offers: { standardWebURL: string; package: { packageId: number; technicalName: string } }[] = data.offers || [];
+    const offers: { standardWebURL: string; package: { packageId: number; technicalName: string; clearName?: string } }[] = data.offers || [];
 
     const links: DirectStreamingLinks = {};
 
     for (const offer of offers) {
       if (!offer.standardWebURL || !offer.package?.packageId) continue;
-      const service = getServiceByTmdbId(offer.package.packageId);
-      if (service && !links[service.id]) {
+      const service = getServiceByTmdbId(offer.package.packageId)
+        ?? createDynamicService(offer.package.packageId, offer.package.clearName ?? '');
+      if (!links[service.id]) {
         links[service.id] = offer.standardWebURL;
       }
     }

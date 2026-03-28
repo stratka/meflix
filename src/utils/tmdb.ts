@@ -6,7 +6,7 @@ import type {
   WatchProviderResponse,
 } from '../types/tmdb';
 import type { FilterState } from '../types/app';
-import { STREAMING_SERVICES, getAllTmdbIds } from './constants';
+import { STREAMING_SERVICES, getAllTmdbIds, getTmdbIdFromServiceId } from './constants';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -30,11 +30,15 @@ export async function fetchGenres(): Promise<TMDBGenresResponse> {
   return tmdbFetch<TMDBGenresResponse>(buildUrl('genre/movie/list', new URLSearchParams({ language: 'cs-CZ' })));
 }
 
-/** Vrátí seznam TMDB ID providerů dostupných v daném regionu */
-export async function fetchRegionProviderIds(region: string): Promise<Set<number>> {
+/** Vrátí seznam providerů dostupných v daném regionu (ID + název + logo) */
+export async function fetchRegionProviders(region: string): Promise<{ id: number; name: string; logoPath: string | null }[]> {
   const params = new URLSearchParams({ watch_region: region });
-  const data = await tmdbFetch<{ results: { provider_id: number }[] }>(buildUrl('watch/providers/movie', params));
-  return new Set(data.results.map(p => p.provider_id));
+  const data = await tmdbFetch<{ results: { provider_id: number; provider_name: string; logo_path?: string; display_priority: number }[] }>(
+    buildUrl('watch/providers/movie', params)
+  );
+  return data.results
+    .sort((a, b) => a.display_priority - b.display_priority)
+    .map(p => ({ id: p.provider_id, name: p.provider_name, logoPath: p.logo_path ?? null }));
 }
 
 export async function discoverMovies(
@@ -43,18 +47,17 @@ export async function discoverMovies(
   filters: FilterState,
   page: number = 1
 ): Promise<TMDBDiscoverResponse> {
-  const serviceIds = selectedServices.flatMap(id => {
-    const svc = STREAMING_SERVICES.find(s => s.id === id);
-    return svc ? getAllTmdbIds(svc) : [];
-  });
+  function resolveIds(ids: string[]): number[] {
+    return ids.flatMap(id => {
+      const svc = STREAMING_SERVICES.find(s => s.id === id);
+      if (svc) return getAllTmdbIds(svc);
+      const tmdbId = getTmdbIdFromServiceId(id);
+      return tmdbId ? [tmdbId] : [];
+    });
+  }
 
-  const filterServiceIds =
-    filters.services.length > 0
-      ? filters.services.flatMap(id => {
-          const svc = STREAMING_SERVICES.find(s => s.id === id);
-          return svc ? getAllTmdbIds(svc) : [];
-        })
-      : serviceIds;
+  const serviceIds = resolveIds(selectedServices);
+  const filterServiceIds = filters.services.length > 0 ? resolveIds(filters.services) : serviceIds;
 
   const isTV = filters.mediaType === 'tv';
   const dateGteParam = isTV ? 'first_air_date.gte' : 'primary_release_date.gte';
