@@ -37,13 +37,13 @@ export default function App() {
       {/* Top navbar */}
       <nav className="bg-gray-900 border-b border-gray-800 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setResetKey(k => k + 1)}
+          <a
+            href="/"
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             title="Domů"
           >
             <img src="/logo_mimoovie.png" alt="Mimoovie" className="h-10 md:h-12 w-auto" />
-          </button>
+          </a>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-600">v1.3.0</span>
