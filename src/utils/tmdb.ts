@@ -106,6 +106,7 @@ export async function fetchMovieDetail(
   const params = new URLSearchParams({
     language: 'cs-CZ',
     append_to_response: 'credits,watch/providers,videos',
+    include_video_language: 'cs,en',
   });
   const endpoint = mediaType === 'tv' ? `tv/${movieId}` : `movie/${movieId}`;
   const data = await tmdbFetch<any>(buildUrl(endpoint, params));

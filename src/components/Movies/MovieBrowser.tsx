@@ -261,7 +261,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
           )}
 
           {/* Počet výsledků */}
-          {!loading && totalResults > 0 && (
+          {totalResults > 0 && (
             <span className="text-sm text-gray-500 ml-auto">
               {isSearching ? `${totalResults.toLocaleString()} výsledků` : `${totalResults.toLocaleString()} filmů`}
             </span>
