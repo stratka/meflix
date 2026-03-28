@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Tv2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
 export function AuthScreen({ onClose }: { onClose?: () => void }) {
@@ -37,11 +37,8 @@ export function AuthScreen({ onClose }: { onClose?: () => void }) {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-950">
-      <div className="mb-8 flex items-center gap-3">
-        <div className="w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center">
-          <Tv2 className="w-7 h-7 text-white" />
-        </div>
-        <span className="text-3xl font-bold text-white tracking-tight">MEFLIX</span>
+      <div className="mb-8">
+        <img src="/logo_mimoovie.png" alt="Mimoovie" className="h-12 w-auto" />
       </div>
 
       <div className="w-full max-w-sm bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-2xl">
