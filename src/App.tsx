@@ -16,7 +16,7 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [showWatched, setShowWatched] = useState(false);
-  const [resetKey, setResetKey] = useState(0);
+  const [resetKey] = useState(0);
 
   if (authLoading || (user && !synced)) {
     return (
