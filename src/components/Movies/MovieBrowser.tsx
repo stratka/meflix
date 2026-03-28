@@ -6,6 +6,7 @@ import type { AppSettings, FilterState, WatchedMovies } from '../../types/app';
 import { useMovies } from '../../hooks/useMovies';
 import { useGenres } from '../../hooks/useGenres';
 import { useCloudWatchlist } from '../../hooks/useCloudWatchlist';
+import { fetchMovieDetail } from '../../utils/tmdb';
 import { MovieCard } from './MovieCard';
 import { MovieModal } from './MovieModal';
 import { MovieSkeletonGrid } from './MovieSkeleton';
@@ -61,7 +62,9 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
   // Ulož filtry při každé změně
   useEffect(() => { saveFilters(filters); }, [filters]);
   const [selectedMovie, setSelectedMovie] = useState<TMDBMovie | null>(null);
-  const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useCloudWatchlist(user);
+  const { watchlist, isInWatchlist, addToWatchlist, removeFromWatchlist } = useCloudWatchlist(user);
+  const [idMovies, setIdMovies] = useState<TMDBMovie[]>([]);
+  const [idLoading, setIdLoading] = useState(false);
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [hiddenMovieIds, setHiddenMovieIds] = useState<Set<number>>(new Set());
@@ -76,16 +79,28 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Klik na logo — reset search + filtry + scroll nahoru
+  // Klik na logo — reset search + scroll nahoru (filtry zachovej)
   useEffect(() => {
     if (resetKey === 0 || resetKey === undefined) return;
     setSearchInput('');
     setSearchQuery('');
-    setFilters(DEFAULT_FILTERS);
-    saveFilters(DEFAULT_FILTERS);
     setMobileFilterOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [resetKey]);
+
+  // Načti filmy přímo podle ID když je aktivní filtr "jen shlédnuté" nebo "jen chci vidět"
+  const idMode = filters.watchlistFilter === 'only' || filters.watchedFilter === 'only';
+  useEffect(() => {
+    if (!idMode) { setIdMovies([]); return; }
+    const ids = filters.watchlistFilter === 'only'
+      ? [...watchlist]
+      : Object.keys(watched).map(Number);
+    if (ids.length === 0) { setIdMovies([]); return; }
+    setIdLoading(true);
+    Promise.all(ids.map(id => fetchMovieDetail(id, settings.region, filters.mediaType).catch(() => null)))
+      .then(results => setIdMovies(results.filter(Boolean) as TMDBMovie[]))
+      .finally(() => setIdLoading(false));
+  }, [idMode, filters.watchlistFilter, filters.watchedFilter, filters.mediaType, watchlist, watched, settings.region]);
 
   const { movies, unavailableIds, movieProviders, loading, loadingMore, error, hasMore, totalResults, loadMore } = useMovies(
     settings.region,
@@ -279,19 +294,23 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
             </div>
           )}
 
-          {loading ? (
+          {(idMode ? idLoading : loading) ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3">
               <MovieSkeletonGrid count={20} />
             </div>
-          ) : movies.length === 0 ? (
+          ) : (idMode ? idMovies : movies).filter(m => !hiddenMovieIds.has(m.id)).filter(m => !idMode ? (
+              filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id))
+            ) : true).filter(m => !idMode ? (
+              filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id))
+            ) : true).length === 0 ? (
             <EmptyState />
           ) : (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3">
-                {movies
+                {(idMode ? idMovies : movies)
                   .filter(m => !hiddenMovieIds.has(m.id))
-                  .filter(m => filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id)))
-                  .filter(m => filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id)))
+                  .filter(m => !idMode ? (filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id))) : true)
+                  .filter(m => !idMode ? (filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id))) : true)
                   .map(movie => (
                   <MovieCard
                     key={movie.id}
@@ -303,15 +322,20 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                     availableOn={unavailableIds.has(movie.id) ? movieProviders.get(movie.id) : undefined}
                   />
                 ))}
-                {loadingMore && <MovieSkeletonGrid count={10} />}
+                {!idMode && loadingMore && <MovieSkeletonGrid count={10} />}
               </div>
 
               {/* Infinite scroll trigger */}
-              <div ref={loaderRef} className="h-8 mt-4" />
+              {!idMode && <div ref={loaderRef} className="h-8 mt-4" />}
 
-              {!hasMore && movies.length > 0 && (
+              {!idMode && !hasMore && movies.length > 0 && (
                 <p className="text-center text-sm text-gray-600 pb-8">
                   Zobrazeno všech {movies.length} filmů
+                </p>
+              )}
+              {idMode && (
+                <p className="text-center text-sm text-gray-600 pb-8">
+                  Celkem {idMovies.length} filmů
                 </p>
               )}
             </>
