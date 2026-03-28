@@ -5,9 +5,18 @@ const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
 export const supabaseEnabled = !!(url && key);
 
+const clientOptions = {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    storageKey: 'mimoovie-auth',
+  },
+};
+
 export const supabase = supabaseEnabled
-  ? createClient(url!, key!)
-  : createClient('https://placeholder.supabase.co', 'placeholder');
+  ? createClient(url!, key!, clientOptions)
+  : createClient('https://placeholder.supabase.co', 'placeholder', clientOptions);
 
 export type DbUserSettings = {
   user_id: string;
