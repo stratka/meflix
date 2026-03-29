@@ -127,7 +127,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
   );
 
   useEffect(() => {
-    const observer = new IntersectionObserver(handleObserver, { threshold: 0.1 });
+    const observer = new IntersectionObserver(handleObserver, { threshold: 0.1, rootMargin: '400px' });
     if (loaderRef.current) observer.observe(loaderRef.current);
     return () => observer.disconnect();
   }, [handleObserver]);
