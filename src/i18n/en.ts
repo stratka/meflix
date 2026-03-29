@@ -119,6 +119,14 @@ const en = {
   banner: {
     notLoggedIn: 'Your data is not backed up. Sign in to save your watchlist across devices.',
     signIn: 'Sign in',
+    offline: 'You are offline. Some content may not load.',
+  },
+  rating: {
+    title: 'Enjoying Mimoovie?',
+    subtitle: 'If you like the app, please take a moment to rate it.',
+    rate: 'Rate now',
+    later: 'Later',
+    never: 'No thanks',
   },
   onboarding: {
     welcomeTitle: 'Welcome to Mimoovie',

@@ -121,6 +121,14 @@ const cs = {
   banner: {
     notLoggedIn: 'Tvoje data nejsou zálohována. Přihlas se a ulož svůj seznam na všech zařízeních.',
     signIn: 'Přihlásit se',
+    offline: 'Jsi offline. Část obsahu se nemusí načíst.',
+  },
+  rating: {
+    title: 'Líbí se ti Mimoovie?',
+    subtitle: 'Pomož nám tím, že nás ohodnotíš v obchodě.',
+    rate: 'Ohodnotit',
+    later: 'Později',
+    never: 'Ne díky',
   },
   onboarding: {
     welcomeTitle: 'Vítej v Mimoovie',

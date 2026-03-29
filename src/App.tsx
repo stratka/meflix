@@ -1,17 +1,20 @@
-import { useState } from 'react';
-import { Settings, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Settings, X, WifiOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from './hooks/useAuth';
 import { useCloudSettings } from './hooks/useCloudSettings';
 import { useCloudWatched } from './hooks/useCloudWatched';
+import { useOnline } from './hooks/useOnline';
 import { AuthScreen } from './components/Auth/AuthScreen';
 import { SetupScreen } from './components/Setup/SetupScreen';
 import { MovieBrowser } from './components/Movies/MovieBrowser';
 import { WatchedScreen } from './components/Movies/WatchedScreen';
 import { SettingsPanel } from './components/Settings/SettingsPanel';
+import { RatingPrompt, shouldShowRating } from './components/common/RatingPrompt';
 
 export default function App() {
   const { t } = useTranslation();
+  const online = useOnline();
   const { user, loading: authLoading, signOut } = useAuth();
   const { settings, setSettings, synced } = useCloudSettings(user);
   const { watched, markWatched, unmarkWatched, isWatched } = useCloudWatched(user);
@@ -20,6 +23,14 @@ export default function App() {
   const [showWatched, setShowWatched] = useState(false);
   const [resetKey] = useState(0);
   const [bannerDismissed, setBannerDismissed] = useState(false);
+  const [showRating, setShowRating] = useState(false);
+
+  const watchedCount = Object.keys(watched).length;
+  useEffect(() => {
+    if (watchedCount >= 5 && shouldShowRating()) {
+      setShowRating(true);
+    }
+  }, [watchedCount]);
 
   if (authLoading || (user && !synced)) {
     return (
@@ -60,6 +71,14 @@ export default function App() {
         </div>
       </nav>
 
+      {/* Offline banner */}
+      {!online && (
+        <div className="bg-gray-800 border-b border-gray-700 px-4 py-2 flex items-center gap-2">
+          <WifiOff className="w-4 h-4 text-gray-400 shrink-0" />
+          <p className="text-sm text-gray-300">{t('banner.offline')}</p>
+        </div>
+      )}
+
       {/* Not-logged-in banner */}
       {!user && !bannerDismissed && (
         <div className="bg-amber-950/60 border-b border-amber-700/50 px-4 py-2.5 flex items-center justify-between gap-3">
@@ -99,6 +118,8 @@ export default function App() {
           onClose={() => setShowWatched(false)}
         />
       )}
+
+      {showRating && <RatingPrompt onClose={() => setShowRating(false)} />}
 
       {showSettings && (
         <SettingsPanel

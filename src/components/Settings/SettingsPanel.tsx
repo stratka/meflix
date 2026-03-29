@@ -89,6 +89,18 @@ export function SettingsPanel({ settings, onSave, onClose, user, onSignIn, onSig
           )}
         </div>
 
+        {/* Privacy */}
+        <div className="px-6 pt-3 pb-1">
+          <a
+            href="/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-gray-600 hover:text-gray-400 transition-colors"
+          >
+            Privacy Policy
+          </a>
+        </div>
+
         {/* Auth section */}
         <div className="px-6 pb-5 border-t border-gray-800 pt-4">
           {user ? (
