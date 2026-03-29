@@ -38,8 +38,10 @@ const vi = {
     unmarkWatched: 'Đã xem – nhấp để hủy', addWatchlist: 'Thêm vào danh sách',
     removeWatchlist: 'Xóa khỏi danh sách', back: 'Quay lại', minPerEpisode: 'phút / tập',
     seasons_one: '{{count}} mùa', seasons_other: '{{count}} mùa',
+    similar: 'Bạn cũng có thể thích',
   },
   watched: { title: 'Phim đã xem', empty: 'Chưa có phim nào được xem', emptyHint: 'Đánh dấu phim đã xem trong chi tiết phim', watchedOn: 'Đã xem {{date}}', remove: 'Xóa khỏi đã xem', badge: 'Đã xem' },
   empty: { title: 'Không có phim', message: 'Thử điều chỉnh bộ lọc hoặc thêm dịch vụ streaming.' },
+  banner: { notLoggedIn: 'Dữ liệu của bạn chưa được sao lưu. Đăng nhập để lưu danh sách trên tất cả thiết bị.', signIn: 'Đăng nhập' },
 } as const;
 export default vi;

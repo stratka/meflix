@@ -38,8 +38,10 @@ const fi = {
     unmarkWatched: 'Katsottu – napsauta poistaaksesi', addWatchlist: 'Lisää listalle',
     removeWatchlist: 'Poista listalta', back: 'Takaisin', minPerEpisode: 'min / jak.',
     seasons_one: '{{count}} kausi', seasons_other: '{{count}} kautta',
+    similar: 'Voisit myös pitää',
   },
   watched: { title: 'Katsotut elokuvat', empty: 'Ei katsottuja elokuvia vielä', emptyHint: 'Merkitse elokuvia katsotuiksi elokuvan tiedoissa', watchedOn: 'Katsottu {{date}}', remove: 'Poista katsotuista', badge: 'Katsottu' },
   empty: { title: 'Ei elokuvia', message: 'Kokeile säätää suodattimia tai lisätä suoratoistopalveluita.' },
+  banner: { notLoggedIn: 'Tietojasi ei varmuuskopioida. Kirjaudu sisään tallentaaksesi listan kaikille laitteille.', signIn: 'Kirjaudu' },
 } as const;
 export default fi;

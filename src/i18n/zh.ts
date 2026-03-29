@@ -38,8 +38,10 @@ const zh = {
     unmarkWatched: '已观看 – 点击取消', addWatchlist: '添加到想看列表',
     removeWatchlist: '从想看列表移除', back: '返回', minPerEpisode: '分钟/集',
     seasons_one: '{{count}}季', seasons_other: '{{count}}季',
+    similar: '你可能也喜欢',
   },
   watched: { title: '已观看电影', empty: '暂无已观看电影', emptyHint: '在电影详情中标记为已观看', watchedOn: '{{date}} 观看', remove: '从已观看中移除', badge: '已看' },
   empty: { title: '无电影', message: '尝试调整筛选条件或添加更多流媒体服务。' },
+  banner: { notLoggedIn: '您的数据未备份。登录以在所有设备上保存您的列表。', signIn: '登录' },
 } as const;
 export default zh;

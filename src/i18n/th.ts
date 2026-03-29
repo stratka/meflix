@@ -38,8 +38,10 @@ const th = {
     unmarkWatched: 'ดูแล้ว – คลิกเพื่อยกเลิก', addWatchlist: 'เพิ่มในรายการ',
     removeWatchlist: 'ลบออกจากรายการ', back: 'ย้อนกลับ', minPerEpisode: 'นาที / ตอน',
     seasons_one: '{{count}} ซีซัน', seasons_other: '{{count}} ซีซัน',
+    similar: 'คุณอาจจะชอบสิ่งนี้ด้วย',
   },
   watched: { title: 'ภาพยนตร์ที่ดูแล้ว', empty: 'ยังไม่มีภาพยนตร์ที่ดูแล้ว', emptyHint: 'ทำเครื่องหมายภาพยนตร์ว่าดูแล้วในรายละเอียดภาพยนตร์', watchedOn: 'ดูเมื่อ {{date}}', remove: 'ลบออกจากที่ดูแล้ว', badge: 'ดูแล้ว' },
   empty: { title: 'ไม่มีภาพยนตร์', message: 'ลองปรับตัวกรองหรือเพิ่มบริการสตรีมมิ่งเพิ่มเติม' },
+  banner: { notLoggedIn: 'ข้อมูลของคุณไม่ได้สำรอง เข้าสู่ระบบเพื่อบันทึกรายการในทุกอุปกรณ์', signIn: 'เข้าสู่ระบบ' },
 } as const;
 export default th;

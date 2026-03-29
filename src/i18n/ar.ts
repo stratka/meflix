@@ -38,8 +38,10 @@ const ar = {
     unmarkWatched: 'مُشاهَد – انقر للإلغاء', addWatchlist: 'إضافة إلى القائمة',
     removeWatchlist: 'إزالة من القائمة', back: 'رجوع', minPerEpisode: 'دقيقة / حلقة',
     seasons_one: '{{count}} موسم', seasons_other: '{{count}} مواسم',
+    similar: 'قد يعجبك أيضًا',
   },
   watched: { title: 'الأفلام المُشاهَدة', empty: 'لا توجد أفلام مُشاهَدة بعد', emptyHint: 'ضع علامة على الأفلام كمُشاهَدة في تفاصيل الفيلم', watchedOn: 'تمت المشاهدة {{date}}', remove: 'إزالة من المُشاهَدة', badge: 'مُشاهَد' },
   empty: { title: 'لا توجد أفلام', message: 'حاول ضبط الفلاتر أو إضافة المزيد من خدمات البث.' },
+  banner: { notLoggedIn: 'بياناتك غير مُحفوظة. سجّل الدخول لحفظ قائمتك على جميع الأجهزة.', signIn: 'تسجيل الدخول' },
 } as const;
 export default ar;

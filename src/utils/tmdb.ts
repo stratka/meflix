@@ -172,3 +172,23 @@ export async function searchPerson(query: string): Promise<TMDBSearchPersonRespo
   const params = new URLSearchParams({ query, language: getTmdbLanguage() });
   return tmdbFetch<TMDBSearchPersonResponse>(buildUrl('search/person', params));
 }
+
+export async function fetchSimilarMovies(
+  movieId: number,
+  mediaType: 'movie' | 'tv' = 'movie'
+): Promise<TMDBDiscoverResponse> {
+  const params = new URLSearchParams({ language: getTmdbLanguage() });
+  const endpoint = mediaType === 'tv' ? `tv/${movieId}/similar` : `movie/${movieId}/similar`;
+  const raw = await tmdbFetch<any>(buildUrl(endpoint, params));
+  if (mediaType === 'tv') {
+    raw.results = (raw.results || []).map((item: any) => ({
+      ...item,
+      title: item.name || item.original_name || '',
+      release_date: item.first_air_date || '',
+      media_type: 'tv' as const,
+    }));
+  } else {
+    raw.results = (raw.results || []).map((item: any) => ({ ...item, media_type: 'movie' as const }));
+  }
+  return raw as TMDBDiscoverResponse;
+}

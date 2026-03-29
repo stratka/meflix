@@ -38,8 +38,10 @@ const hu = {
     unmarkWatched: 'Megnézett – kattints az eltávolításhoz', addWatchlist: 'Hozzáadás a listához',
     removeWatchlist: 'Eltávolítás a listából', back: 'Vissza', minPerEpisode: 'perc / ep.',
     seasons_one: '{{count}} évad', seasons_other: '{{count}} évad',
+    similar: 'Neked is tetszhet',
   },
   watched: { title: 'Megnézett filmek', empty: 'Még nincsenek megnézett filmek', emptyHint: 'Jelöld a filmeket megnézettnek a film részleteinél', watchedOn: 'Megnézve: {{date}}', remove: 'Eltávolítás a megnézettekből', badge: 'Megnézve' },
   empty: { title: 'Nincsenek filmek', message: 'Próbáld meg módosítani a szűrőket, vagy adj hozzá több streamingszolgáltatást.' },
+  banner: { notLoggedIn: 'Az adataid nincsenek mentve. Jelentkezz be a lista mentéséhez minden eszközön.', signIn: 'Bejelentkezés' },
 } as const;
 export default hu;

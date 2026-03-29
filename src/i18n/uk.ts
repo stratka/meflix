@@ -38,8 +38,10 @@ const uk = {
     unmarkWatched: 'Переглянуто – натисни для скасування', addWatchlist: 'Додати до списку',
     removeWatchlist: 'Прибрати зі списку', back: 'Назад', minPerEpisode: 'хв / сер.',
     seasons_one: '{{count}} сезон', seasons_few: '{{count}} сезони', seasons_many: '{{count}} сезонів', seasons_other: '{{count}} сезону',
+    similar: 'Вам також може сподобатись',
   },
   watched: { title: 'Переглянуті фільми', empty: 'Немає переглянутих фільмів', emptyHint: 'Позначай фільми як переглянуті в деталях фільму', watchedOn: 'Переглянуто {{date}}', remove: 'Прибрати з переглянутих', badge: 'Переглянуто' },
   empty: { title: 'Немає фільмів', message: 'Спробуй змінити фільтри або додати стримінгові сервіси.' },
+  banner: { notLoggedIn: 'Ваші дані не зберігаються. Увійдіть, щоб зберегти список на всіх пристроях.', signIn: 'Увійти' },
 } as const;
 export default uk;

@@ -38,8 +38,10 @@ const ms = {
     unmarkWatched: 'Ditonton – klik untuk batal', addWatchlist: 'Tambah ke senarai',
     removeWatchlist: 'Buang dari senarai', back: 'Kembali', minPerEpisode: 'min / ep.',
     seasons_one: '{{count}} musim', seasons_other: '{{count}} musim',
+    similar: 'Anda mungkin juga suka',
   },
   watched: { title: 'Filem yang ditonton', empty: 'Tiada filem yang ditonton lagi', emptyHint: 'Tandakan filem sebagai ditonton dalam butiran filem', watchedOn: 'Ditonton {{date}}', remove: 'Buang dari ditonton', badge: 'Ditonton' },
   empty: { title: 'Tiada filem', message: 'Cuba laraskan penapis atau tambah lebih banyak perkhidmatan penstriman.' },
+  banner: { notLoggedIn: 'Data anda tidak disimpan. Log masuk untuk menyimpan senarai di semua peranti.', signIn: 'Log masuk' },
 } as const;
 export default ms;

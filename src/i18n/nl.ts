@@ -38,8 +38,10 @@ const nl = {
     unmarkWatched: 'Bekeken – klik om te verwijderen', addWatchlist: 'Toevoegen aan lijst',
     removeWatchlist: 'Verwijderen uit lijst', back: 'Terug', minPerEpisode: 'min / afl.',
     seasons_one: '{{count}} seizoen', seasons_other: '{{count}} seizoenen',
+    similar: 'Misschien vind je dit ook leuk',
   },
   watched: { title: 'Bekeken films', empty: 'Nog geen bekeken films', emptyHint: 'Markeer films als bekeken in de filmdetails', watchedOn: 'Bekeken op {{date}}', remove: 'Verwijderen uit bekeken', badge: 'Bekeken' },
   empty: { title: 'Geen films', message: 'Probeer de filters aan te passen of voeg meer streamingdiensten toe.' },
+  banner: { notLoggedIn: 'Jouw gegevens worden niet opgeslagen. Log in om je lijst op alle apparaten te bewaren.', signIn: 'Inloggen' },
 } as const;
 export default nl;

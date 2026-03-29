@@ -102,6 +102,7 @@ const en = {
     minPerEpisode: 'min / ep',
     seasons_one: '{{count}} season',
     seasons_other: '{{count}} seasons',
+    similar: 'You might also like',
   },
   watched: {
     title: 'Watched movies',
@@ -114,6 +115,18 @@ const en = {
   empty: {
     title: 'No movies',
     message: 'Try adjusting filters or adding more streaming services.',
+  },
+  banner: {
+    notLoggedIn: 'Your data is not backed up. Sign in to save your watchlist across devices.',
+    signIn: 'Sign in',
+  },
+  onboarding: {
+    welcomeTitle: 'Welcome to Mimoovie',
+    welcomeSubtitle: 'Discover movies and series available on your streaming services — all in one place.',
+    getStarted: 'Get started',
+    doneTitle: "You're all set!",
+    doneSubtitle: 'Start discovering great movies and series available on your services.',
+    startBrowsing: 'Start browsing',
   },
 } as const;
 

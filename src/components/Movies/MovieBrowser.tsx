@@ -372,6 +372,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
             setFilters(f => ({ ...f, personId, personName, personRole: role }));
             setSelectedMovie(null);
           }}
+          onMovieClick={setSelectedMovie}
         />
       )}
     </div>

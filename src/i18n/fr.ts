@@ -38,8 +38,10 @@ const fr = {
     unmarkWatched: 'Vu – cliquer pour annuler', addWatchlist: 'Ajouter à la liste',
     removeWatchlist: 'Retirer de la liste', back: 'Retour', minPerEpisode: 'min / ép.',
     seasons_one: '{{count}} saison', seasons_other: '{{count}} saisons',
+    similar: 'Vous pourriez aussi aimer',
   },
   watched: { title: 'Films vus', empty: 'Aucun film vu pour le moment', emptyHint: 'Marquez les films comme vus dans le détail du film', watchedOn: 'Vu le {{date}}', remove: 'Retirer des vus', badge: 'Vu' },
   empty: { title: 'Aucun film', message: 'Essayez de modifier les filtres ou ajoutez des services de streaming.' },
+  banner: { notLoggedIn: 'Vos données ne sont pas sauvegardées. Connectez-vous pour sauvegarder votre liste sur tous vos appareils.', signIn: 'Se connecter' },
 } as const;
 export default fr;

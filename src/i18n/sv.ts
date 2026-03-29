@@ -38,8 +38,10 @@ const sv = {
     unmarkWatched: 'Sedd – klicka för att ta bort', addWatchlist: 'Lägg till i lista',
     removeWatchlist: 'Ta bort från lista', back: 'Tillbaka', minPerEpisode: 'min / avs.',
     seasons_one: '{{count}} säsong', seasons_other: '{{count}} säsonger',
+    similar: 'Du kanske också gillar',
   },
   watched: { title: 'Sedda filmer', empty: 'Inga sedda filmer ännu', emptyHint: 'Markera filmer som sedda i filmdetaljerna', watchedOn: 'Sedd {{date}}', remove: 'Ta bort från sedda', badge: 'Sedd' },
   empty: { title: 'Inga filmer', message: 'Försök att justera filtren eller lägg till fler streamingtjänster.' },
+  banner: { notLoggedIn: 'Dina data säkerhetskopieras inte. Logga in för att spara listan på alla enheter.', signIn: 'Logga in' },
 } as const;
 export default sv;

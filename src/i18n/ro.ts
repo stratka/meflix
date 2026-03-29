@@ -38,8 +38,10 @@ const ro = {
     unmarkWatched: 'Văzut – apasă pentru eliminare', addWatchlist: 'Adaugă la listă',
     removeWatchlist: 'Elimină din listă', back: 'Înapoi', minPerEpisode: 'min / ep.',
     seasons_one: '{{count}} sezon', seasons_other: '{{count}} sezoane',
+    similar: 'Ți-ar putea plăcea și',
   },
   watched: { title: 'Filme văzute', empty: 'Niciun film văzut încă', emptyHint: 'Marchează filmele ca văzute în detaliile filmului', watchedOn: 'Văzut pe {{date}}', remove: 'Elimină din văzute', badge: 'Văzut' },
   empty: { title: 'Niciun film', message: 'Încearcă să ajustezi filtrele sau să adaugi mai multe servicii de streaming.' },
+  banner: { notLoggedIn: 'Datele tale nu sunt salvate. Conectează-te pentru a salva lista pe toate dispozitivele.', signIn: 'Conectare' },
 } as const;
 export default ro;

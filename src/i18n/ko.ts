@@ -38,8 +38,10 @@ const ko = {
     unmarkWatched: '시청 완료 – 클릭하여 취소', addWatchlist: '목록에 추가',
     removeWatchlist: '목록에서 제거', back: '뒤로', minPerEpisode: '분 / 화',
     seasons_one: '{{count}}시즌', seasons_other: '{{count}}시즌',
+    similar: '비슷한 작품',
   },
   watched: { title: '시청한 영화', empty: '아직 시청한 영화가 없습니다', emptyHint: '영화 상세에서 시청 완료로 표시하세요', watchedOn: '{{date}} 시청', remove: '시청 목록에서 제거', badge: '시청 완료' },
   empty: { title: '영화 없음', message: '필터를 조정하거나 스트리밍 서비스를 추가해 보세요.' },
+  banner: { notLoggedIn: '데이터가 백업되지 않습니다. 모든 기기에서 목록을 저장하려면 로그인하세요.', signIn: '로그인' },
 } as const;
 export default ko;

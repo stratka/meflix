@@ -38,8 +38,10 @@ const ru = {
     unmarkWatched: 'Просмотрено – нажми для отмены', addWatchlist: 'Добавить в список',
     removeWatchlist: 'Убрать из списка', back: 'Назад', minPerEpisode: 'мин / сер.',
     seasons_one: '{{count}} сезон', seasons_few: '{{count}} сезона', seasons_many: '{{count}} сезонов', seasons_other: '{{count}} сезона',
+    similar: 'Вам также может понравиться',
   },
   watched: { title: 'Просмотренные фильмы', empty: 'Нет просмотренных фильмов', emptyHint: 'Отмечай фильмы как просмотренные в деталях фильма', watchedOn: 'Просмотрено {{date}}', remove: 'Убрать из просмотренных', badge: 'Просмотрено' },
   empty: { title: 'Нет фильмов', message: 'Попробуй изменить фильтры или добавить стриминговые сервисы.' },
+  banner: { notLoggedIn: 'Ваши данные не сохраняются. Войдите, чтобы сохранить список на всех устройствах.', signIn: 'Войти' },
 } as const;
 export default ru;

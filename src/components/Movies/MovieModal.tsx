@@ -3,7 +3,8 @@ import { Star, Clock, ExternalLink, Play, Youtube, Eye, ArrowLeft, Bookmark, Boo
 import { useTranslation } from 'react-i18next';
 import type { TMDBMovie, TMDBMovieDetail, Provider } from '../../types/tmdb';
 import type { AppSettings, StreamingService, WatchedEntry } from '../../types/app';
-import { fetchMovieDetail } from '../../utils/tmdb';
+import { fetchMovieDetail, fetchSimilarMovies } from '../../utils/tmdb';
+import type { TMDBDiscoverResponse } from '../../types/tmdb';
 import { TMDB_IMAGE_BASE, getServiceByTmdbId, getWatchUrl, createDynamicService } from '../../utils/constants';
 import { fetchJustWatchLinks } from '../../utils/justwatch';
 import type { DirectStreamingLinks } from '../../utils/streamingAvailability';
@@ -20,14 +21,16 @@ interface Props {
   onPersonClick?: (personId: number, personName: string, role: 'cast' | 'crew') => void;
   isInWatchlist?: boolean;
   onToggleWatchlist?: (id: number, title: string) => void;
+  onMovieClick?: (movie: TMDBMovie) => void;
 }
 
-export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatched, onUnmarkWatched, onPersonClick, isInWatchlist, onToggleWatchlist }: Props) {
+export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatched, onUnmarkWatched, onPersonClick, isInWatchlist, onToggleWatchlist, onMovieClick }: Props) {
   const { t, i18n } = useTranslation();
   const [detail, setDetail] = useState<TMDBMovieDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [showTrailer, setShowTrailer] = useState(false);
   const [directLinks, setDirectLinks] = useState<DirectStreamingLinks>({});
+  const [similar, setSimilar] = useState<TMDBDiscoverResponse['results']>([]);
 
   const dragY = useRef(0);
   const scrollY = useRef(0);
@@ -109,6 +112,13 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
       .then(links => setDirectLinks(links))
       .catch(() => { /* silently ignore errors */ });
   }, [movie.id, settings.region, movie.title]);
+
+  useEffect(() => {
+    setSimilar([]);
+    fetchSimilarMovies(movie.id, movie.media_type ?? 'movie')
+      .then(r => setSimilar(r.results.slice(0, 12)))
+      .catch(() => {});
+  }, [movie.id, movie.media_type]);
 
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent) => { if (e.target === e.currentTarget) onClose(); },
@@ -436,6 +446,40 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
             {!loading && flatrate.length === 0 && (
               <div className="mt-6 p-3 bg-gray-800 rounded-lg text-sm text-gray-400 text-center">
                 {t('modal.notAvailable')}
+              </div>
+            )}
+
+            {/* Similar movies */}
+            {similar.length > 0 && onMovieClick && (
+              <div className="mt-6">
+                <p className="text-sm text-gray-500 mb-3">{t('modal.similar')}</p>
+                <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1" style={{ scrollbarWidth: 'thin' }}>
+                  {similar.map(s => (
+                    <button
+                      key={s.id}
+                      onClick={() => { onMovieClick(s); onClose(); }}
+                      className="flex-shrink-0 w-24 group"
+                    >
+                      <div className="w-24 h-36 rounded-lg overflow-hidden bg-gray-800 mb-1 relative">
+                        {s.poster_path ? (
+                          <img
+                            src={`${TMDB_IMAGE_BASE}/w185${s.poster_path}`}
+                            alt={s.title}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-600 text-xs text-center p-1">
+                            {s.title}
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-lg" />
+                      </div>
+                      <p className="text-xs text-gray-400 group-hover:text-white transition-colors line-clamp-2 text-left leading-tight">
+                        {s.title}
+                      </p>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 

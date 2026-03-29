@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Settings } from 'lucide-react';
+import { Settings, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from './hooks/useAuth';
 import { useCloudSettings } from './hooks/useCloudSettings';
 import { useCloudWatched } from './hooks/useCloudWatched';
@@ -10,6 +11,7 @@ import { WatchedScreen } from './components/Movies/WatchedScreen';
 import { SettingsPanel } from './components/Settings/SettingsPanel';
 
 export default function App() {
+  const { t } = useTranslation();
   const { user, loading: authLoading, signOut } = useAuth();
   const { settings, setSettings, synced } = useCloudSettings(user);
   const { watched, markWatched, unmarkWatched, isWatched } = useCloudWatched(user);
@@ -17,6 +19,7 @@ export default function App() {
   const [showAuth, setShowAuth] = useState(false);
   const [showWatched, setShowWatched] = useState(false);
   const [resetKey] = useState(0);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
 
   if (authLoading || (user && !synced)) {
     return (
@@ -46,7 +49,7 @@ export default function App() {
           </a>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-600">v1.6.3</span>
+          <span className="text-xs text-gray-600">v1.6.5</span>
           <button
             onClick={() => setShowSettings(true)}
             className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
@@ -56,6 +59,28 @@ export default function App() {
           </button>
         </div>
       </nav>
+
+      {/* Not-logged-in banner */}
+      {!user && !bannerDismissed && (
+        <div className="bg-amber-950/60 border-b border-amber-700/50 px-4 py-2.5 flex items-center justify-between gap-3">
+          <p className="text-sm text-amber-200 flex-1">
+            {t('banner.notLoggedIn')}{' '}
+            <button
+              onClick={() => { setShowAuth(true); }}
+              className="underline font-semibold hover:text-white transition-colors"
+            >
+              {t('banner.signIn')}
+            </button>
+          </p>
+          <button
+            onClick={() => setBannerDismissed(true)}
+            className="text-amber-400 hover:text-white shrink-0"
+            aria-label="Dismiss"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
 
       <MovieBrowser
         settings={settings}

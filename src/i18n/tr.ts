@@ -38,8 +38,10 @@ const tr = {
     unmarkWatched: 'İzlendi – kaldırmak için tıkla', addWatchlist: 'Listeye ekle',
     removeWatchlist: 'Listeden kaldır', back: 'Geri', minPerEpisode: 'dak / bölüm',
     seasons_one: '{{count}} sezon', seasons_other: '{{count}} sezon',
+    similar: 'Bunları da beğenebilirsin',
   },
   watched: { title: 'İzlenen filmler', empty: 'Henüz izlenen film yok', emptyHint: 'Film detaylarında filmleri izlendi olarak işaretle', watchedOn: '{{date}} tarihinde izlendi', remove: 'İzlenenlerden kaldır', badge: 'İzlendi' },
   empty: { title: 'Film yok', message: 'Filtreleri ayarlamayı veya daha fazla yayın hizmeti eklemeyi dene.' },
+  banner: { notLoggedIn: 'Verileriniz yedeklenmiyor. Tüm cihazlarınızda listenizi kaydetmek için giriş yapın.', signIn: 'Giriş yap' },
 } as const;
 export default tr;

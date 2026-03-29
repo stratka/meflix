@@ -38,8 +38,10 @@ const pt = {
     unmarkWatched: 'Assistido – clique para desmarcar', addWatchlist: 'Adicionar à lista',
     removeWatchlist: 'Remover da lista', back: 'Voltar', minPerEpisode: 'min / ep.',
     seasons_one: '{{count}} temporada', seasons_other: '{{count}} temporadas',
+    similar: 'Você também pode gostar',
   },
   watched: { title: 'Filmes assistidos', empty: 'Nenhum filme assistido ainda', emptyHint: 'Marque filmes como assistidos no detalhe do filme', watchedOn: 'Assistido em {{date}}', remove: 'Remover dos assistidos', badge: 'Assistido' },
   empty: { title: 'Sem filmes', message: 'Tente ajustar os filtros ou adicionar mais serviços de streaming.' },
+  banner: { notLoggedIn: 'Os seus dados não estão guardados. Inicie sessão para guardar a sua lista em todos os dispositivos.', signIn: 'Entrar' },
 } as const;
 export default pt;

@@ -1,73 +1,15 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
-import cs from './cs';
-import en from './en';
-import ja from './ja';
-import de from './de';
-import fr from './fr';
-import es from './es';
-import pt from './pt';
-import it from './it';
-import nl from './nl';
-import pl from './pl';
-import sv from './sv';
-import da from './da';
-import no from './no';
-import fi from './fi';
-import sk from './sk';
-import hu from './hu';
-import ro from './ro';
-import tr from './tr';
-import ru from './ru';
-import uk from './uk';
-import ko from './ko';
-import zh from './zh';
-import ar from './ar';
-import hi from './hi';
-import el from './el';
-import th from './th';
-import id from './id';
-import vi from './vi';
-import ms from './ms';
+
+const SUPPORTED_LANGS = ['cs', 'en', 'ja', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'pl', 'sv', 'da', 'no', 'fi', 'sk', 'hu', 'ro', 'tr', 'ru', 'uk', 'ko', 'zh', 'ar', 'hi', 'el', 'th', 'id', 'vi', 'ms'] as const;
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: {
-      cs: { translation: cs },
-      en: { translation: en },
-      ja: { translation: ja },
-      de: { translation: de },
-      fr: { translation: fr },
-      es: { translation: es },
-      pt: { translation: pt },
-      it: { translation: it },
-      nl: { translation: nl },
-      pl: { translation: pl },
-      sv: { translation: sv },
-      da: { translation: da },
-      no: { translation: no },
-      fi: { translation: fi },
-      sk: { translation: sk },
-      hu: { translation: hu },
-      ro: { translation: ro },
-      tr: { translation: tr },
-      ru: { translation: ru },
-      uk: { translation: uk },
-      ko: { translation: ko },
-      zh: { translation: zh },
-      ar: { translation: ar },
-      hi: { translation: hi },
-      el: { translation: el },
-      th: { translation: th },
-      id: { translation: id },
-      vi: { translation: vi },
-      ms: { translation: ms },
-    },
     fallbackLng: 'en',
-    supportedLngs: ['cs', 'en', 'ja', 'de', 'fr', 'es', 'pt', 'it', 'nl', 'pl', 'sv', 'da', 'no', 'fi', 'sk', 'hu', 'ro', 'tr', 'ru', 'uk', 'ko', 'zh', 'ar', 'hi', 'el', 'th', 'id', 'vi', 'ms'],
+    supportedLngs: [...SUPPORTED_LANGS],
     interpolation: {
       escapeValue: false,
     },
@@ -76,6 +18,44 @@ i18n
       caches: [],
       lookupQuerystring: 'lng',
     },
+    // Resources are loaded on demand via the backend below
+    partialBundledLanguages: true,
+    resources: {},
   });
+
+// Detect the language synchronously (same logic as LanguageDetector would use)
+function detectLanguage(): string {
+  const params = new URLSearchParams(window.location.search);
+  const fromQuery = params.get('lng');
+  if (fromQuery && SUPPORTED_LANGS.includes(fromQuery as any)) return fromQuery;
+  const nav = navigator.language?.split('-')[0] || 'en';
+  return SUPPORTED_LANGS.includes(nav as any) ? nav : 'en';
+}
+
+// Load a language bundle and add it to i18n
+async function loadLanguage(lang: string): Promise<void> {
+  if (i18n.hasResourceBundle(lang, 'translation')) return;
+  try {
+    const mod = await import(`./${lang}.ts`);
+    i18n.addResourceBundle(lang, 'translation', mod.default, true, true);
+  } catch {
+    // Fallback: if the requested lang fails, load English
+    if (lang !== 'en') await loadLanguage('en');
+  }
+}
+
+// Bootstrap: load detected language (+ English fallback) before app renders
+const detectedLang = detectLanguage();
+
+export const i18nReady: Promise<void> = (async () => {
+  await loadLanguage('en');
+  if (detectedLang !== 'en') await loadLanguage(detectedLang);
+  await i18n.changeLanguage(detectedLang);
+})();
+
+// When language changes at runtime, lazily load the new bundle
+i18n.on('languageChanged', (lang: string) => {
+  loadLanguage(lang);
+});
 
 export default i18n;

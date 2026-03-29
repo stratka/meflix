@@ -38,8 +38,10 @@ const pl = {
     unmarkWatched: 'Obejrzane – kliknij aby usunąć', addWatchlist: 'Dodaj do listy',
     removeWatchlist: 'Usuń z listy', back: 'Wstecz', minPerEpisode: 'min / odc.',
     seasons_one: '{{count}} sezon', seasons_few: '{{count}} sezony', seasons_many: '{{count}} sezonów', seasons_other: '{{count}} sezonu',
+    similar: 'Może ci się też spodobać',
   },
   watched: { title: 'Obejrzane filmy', empty: 'Brak obejrzanych filmów', emptyHint: 'Oznaczaj filmy jako obejrzane w szczegółach filmu', watchedOn: 'Obejrzano {{date}}', remove: 'Usuń z obejrzanych', badge: 'Obejrzano' },
   empty: { title: 'Brak filmów', message: 'Spróbuj dostosować filtry lub dodać więcej serwisów streamingowych.' },
+  banner: { notLoggedIn: 'Twoje dane nie są zapisywane. Zaloguj się, aby zachować listę na wszystkich urządzeniach.', signIn: 'Zaloguj się' },
 } as const;
 export default pl;

@@ -38,8 +38,10 @@ const da = {
     unmarkWatched: 'Set – klik for at fjerne', addWatchlist: 'Tilføj til liste',
     removeWatchlist: 'Fjern fra liste', back: 'Tilbage', minPerEpisode: 'min / afsnit',
     seasons_one: '{{count}} sæson', seasons_other: '{{count}} sæsoner',
+    similar: 'Du vil måske også synes om',
   },
   watched: { title: 'Sete film', empty: 'Ingen sete film endnu', emptyHint: 'Marker film som set i filmdetaljer', watchedOn: 'Set {{date}}', remove: 'Fjern fra sete', badge: 'Set' },
   empty: { title: 'Ingen film', message: 'Prøv at justere filtrene eller tilføj flere streamingtjenester.' },
+  banner: { notLoggedIn: 'Dine data gemmes ikke. Log ind for at gemme din liste på alle enheder.', signIn: 'Log ind' },
 } as const;
 export default da;

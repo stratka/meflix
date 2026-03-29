@@ -38,8 +38,10 @@ const no = {
     unmarkWatched: 'Sett – klikk for å fjerne', addWatchlist: 'Legg til i liste',
     removeWatchlist: 'Fjern fra liste', back: 'Tilbake', minPerEpisode: 'min / ep.',
     seasons_one: '{{count}} sesong', seasons_other: '{{count}} sesonger',
+    similar: 'Du vil kanskje også like',
   },
   watched: { title: 'Sette filmer', empty: 'Ingen sette filmer ennå', emptyHint: 'Merk filmer som sett i filmdetaljer', watchedOn: 'Sett {{date}}', remove: 'Fjern fra sette', badge: 'Sett' },
   empty: { title: 'Ingen filmer', message: 'Prøv å justere filtrene eller legg til flere strømmetjenester.' },
+  banner: { notLoggedIn: 'Dataene dine lagres ikke. Logg inn for å lagre listen din på alle enheter.', signIn: 'Logg inn' },
 } as const;
 export default no;

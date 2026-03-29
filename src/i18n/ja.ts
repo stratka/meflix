@@ -102,6 +102,7 @@ const ja = {
     minPerEpisode: '分/話',
     seasons_one: '{{count}}シーズン',
     seasons_other: '{{count}}シーズン',
+    similar: 'おすすめの作品',
   },
   watched: {
     title: '視聴履歴',
@@ -114,6 +115,10 @@ const ja = {
   empty: {
     title: '作品がありません',
     message: 'フィルターを変更するか、ストリーミングサービスを追加してください。',
+  },
+  banner: {
+    notLoggedIn: 'データはバックアップされていません。すべてのデバイスでリストを保存するにはサインインしてください。',
+    signIn: 'サインイン',
   },
 } as const;
 

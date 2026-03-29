@@ -104,6 +104,7 @@ const cs = {
     seasons_few: '{{count}} sezóny',
     seasons_many: '{{count}} sezón',
     seasons_other: '{{count}} sezón',
+    similar: 'Mohlo by se ti líbit',
   },
   watched: {
     title: 'Shlédnuté filmy',
@@ -116,6 +117,18 @@ const cs = {
   empty: {
     title: 'Žádné filmy',
     message: 'Zkus upravit filtry nebo přidat další streamovací služby.',
+  },
+  banner: {
+    notLoggedIn: 'Tvoje data nejsou zálohována. Přihlas se a ulož svůj seznam na všech zařízeních.',
+    signIn: 'Přihlásit se',
+  },
+  onboarding: {
+    welcomeTitle: 'Vítej v Mimoovie',
+    welcomeSubtitle: 'Objevuj filmy a seriály dostupné na tvých streamovacích službách — vše na jednom místě.',
+    getStarted: 'Začít',
+    doneTitle: 'Vše je připraveno!',
+    doneSubtitle: 'Začni objevovat skvělé filmy a seriály dostupné na tvých službách.',
+    startBrowsing: 'Procházet filmy',
   },
 } as const;
 

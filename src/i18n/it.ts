@@ -38,8 +38,10 @@ const it = {
     unmarkWatched: 'Visto – clicca per rimuovere', addWatchlist: 'Aggiungi alla lista',
     removeWatchlist: 'Rimuovi dalla lista', back: 'Indietro', minPerEpisode: 'min / ep.',
     seasons_one: '{{count}} stagione', seasons_other: '{{count}} stagioni',
+    similar: 'Potrebbe piacerti anche',
   },
   watched: { title: 'Film visti', empty: 'Nessun film visto ancora', emptyHint: 'Segna i film come visti nel dettaglio del film', watchedOn: 'Visto il {{date}}', remove: 'Rimuovi dai visti', badge: 'Visto' },
   empty: { title: 'Nessun film', message: 'Prova a modificare i filtri o ad aggiungere altri servizi di streaming.' },
+  banner: { notLoggedIn: 'I tuoi dati non vengono salvati. Accedi per salvare la tua lista su tutti i dispositivi.', signIn: 'Accedi' },
 } as const;
 export default it;

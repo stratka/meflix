@@ -38,8 +38,10 @@ const hi = {
     unmarkWatched: 'देखी गई – हटाने के लिए क्लिक करें', addWatchlist: 'सूची में जोड़ें',
     removeWatchlist: 'सूची से हटाएं', back: 'वापस', minPerEpisode: 'मिनट / एप.',
     seasons_one: '{{count}} सीज़न', seasons_other: '{{count}} सीज़न',
+    similar: 'आपको यह भी पसंद आ सकता है',
   },
   watched: { title: 'देखी गई फ़िल्में', empty: 'अभी तक कोई देखी गई फ़िल्म नहीं', emptyHint: 'फ़िल्म विवरण में फ़िल्मों को देखी गई के रूप में चिह्नित करें', watchedOn: '{{date}} को देखा', remove: 'देखी गई से हटाएं', badge: 'देखी गई' },
   empty: { title: 'कोई फ़िल्म नहीं', message: 'फ़िल्टर बदलने या अधिक स्ट्रीमिंग सेवाएं जोड़ने का प्रयास करें।' },
+  banner: { notLoggedIn: 'आपका डेटा बैकअप नहीं है। सभी डिवाइस पर सूची सहेजने के लिए साइन इन करें।', signIn: 'साइन इन' },
 } as const;
 export default hi;

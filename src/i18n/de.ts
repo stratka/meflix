@@ -38,8 +38,10 @@ const de = {
     unmarkWatched: 'Gesehen – klicken zum Entfernen', addWatchlist: 'Zur Merkliste',
     removeWatchlist: 'Von Merkliste entfernen', back: 'Zurück', minPerEpisode: 'Min / Folge',
     seasons_one: '{{count}} Staffel', seasons_other: '{{count}} Staffeln',
+    similar: 'Das könnte dir auch gefallen',
   },
   watched: { title: 'Gesehene Filme', empty: 'Noch keine gesehenen Filme', emptyHint: 'Markiere Filme als gesehen in der Filmdetailansicht', watchedOn: 'Gesehen am {{date}}', remove: 'Von gesehen entfernen', badge: 'Gesehen' },
   empty: { title: 'Keine Filme', message: 'Versuche, die Filter anzupassen oder weitere Streaming-Dienste hinzuzufügen.' },
+  banner: { notLoggedIn: 'Deine Daten werden nicht gesichert. Melde dich an, um deine Liste auf allen Geräten zu speichern.', signIn: 'Anmelden' },
 } as const;
 export default de;

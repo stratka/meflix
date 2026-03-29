@@ -38,8 +38,10 @@ const el = {
     unmarkWatched: 'Ειδωμένο – κλικ για αφαίρεση', addWatchlist: 'Προσθήκη στη λίστα',
     removeWatchlist: 'Αφαίρεση από τη λίστα', back: 'Πίσω', minPerEpisode: 'λεπτά / επεισόδιο',
     seasons_one: '{{count}} σεζόν', seasons_other: '{{count}} σεζόν',
+    similar: 'Μπορεί να σου αρέσει επίσης',
   },
   watched: { title: 'Ταινίες που είδα', empty: 'Δεν έχεις δει ταινίες ακόμα', emptyHint: 'Σήμαινε ταινίες ως ειδωμένες στις λεπτομέρειες της ταινίας', watchedOn: 'Είδα {{date}}', remove: 'Αφαίρεση από ειδωμένα', badge: 'Ειδωμένο' },
   empty: { title: 'Δεν υπάρχουν ταινίες', message: 'Δοκίμασε να προσαρμόσεις τα φίλτρα ή να προσθέσεις περισσότερες υπηρεσίες streaming.' },
+  banner: { notLoggedIn: 'Τα δεδομένα σου δεν αποθηκεύονται. Συνδέσου για να αποθηκεύσεις τη λίστα σε όλες τις συσκευές.', signIn: 'Σύνδεση' },
 } as const;
 export default el;

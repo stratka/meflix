@@ -38,8 +38,10 @@ const id = {
     unmarkWatched: 'Ditonton – klik untuk batalkan', addWatchlist: 'Tambahkan ke daftar',
     removeWatchlist: 'Hapus dari daftar', back: 'Kembali', minPerEpisode: 'mnt / ep.',
     seasons_one: '{{count}} musim', seasons_other: '{{count}} musim',
+    similar: 'Mungkin kamu juga suka',
   },
   watched: { title: 'Film yang ditonton', empty: 'Belum ada film yang ditonton', emptyHint: 'Tandai film sebagai ditonton di detail film', watchedOn: 'Ditonton {{date}}', remove: 'Hapus dari ditonton', badge: 'Ditonton' },
   empty: { title: 'Tidak ada film', message: 'Coba sesuaikan filter atau tambahkan lebih banyak layanan streaming.' },
+  banner: { notLoggedIn: 'Data Anda tidak dicadangkan. Masuk untuk menyimpan daftar di semua perangkat.', signIn: 'Masuk' },
 } as const;
 export default id;

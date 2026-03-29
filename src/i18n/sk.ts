@@ -38,8 +38,10 @@ const sk = {
     unmarkWatched: 'Videné – klikni pre zrušenie', addWatchlist: 'Chcem vidieť',
     removeWatchlist: 'Odobrať z chcem vidieť', back: 'Späť', minPerEpisode: 'min / diel',
     seasons_one: '{{count}} sezóna', seasons_few: '{{count}} sezóny', seasons_many: '{{count}} sezón', seasons_other: '{{count}} sezón',
+    similar: 'Mohlo by sa ti páčiť',
   },
   watched: { title: 'Videné filmy', empty: 'Zatiaľ žiadne videné filmy', emptyHint: 'Označuj filmy ako videné v detaile filmu', watchedOn: 'Videné {{date}}', remove: 'Odobrať z videných', badge: 'Videné' },
   empty: { title: 'Žiadne filmy', message: 'Skús upraviť filtre alebo pridať ďalšie streamovacie služby.' },
+  banner: { notLoggedIn: 'Tvoje dáta nie sú zálohované. Prihlás sa a ulož zoznam na všetkých zariadeniach.', signIn: 'Prihlásiť sa' },
 } as const;
 export default sk;
