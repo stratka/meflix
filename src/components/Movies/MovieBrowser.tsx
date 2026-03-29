@@ -157,7 +157,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-gray-900/50 border-b border-gray-800 px-4 py-3 sticky top-14 z-20 backdrop-blur-sm">
+      <div className="bg-gray-900/50 border-b border-gray-800 px-4 py-3 sticky top-16 z-20 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto flex items-center gap-3 flex-wrap">
           {/* Search bar */}
           <div className="relative flex-1 min-w-[200px] max-w-sm">
