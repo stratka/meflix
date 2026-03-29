@@ -238,6 +238,26 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
                     alt={movie.title}
                     className="w-24 sm:w-32 rounded-xl shadow-2xl border-2 border-gray-700"
                   />
+                  {userServices.length === 0 && (
+                    <div className="flex gap-1 w-full mt-1">
+                      <button
+                        onClick={() => watchedEntry ? onUnmarkWatched(movie.id) : onMarkWatched(movie.id, movie.title)}
+                        title={watchedEntry ? t('modal.unmarkWatched') : t('modal.markWatched')}
+                        className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-xs transition-colors ${watchedEntry ? 'bg-green-600/30 text-green-400' : 'bg-gray-800 text-gray-500 hover:text-white hover:bg-gray-700'}`}
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                      </button>
+                      {onToggleWatchlist && (
+                        <button
+                          onClick={() => onToggleWatchlist(movie.id, movie.title)}
+                          title={isInWatchlist ? t('modal.removeWatchlist') : t('modal.addWatchlist')}
+                          className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-xs transition-colors ${isInWatchlist ? 'bg-blue-600/30 text-blue-400' : 'bg-gray-800 text-gray-500 hover:text-white hover:bg-gray-700'}`}
+                        >
+                          {isInWatchlist ? <BookmarkCheck className="w-3.5 h-3.5" /> : <Bookmark className="w-3.5 h-3.5" />}
+                        </button>
+                      )}
+                    </div>
+                  )}
                   {userServices.length > 0 && (
                     <div className="flex flex-col gap-1.5 w-full">
                       {userServices.map(({ service, watchLink }) => (
