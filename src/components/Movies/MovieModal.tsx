@@ -132,16 +132,18 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
   }, [onClose]);
 
   // Android back button: push a history entry so back closes the modal instead of leaving the app
+  const onCloseRef = useRef(onClose);
+  useEffect(() => { onCloseRef.current = onClose; }, [onClose]);
+
   useEffect(() => {
     history.pushState({ modal: true }, '');
-    const handlePopState = () => onClose();
+    const handlePopState = () => onCloseRef.current();
     window.addEventListener('popstate', handlePopState);
     return () => {
       window.removeEventListener('popstate', handlePopState);
-      // If modal is closed programmatically (not via back), clean up the history entry
       if (history.state?.modal) history.back();
     };
-  }, [onClose]);
+  }, []); // prázdné deps — efekt běží jen při mount/unmount, ne při každém re-renderu
 
   const backdropUrl = movie.backdrop_path
     ? `${TMDB_IMAGE_BASE}/w1280${movie.backdrop_path}`
