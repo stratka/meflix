@@ -78,17 +78,20 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
     onChange({ ...filters, genres });
   }
 
-  // Zavři mobilní filtr při odscrollování mimo viewport
+  // Zavři mobilní filtr při odscrollování mimo viewport (zpožděně, aby scroll stihl proběhnout)
   useEffect(() => {
     if (!mobileOpen) return;
     const el = mobileContainerRef.current;
     if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (!entry.isIntersecting) setMobileOpen(false); },
-      { threshold: 0 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+    let observer: IntersectionObserver;
+    const timer = setTimeout(() => {
+      observer = new IntersectionObserver(
+        ([entry]) => { if (!entry.isIntersecting) setMobileOpen(false); },
+        { threshold: 0 }
+      );
+      observer.observe(el);
+    }, 400);
+    return () => { clearTimeout(timer); observer?.disconnect(); };
   }, [mobileOpen]);
 
   const activeFilterCount = [

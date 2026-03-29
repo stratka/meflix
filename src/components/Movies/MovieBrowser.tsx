@@ -72,6 +72,21 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
   const [hiddenMovieIds, setHiddenMovieIds] = useState<Set<number>>(new Set());
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
+
+  // Android back button: otevření filtru pushne history, back ho zavře
+  const mobileFilterOpenRef = useRef(mobileFilterOpen);
+  useEffect(() => { mobileFilterOpenRef.current = mobileFilterOpen; }, [mobileFilterOpen]);
+  useEffect(() => {
+    if (!mobileFilterOpen) return;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    history.pushState({ mobileFilter: true }, '');
+    const handlePopState = () => { if (mobileFilterOpenRef.current) setMobileFilterOpen(false); };
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      if (history.state?.mobileFilter) history.back();
+    };
+  }, [mobileFilterOpen]);
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
