@@ -109,6 +109,7 @@ export default function App() {
         markWatched={markWatched}
         unmarkWatched={unmarkWatched}
         isWatched={isWatched}
+        onOpenSettings={() => setShowSettings(true)}
       />
 
       {showWatched && (

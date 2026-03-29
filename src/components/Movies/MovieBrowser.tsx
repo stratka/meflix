@@ -23,6 +23,7 @@ interface Props {
   markWatched: (id: number, title: string) => void;
   unmarkWatched: (id: number) => void;
   isWatched: (id: number) => boolean;
+  onOpenSettings?: () => void;
 }
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -57,7 +58,7 @@ function saveFilters(f: FilterState) {
   localStorage.setItem(FILTERS_KEY, JSON.stringify(f));
 }
 
-export function MovieBrowser({ settings, user, resetKey, watched, markWatched, unmarkWatched, isWatched }: Props) {
+export function MovieBrowser({ settings, user, resetKey, watched, markWatched, unmarkWatched, isWatched, onOpenSettings }: Props) {
   const { t } = useTranslation();
   const [filters, setFilters] = useState<FilterState>(loadFilters);
 
@@ -284,7 +285,15 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
           {settings.selectedServices.length === 0 && (
             <div className="flex items-center gap-3 p-4 bg-yellow-900/30 border border-yellow-800/50 rounded-xl text-yellow-300 mb-4">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
-              <span className="text-sm">{t('browser.noServices')}</span>
+              <span className="text-sm flex-1">{t('browser.noServices')}</span>
+              {onOpenSettings && (
+                <button
+                  onClick={onOpenSettings}
+                  className="text-xs font-semibold text-yellow-200 hover:text-white underline underline-offset-2 shrink-0 transition-colors"
+                >
+                  {t('browser.addServices')}
+                </button>
+              )}
             </div>
           )}
           {error && (

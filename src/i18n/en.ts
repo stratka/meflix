@@ -44,7 +44,7 @@ const en = {
     movies: '{{count, number}} movies',
     allShown: 'All {{count}} movies shown',
     total: 'Total {{count}} movies',
-    tryAgain: 'Try again', noServices: 'No service selected – showing all movies',
+    tryAgain: 'Try again', noServices: 'No service selected – showing all movies', addServices: 'Add services',
     clearAll: '× all',
     filterRemove: 'Remove filter {{name}}',
     filterOnly: 'Filter only {{name}}',
