@@ -6,6 +6,7 @@ import { useCloudSettings } from './hooks/useCloudSettings';
 import { useCloudWatched } from './hooks/useCloudWatched';
 import { useOnline } from './hooks/useOnline';
 import { AuthScreen } from './components/Auth/AuthScreen';
+import { UpdatePasswordScreen } from './components/Auth/UpdatePasswordScreen';
 import { SetupScreen } from './components/Setup/SetupScreen';
 import { MovieBrowser } from './components/Movies/MovieBrowser';
 import { WatchedScreen } from './components/Movies/WatchedScreen';
@@ -15,7 +16,7 @@ import { RatingPrompt, shouldShowRating } from './components/common/RatingPrompt
 export default function App() {
   const { t } = useTranslation();
   const online = useOnline();
-  const { user, loading: authLoading, signOut } = useAuth();
+  const { user, loading: authLoading, isPasswordRecovery, signOut } = useAuth();
   const { settings, setSettings, synced } = useCloudSettings(user);
   const { watched, markWatched, unmarkWatched, isWatched } = useCloudWatched(user);
   const [showSettings, setShowSettings] = useState(false);
@@ -39,6 +40,8 @@ export default function App() {
       </div>
     );
   }
+
+  if (isPasswordRecovery) return <UpdatePasswordScreen />;
 
   if (showAuth) return <AuthScreen onClose={() => setShowAuth(false)} />;
 

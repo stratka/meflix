@@ -5,8 +5,8 @@ import { useAuth } from '../../hooks/useAuth';
 
 export function AuthScreen({ onClose }: { onClose?: () => void }) {
   const { t } = useTranslation();
-  const { signInWithEmail, signUpWithEmail, signInWithGoogle } = useAuth();
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const { signInWithEmail, signUpWithEmail, signInWithGoogle, resetPassword } = useAuth();
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPwd, setShowPwd] = useState(false);
@@ -19,6 +19,13 @@ export function AuthScreen({ onClose }: { onClose?: () => void }) {
     setError('');
     setInfo('');
     setLoading(true);
+    if (mode === 'forgot') {
+      const err = await resetPassword(email);
+      setLoading(false);
+      if (err) setError(err.message);
+      else setInfo(t('auth.checkEmail'));
+      return;
+    }
     const err = mode === 'login'
       ? await signInWithEmail(email, password)
       : await signUpWithEmail(email, password);
@@ -45,7 +52,7 @@ export function AuthScreen({ onClose }: { onClose?: () => void }) {
 
       <div className="w-full max-w-sm bg-gray-900 rounded-2xl p-6 border border-gray-800 shadow-2xl">
         <h2 className="text-lg font-semibold text-white mb-5">
-          {mode === 'login' ? t('auth.signIn') : t('auth.register')}
+          {mode === 'login' ? t('auth.signIn') : mode === 'register' ? t('auth.register') : t('auth.forgotPassword')}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -60,20 +67,33 @@ export function AuthScreen({ onClose }: { onClose?: () => void }) {
               className="w-full bg-gray-800 text-white placeholder-gray-500 text-sm rounded-lg pl-9 pr-4 py-2.5 border border-gray-700 focus:outline-none focus:border-red-500 transition-colors"
             />
           </div>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
-            <input
-              type={showPwd ? 'text' : 'password'}
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              placeholder={t('auth.password')}
-              required
-              className="w-full bg-gray-800 text-white placeholder-gray-500 text-sm rounded-lg pl-9 pr-10 py-2.5 border border-gray-700 focus:outline-none focus:border-red-500 transition-colors"
-            />
-            <button type="button" onClick={() => setShowPwd(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
-              {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-            </button>
-          </div>
+          {mode !== 'forgot' && (
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+              <input
+                type={showPwd ? 'text' : 'password'}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder={t('auth.password')}
+                required
+                className="w-full bg-gray-800 text-white placeholder-gray-500 text-sm rounded-lg pl-9 pr-10 py-2.5 border border-gray-700 focus:outline-none focus:border-red-500 transition-colors"
+              />
+              <button type="button" onClick={() => setShowPwd(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
+                {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          )}
+          {mode === 'login' && (
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={() => { setMode('forgot'); setError(''); setInfo(''); }}
+                className="text-xs text-gray-500 hover:text-red-400 transition-colors"
+              >
+                {t('auth.forgotPasswordLink')}
+              </button>
+            </div>
+          )}
 
           {error && <p className="text-xs text-red-400">{error}</p>}
           {info && <p className="text-xs text-green-400">{info}</p>}
@@ -83,7 +103,7 @@ export function AuthScreen({ onClose }: { onClose?: () => void }) {
             disabled={loading}
             className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-700 disabled:text-gray-500 text-white font-semibold py-2.5 rounded-lg transition-colors"
           >
-            {loading ? '...' : mode === 'login' ? t('auth.signIn') : t('auth.registerLink')}
+            {loading ? '...' : mode === 'login' ? t('auth.signIn') : mode === 'register' ? t('auth.registerLink') : t('auth.sendReset')}
           </button>
         </form>
 
@@ -106,13 +126,21 @@ export function AuthScreen({ onClose }: { onClose?: () => void }) {
           {t('auth.continueGoogle')}
         </button>
 
-        <p className="text-center text-xs text-gray-600 mt-5">
-          {mode === 'login' ? t('auth.noAccount') : t('auth.haveAccount')}
-          {' '}
-          <button onClick={() => { setMode(m => m === 'login' ? 'register' : 'login'); setError(''); setInfo(''); }} className="text-red-400 hover:text-red-300">
-            {mode === 'login' ? t('auth.registerLink') : t('auth.signInLink')}
-          </button>
-        </p>
+        {mode === 'forgot' ? (
+          <p className="text-center text-xs text-gray-600 mt-5">
+            <button onClick={() => { setMode('login'); setError(''); setInfo(''); }} className="text-red-400 hover:text-red-300">
+              {t('auth.signInLink')}
+            </button>
+          </p>
+        ) : (
+          <p className="text-center text-xs text-gray-600 mt-5">
+            {mode === 'login' ? t('auth.noAccount') : t('auth.haveAccount')}
+            {' '}
+            <button onClick={() => { setMode(m => m === 'login' ? 'register' : 'login'); setError(''); setInfo(''); }} className="text-red-400 hover:text-red-300">
+              {mode === 'login' ? t('auth.registerLink') : t('auth.signInLink')}
+            </button>
+          </p>
+        )}
       </div>
     </div>
   );

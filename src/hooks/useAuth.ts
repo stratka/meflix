@@ -6,6 +6,7 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
 
   useEffect(() => {
     if (!supabaseEnabled) { setLoading(false); return; }
@@ -15,9 +16,10 @@ export function useAuth() {
       setLoading(false);
     });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (event === 'PASSWORD_RECOVERY') setIsPasswordRecovery(true);
     });
 
     return () => subscription.unsubscribe();
@@ -45,5 +47,18 @@ export function useAuth() {
     await supabase.auth.signOut();
   }
 
-  return { user, session, loading, signInWithEmail, signUpWithEmail, signInWithGoogle, signOut };
+  async function resetPassword(email: string) {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin,
+    });
+    return error;
+  }
+
+  async function updatePassword(newPassword: string) {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (!error) setIsPasswordRecovery(false);
+    return error;
+  }
+
+  return { user, session, loading, isPasswordRecovery, signInWithEmail, signUpWithEmail, signInWithGoogle, signOut, resetPassword, updatePassword };
 }
