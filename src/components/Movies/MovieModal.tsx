@@ -298,9 +298,23 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
                 </div>
               )}
               <div className="flex flex-col justify-end pb-1 min-w-0">
-                <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight">
-                  {movie.title}
-                </h2>
+                <div className="flex items-start gap-2">
+                  <h2 className="text-xl sm:text-2xl font-bold text-white leading-tight flex-1">
+                    {movie.title}
+                  </h2>
+                  <button
+                    onClick={() => {
+                      const url = `https://www.mimoovie.com`;
+                      const data = { title: movie.title, text: movie.overview || movie.title, url };
+                      if (navigator.share) navigator.share(data);
+                      else navigator.clipboard?.writeText(url);
+                    }}
+                    className="flex-shrink-0 mt-1 text-gray-500 hover:text-white transition-colors"
+                    title={t('share.movie')}
+                  >
+                    <Share2 className="w-4 h-4" />
+                  </button>
+                </div>
                 <div className="flex flex-wrap items-center gap-2 mt-2 text-sm text-gray-400">
                   {year && <span>{year}</span>}
                   {detail?.runtime && (
@@ -517,8 +531,8 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
               </div>
             )}
 
-            {/* TMDB link + share */}
-            <div className="mt-4 pt-4 border-t border-gray-800 flex items-center justify-between">
+            {/* TMDB link */}
+            <div className="mt-4 pt-4 border-t border-gray-800">
               <a
                 href={`https://www.themoviedb.org/${movie.media_type === 'tv' ? 'tv' : 'movie'}/${movie.id}`}
                 target="_blank"
@@ -527,19 +541,6 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
               >
                 {t('modal.viewOnTMDB')} <ExternalLink className="w-3 h-3" />
               </a>
-              <button
-                onClick={() => {
-                  const url = `https://www.mimoovie.com`;
-                  const data = { title: movie.title, text: movie.overview || movie.title, url };
-                  if (navigator.share) navigator.share(data);
-                  else navigator.clipboard?.writeText(url);
-                }}
-                className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-white transition-colors"
-                title={t('share.movie')}
-              >
-                <Share2 className="w-3.5 h-3.5" />
-                {t('share.movie')}
-              </button>
             </div>
           </div>
         </div>
