@@ -60,7 +60,7 @@ export default function App() {
           </a>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-600">v1.7.1</span>
+          <span className="text-xs text-gray-600">v1.7.2</span>
           <button
             onClick={() => setShowSettings(true)}
             className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"

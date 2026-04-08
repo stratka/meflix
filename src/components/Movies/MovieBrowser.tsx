@@ -78,7 +78,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
   useEffect(() => { mobileFilterOpenRef.current = mobileFilterOpen; }, [mobileFilterOpen]);
   useEffect(() => {
     if (!mobileFilterOpen) return;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'instant' });
     history.pushState({ mobileFilter: true }, '');
     const handlePopState = () => { if (mobileFilterOpenRef.current) setMobileFilterOpen(false); };
     window.addEventListener('popstate', handlePopState);
@@ -329,7 +329,12 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
               filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id))
             ) : true).filter(m => !idMode ? (
               filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id))
-            ) : true).length === 0 ? (
+            ) : true).sort((a, b) => {
+              if (filters.watchedFilter !== 'only') return 0;
+              const dateA = watched[a.id]?.date ?? '';
+              const dateB = watched[b.id]?.date ?? '';
+              return dateB.localeCompare(dateA);
+            }).length === 0 ? (
             <EmptyState />
           ) : (
             <>
@@ -338,6 +343,12 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                   .filter(m => !hiddenMovieIds.has(m.id))
                   .filter(m => !idMode ? (filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id))) : true)
                   .filter(m => !idMode ? (filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id))) : true)
+                  .sort((a, b) => {
+                    if (filters.watchedFilter !== 'only') return 0;
+                    const dateA = watched[a.id]?.date ?? '';
+                    const dateB = watched[b.id]?.date ?? '';
+                    return dateB.localeCompare(dateA);
+                  })
                   .map(movie => (
                   <MovieCard
                     key={movie.id}
