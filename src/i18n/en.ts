@@ -138,6 +138,11 @@ const en = {
     later: 'Later',
     never: 'No thanks',
   },
+  share: {
+    app: 'Share app',
+    appText: 'Discover movies and series available on your streaming services.',
+    movie: 'Share',
+  },
   onboarding: {
     welcomeTitle: 'Welcome to Mimoovie',
     welcomeSubtitle: 'Discover movies and series available on your streaming services — all in one place.',

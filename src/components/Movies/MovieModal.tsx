@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { Star, Clock, ExternalLink, Play, Youtube, Eye, ArrowLeft, Bookmark, BookmarkCheck } from 'lucide-react';
+import { Star, Clock, ExternalLink, Play, Youtube, Eye, ArrowLeft, Bookmark, BookmarkCheck, Share2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { TMDBMovie, TMDBMovieDetail, Provider } from '../../types/tmdb';
 import type { AppSettings, StreamingService, WatchedEntry } from '../../types/app';
@@ -517,8 +517,8 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
               </div>
             )}
 
-            {/* TMDB link */}
-            <div className="mt-4 pt-4 border-t border-gray-800">
+            {/* TMDB link + share */}
+            <div className="mt-4 pt-4 border-t border-gray-800 flex items-center justify-between">
               <a
                 href={`https://www.themoviedb.org/${movie.media_type === 'tv' ? 'tv' : 'movie'}/${movie.id}`}
                 target="_blank"
@@ -527,6 +527,19 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
               >
                 {t('modal.viewOnTMDB')} <ExternalLink className="w-3 h-3" />
               </a>
+              <button
+                onClick={() => {
+                  const url = `https://www.mimoovie.com`;
+                  const data = { title: movie.title, text: movie.overview || movie.title, url };
+                  if (navigator.share) navigator.share(data);
+                  else navigator.clipboard?.writeText(url);
+                }}
+                className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-white transition-colors"
+                title={t('share.movie')}
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                {t('share.movie')}
+              </button>
             </div>
           </div>
         </div>

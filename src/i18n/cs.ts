@@ -140,6 +140,11 @@ const cs = {
     later: 'Později',
     never: 'Ne díky',
   },
+  share: {
+    app: 'Sdílet aplikaci',
+    appText: 'Objevuj filmy a seriály dostupné na tvých streamovacích službách.',
+    movie: 'Sdílet film',
+  },
   onboarding: {
     welcomeTitle: 'Vítej v Mimoovie',
     welcomeSubtitle: 'Objevuj filmy a seriály dostupné na tvých streamovacích službách — vše na jednom místě.',
