@@ -99,7 +99,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';
-      try { screen.orientation.lock('portrait'); } catch { /* ignore */ }
+      try { (screen.orientation as any).lock('portrait'); } catch { /* ignore */ }
     };
   }, []);
 
