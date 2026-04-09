@@ -153,6 +153,14 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
 
   const isSearching = searchQuery.trim().length > 0;
 
+  const displayedCount = idMode
+    ? idMovies
+        .filter(m => !hiddenMovieIds.has(m.id))
+        .filter(m => filters.watchedFilter !== 'hide' || !isWatched(m.id))
+        .filter(m => filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id))
+        .length
+    : totalResults;
+
   const activeFilterCount = [
     filters.genres.length > 0,
     filters.minRating > 0,
@@ -292,7 +300,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
             onChange={setFilters}
             mobileOpen={mobileFilterOpen}
             onMobileOpenChange={setMobileFilterOpen}
-            totalResults={idMode ? idMovies.length : totalResults}
+            totalResults={displayedCount}
           />
         )}
 
