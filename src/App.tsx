@@ -63,7 +63,7 @@ export default function App() {
           </a>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-600">v1.7.6</span>
+          <span className="text-xs text-gray-600">v1.7.7</span>
           <button
             onClick={() => {
               const data = { title: 'Mimoovie', text: t('share.appText'), url: 'https://www.mimoovie.com' };

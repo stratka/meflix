@@ -458,34 +458,14 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
               </div>
             )}
 
-            {/* Available on */}
-            {!loading && flatrate.length > 0 && (
+            {/* Also available on (other services only) */}
+            {!loading && otherServices.length > 0 && (
               <div className="mt-4">
-                <p className="text-sm text-gray-500 mb-2">{t('modal.availableOn')}</p>
+                <p className="text-sm text-gray-500 mb-2">{t('modal.alsoOn')}</p>
                 <div className="flex flex-wrap gap-2">
-                  {flatrate.map(provider => {
-                    const service = getServiceByTmdbId(provider.provider_id)
-                      ?? createDynamicService(provider.provider_id, provider.provider_name);
-                    const isUserService = settings.selectedServices.includes(service.id);
-                    const watchLink = directLinks[service.id] || getWatchUrl(service.id, movie.title);
-                    if (isUserService) {
-                      return (
-                        <a
-                          key={service.id}
-                          href={watchLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-semibold text-xs transition-all hover:opacity-90 hover:scale-105"
-                          style={{ backgroundColor: service.color, color: service.textColor }}
-                          onClick={() => onMarkWatched(movie.id, movie.title)}
-                        >
-                          <Play className="w-3 h-3 fill-current flex-shrink-0" />
-                          {service.name}
-                        </a>
-                      );
-                    }
-                    return <ServiceBadge key={service.id} service={service} size="sm" />;
-                  })}
+                  {otherServices.map(({ service }) => (
+                    <ServiceBadge key={service.id} service={service} size="sm" />
+                  ))}
                 </div>
               </div>
             )}

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, ChevronDown, SlidersHorizontal, Eye, Bookmark, Sparkles } from 'lucide-react';
+import { Search, X, ChevronDown, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Genre } from '../../types/tmdb';
 import type { FilterState, SortOption } from '../../types/app';
@@ -381,92 +381,152 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
     </div>
   );
 
-  // Desktop sidebar (zachován původní styl)
+  // Desktop sidebar
   const desktopPanel = (
     <div className="space-y-5">
-      {/* Watched */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> {t('filter.watched')}</span>
-        </label>
-        <div className="flex rounded-lg overflow-hidden border border-gray-700">
-          {([{ value: 'all', label: t('filter.all') }, { value: 'hide', label: t('filter.hide') }, { value: 'only', label: t('filter.onlyWatched') }] as const).map(opt => (
-            <button key={opt.value} onClick={() => onChange({ ...filters, watchedFilter: opt.value })}
-              className={`flex-1 py-2 text-xs font-medium transition-colors ${filters.watchedFilter === opt.value ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
-            >{opt.label}</button>
-          ))}
+      {/* Upřesnění */}
+      <section>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-2">
+            <div>
+              <p className="text-xs text-gray-500 mb-1.5">{t('filter.sort')}</p>
+              <div className="relative">
+                <select value={filters.sortBy} onChange={e => onChange({ ...filters, sortBy: e.target.value as SortOption })}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-xs text-white appearance-none focus:outline-none focus:border-red-500 pr-7">
+                  {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{t(`sort.${o.value.replace(/\./g, '_')}`)}</option>)}
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 mb-1.5">{t('filter.ageRating')}</p>
+              <div className="relative">
+                <select value={filters.certification} onChange={e => onChange({ ...filters, certification: e.target.value as FilterState['certification'] })}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-xs text-white appearance-none focus:outline-none focus:border-red-500 pr-7">
+                  <option value="">{t('filter.ratingAll')}</option>
+                  <option value="G">{t('filter.forKids')}</option>
+                  <option value="PG">{t('filter.children')}</option>
+                  <option value="PG-13">{t('filter.youth')}</option>
+                </select>
+                <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs text-gray-500">{t('filter.minRating', { value: filters.minRating > 0 ? filters.minRating.toFixed(1) : t('filter.minRatingAll') })}</p>
+              <div className="flex gap-0.5">
+                {[1,2,3,4,5].map(i => (
+                  <span key={i} className={`text-base ${filters.minRating >= i * 2 - 1 ? 'text-yellow-400' : filters.minRating >= i * 2 - 1.5 ? 'text-yellow-400/50' : 'text-gray-700'}`}>★</span>
+                ))}
+              </div>
+            </div>
+            <input type="range" min={0} max={9} step={0.5} value={filters.minRating}
+              onChange={e => onChange({ ...filters, minRating: parseFloat(e.target.value) })}
+              className="w-full accent-red-500" />
+            <div className="flex justify-between text-xs text-gray-600 mt-1"><span>{t('filter.ratingAll')}</span><span>9.0</span></div>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 mb-2">{t('filter.yearRange', { from: filters.yearFrom, to: filters.yearTo })}</p>
+            <div className="relative mt-3 mb-1">
+              <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-gray-700 rounded-full pointer-events-none">
+                <div className="absolute h-full bg-red-500 rounded-full"
+                  style={{ left: `${((filters.yearFrom - 1950) / (CURRENT_YEAR - 1950)) * 100}%`, right: `${((CURRENT_YEAR - filters.yearTo) / (CURRENT_YEAR - 1950)) * 100}%` }} />
+              </div>
+              <div className="dual-range">
+                <input type="range" min={1950} max={CURRENT_YEAR} step={1} value={filters.yearFrom}
+                  onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearFrom: v, yearTo: Math.max(v, filters.yearTo) }); }} />
+                <input type="range" min={1950} max={CURRENT_YEAR} step={1} value={filters.yearTo}
+                  onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearTo: v, yearFrom: Math.min(v, filters.yearFrom) }); }} />
+              </div>
+            </div>
+            <div className="flex justify-between text-xs text-gray-600 mt-1"><span>1950</span><span>{CURRENT_YEAR}</span></div>
+          </div>
+          <div>
+            <div className="relative">
+              <select value={filters.originCountry} onChange={e => onChange({ ...filters, originCountry: e.target.value })}
+                className="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8">
+                {COUNTRY_CODES.map(code => (
+                  <option key={code} value={code}>{code === '' ? t('filter.allCountries') : countryDisplayNames.of(code) ?? code}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Watchlist */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          <span className="flex items-center gap-1"><Bookmark className="w-3.5 h-3.5" /> {t('filter.watchlist')}</span>
-        </label>
-        <div className="flex rounded-lg overflow-hidden border border-gray-700">
-          {([{ value: 'all', label: t('filter.all') }, { value: 'hide', label: t('filter.hide') }, { value: 'only', label: t('filter.onlyWatchlist') }] as const).map(opt => (
-            <button key={opt.value} onClick={() => onChange({ ...filters, watchlistFilter: opt.value })}
-              className={`flex-1 py-2 text-xs font-medium transition-colors ${filters.watchlistFilter === opt.value ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
-            >{opt.label}</button>
-          ))}
+      {/* Váš výběr */}
+      <section>
+        <div className="space-y-2.5">
+          <div>
+            <p className="text-xs text-gray-500 mb-1.5">{t('filter.watched')}</p>
+            <div className="flex rounded-xl overflow-hidden border border-gray-700">
+              {([{ value: 'all', label: t('filter.all') }, { value: 'hide', label: t('filter.hide') }, { value: 'only', label: t('filter.onlyWatched') }] as const).map(opt => (
+                <button key={opt.value} onClick={() => onChange({ ...filters, watchedFilter: opt.value })}
+                  className={`flex-1 py-2 text-xs font-medium transition-colors ${filters.watchedFilter === opt.value ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+                >{opt.label}</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-xs text-gray-500 mb-1.5">{t('filter.watchlist')}</p>
+            <div className="flex rounded-xl overflow-hidden border border-gray-700">
+              {([{ value: 'all', label: t('filter.all') }, { value: 'hide', label: t('filter.hide') }, { value: 'only', label: t('filter.onlyWatchlist') }] as const).map(opt => (
+                <button key={opt.value} onClick={() => onChange({ ...filters, watchlistFilter: opt.value })}
+                  className={`flex-1 py-2 text-xs font-medium transition-colors ${filters.watchlistFilter === opt.value ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+                >{opt.label}</button>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* Media type */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.contentType')}</label>
-        <div className="flex rounded-lg overflow-hidden border border-gray-700">
+      {/* Co hledáte */}
+      <section>
+        <div className="flex gap-2 mb-4">
           {(['movie', 'tv'] as const).map(type => (
             <button key={type} onClick={() => onChange({ ...filters, mediaType: type, genres: [] })}
-              className={`flex-1 py-2 text-sm font-medium transition-colors ${filters.mediaType === type ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
-            >{type === 'movie' ? t('filter.movies') : t('filter.series')}</button>
+              className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-700 bg-gray-800 text-gray-400'}`}>
+              <span className="text-2xl">{type === 'movie' ? '🎬' : '📺'}</span>
+              <span className="text-xs font-medium">{type === 'movie' ? t('filter.movies') : t('filter.series')}</span>
+            </button>
           ))}
         </div>
-      </div>
+        <button onClick={() => setGenreModalOpen(true)}
+          className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 hover:border-gray-600 transition-colors">
+          <span className="text-sm text-gray-300">
+            {filters.genres.length > 0
+              ? selectedGenres.map(g => `${GENRE_ICONS[g.id] ?? '🎞️'} ${g.name}`).join(', ')
+              : t('filter.genre')}
+          </span>
+          <span className="flex items-center gap-1.5 flex-shrink-0 ml-2">
+            {filters.genres.length > 0 && (
+              <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">{filters.genres.length}</span>
+            )}
+            <ChevronDown className="w-4 h-4 text-gray-500" />
+          </span>
+        </button>
+      </section>
 
-      {/* Sort */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.sort')}</label>
-        <div className="relative">
-          <select value={filters.sortBy} onChange={e => onChange({ ...filters, sortBy: e.target.value as SortOption })}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8">
-            {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{t(`sort.${o.value.replace(/\./g, '_')}`)}</option>)}
-          </select>
-          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-        </div>
-      </div>
-
-      {/* Certification */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.ageRating')}</label>
-        <div className="relative">
-          <select value={filters.certification} onChange={e => onChange({ ...filters, certification: e.target.value as FilterState['certification'] })}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8">
-            <option value="">{t('filter.ratingAll')}</option>
-            <option value="G">{t('filter.forKids')}</option>
-            <option value="PG">{t('filter.children')}</option>
-            <option value="PG-13">{t('filter.youth')}</option>
-          </select>
-          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-        </div>
-      </div>
-
-      {/* Person search */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.personSearch')}</label>
+      {/* Osoby */}
+      <section>
+        <h3 className="text-sm font-semibold text-gray-400 mb-3">{t('filter.personSearch')}</h3>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <input type="text" value={personQuery} onChange={e => setPersonQuery(e.target.value)} placeholder={t('filter.personPlaceholder')}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-9 pr-9 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500" />
+            className="w-full bg-gray-800 border border-gray-700 rounded-xl pl-9 pr-9 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-red-500" />
           {(personQuery || filters.personId) && (
-            <button onClick={clearPerson} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"><X className="w-4 h-4" /></button>
+            <button onClick={clearPerson} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
+              <X className="w-4 h-4" />
+            </button>
           )}
         </div>
         {personResults.length > 0 && (
-          <div className="mt-1 bg-gray-800 border border-gray-700 rounded-lg overflow-hidden shadow-xl">
+          <div className="mt-1 bg-gray-800 border border-gray-700 rounded-xl overflow-hidden shadow-xl">
             {personResults.map(p => (
               <button key={p.id} onClick={() => selectPerson(p.id, p.name, p.dept)}
-                className="w-full text-left px-3 py-2 hover:bg-gray-700 text-sm text-white flex justify-between items-center">
+                className="w-full text-left px-3 py-2.5 hover:bg-gray-700 text-sm text-white flex justify-between items-center border-b border-gray-700 last:border-0">
                 <span>{p.name}</span><span className="text-xs text-gray-500">{p.dept}</span>
               </button>
             ))}
@@ -474,68 +534,17 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
         )}
         {personSearchLoading && <p className="text-xs text-gray-500 mt-1">{t('filter.searching')}</p>}
         {filters.personId && <p className="text-xs text-green-400 mt-1">{t('filter.filteredBy', { name: filters.personName })}</p>}
-      </div>
-
-      {/* Min rating */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          {t('filter.minRating', { value: filters.minRating > 0 ? filters.minRating.toFixed(1) : t('filter.minRatingAll') })}
-        </label>
-        <input type="range" min={0} max={9} step={0.5} value={filters.minRating}
-          onChange={e => onChange({ ...filters, minRating: parseFloat(e.target.value) })}
-          className="w-full accent-red-500" />
-        <div className="flex justify-between text-xs text-gray-500 mt-1"><span>{t('filter.ratingAll')}</span><span>9.0</span></div>
-      </div>
-
-      {/* Origin country */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.originCountry')}</label>
-        <div className="relative">
-          <select value={filters.originCountry} onChange={e => onChange({ ...filters, originCountry: e.target.value })}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8">
-            {COUNTRY_CODES.map(code => (
-              <option key={code} value={code}>{code === '' ? t('filter.allCountries') : countryDisplayNames.of(code) ?? code}</option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-        </div>
-      </div>
-
-      {/* Year range */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          {t('filter.yearRange', { from: filters.yearFrom, to: filters.yearTo })}
-        </label>
-        <div className="relative mt-3 mb-1">
-          <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-gray-700 rounded-full pointer-events-none">
-            <div className="absolute h-full bg-red-500 rounded-full"
-              style={{ left: `${((filters.yearFrom - 1950) / (CURRENT_YEAR - 1950)) * 100}%`, right: `${((CURRENT_YEAR - filters.yearTo) / (CURRENT_YEAR - 1950)) * 100}%` }} />
-          </div>
-          <div className="dual-range">
-            <input type="range" min={1950} max={CURRENT_YEAR} step={1} value={filters.yearFrom}
-              onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearFrom: v, yearTo: Math.max(v, filters.yearTo) }); }} />
-            <input type="range" min={1950} max={CURRENT_YEAR} step={1} value={filters.yearTo}
-              onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearTo: v, yearFrom: Math.min(v, filters.yearFrom) }); }} />
-          </div>
-        </div>
-        <div className="flex justify-between text-xs text-gray-500 mt-1"><span>1950</span><span>{CURRENT_YEAR}</span></div>
-      </div>
-
-      {/* Genres */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.genre')}</label>
-        <div className="flex flex-wrap gap-2">
-          {genres.map(genre => {
-            const active = filters.genres.includes(genre.id);
-            return (
-              <button key={genre.id} onClick={() => toggleGenre(genre.id)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${active ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'}`}>
-                {genre.name}
+        {!filters.personId && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {QUICK_PERSONS.map(p => (
+              <button key={p.id} onClick={() => selectPerson(p.id, p.fullName, p.dept)}
+                className="px-3 py-1.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300 hover:border-gray-600 hover:text-white transition-colors">
+                {p.name}
               </button>
-            );
-          })}
-        </div>
-      </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 
