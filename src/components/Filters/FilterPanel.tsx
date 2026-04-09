@@ -98,56 +98,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
   const mobilePanel = (
     <div className="fixed inset-0 z-50 bg-gray-950 flex flex-col overflow-hidden">
 
-      {/* Genre popup modal */}
-      {genreModalOpen && (
-        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/70 backdrop-blur-sm" onClick={() => setGenreModalOpen(false)}>
-          <div className="w-full max-h-[80vh] bg-gray-900 rounded-t-2xl flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between px-4 py-4 border-b border-gray-800 flex-shrink-0">
-              <h3 className="font-semibold text-white">{t('filter.genre')}</h3>
-              <div className="flex items-center gap-2">
-                {filters.genres.length > 0 && (
-                  <button onClick={() => onChange({ ...filters, genres: [] })} className="text-xs text-red-400 hover:text-red-300">
-                    {t('filter.ratingAll')}
-                  </button>
-                )}
-                <button onClick={() => setGenreModalOpen(false)} className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white rounded-lg hover:bg-gray-800">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-            <div className="overflow-y-auto p-4 grid grid-cols-2 gap-2">
-              {genres.map(genre => {
-                const active = filters.genres.includes(genre.id);
-                return (
-                  <button
-                    key={genre.id}
-                    onClick={() => toggleGenre(genre.id)}
-                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                      active
-                        ? 'bg-red-600/20 border border-red-500/60 text-white'
-                        : 'bg-gray-800 border border-gray-700 text-gray-300 hover:border-gray-500 hover:text-white'
-                    }`}
-                  >
-                    <span className="text-base">{GENRE_ICONS[genre.id] ?? '🎞️'}</span>
-                    <span className="truncate">{genre.name}</span>
-                  </button>
-                );
-              })}
-            </div>
-            <div className="px-4 py-3 border-t border-gray-800 flex-shrink-0">
-              <button
-                onClick={() => setGenreModalOpen(false)}
-                className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-xl transition-colors"
-              >
-                {filters.genres.length > 0
-                  ? `${t('filter.genre')}: ${filters.genres.length} ✓`
-                  : t('filter.showResultsSimple')}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-5">
 
@@ -550,6 +500,56 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
 
   return (
     <>
+      {/* Genre popup modal (shared mobile + desktop) */}
+      {genreModalOpen && (
+        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/70 backdrop-blur-sm" onClick={() => setGenreModalOpen(false)}>
+          <div className="w-full max-w-lg max-h-[80vh] bg-gray-900 rounded-t-2xl flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-4 py-4 border-b border-gray-800 flex-shrink-0">
+              <h3 className="font-semibold text-white">{t('filter.genre')}</h3>
+              <div className="flex items-center gap-2">
+                {filters.genres.length > 0 && (
+                  <button onClick={() => onChange({ ...filters, genres: [] })} className="text-xs text-red-400 hover:text-red-300">
+                    {t('filter.ratingAll')}
+                  </button>
+                )}
+                <button onClick={() => setGenreModalOpen(false)} className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white rounded-lg hover:bg-gray-800">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            <div className="overflow-y-auto p-4 grid grid-cols-2 gap-2">
+              {genres.map(genre => {
+                const active = filters.genres.includes(genre.id);
+                return (
+                  <button
+                    key={genre.id}
+                    onClick={() => toggleGenre(genre.id)}
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                      active
+                        ? 'bg-red-600/20 border border-red-500/60 text-white'
+                        : 'bg-gray-800 border border-gray-700 text-gray-300 hover:border-gray-500 hover:text-white'
+                    }`}
+                  >
+                    <span className="text-base">{GENRE_ICONS[genre.id] ?? '🎞️'}</span>
+                    <span className="truncate">{genre.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="px-4 py-3 border-t border-gray-800 flex-shrink-0">
+              <button
+                onClick={() => setGenreModalOpen(false)}
+                className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-xl transition-colors"
+              >
+                {filters.genres.length > 0
+                  ? `${t('filter.genre')}: ${filters.genres.length} ✓`
+                  : t('filter.showResultsSimple')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Mobile full-screen panel */}
       {mobileOpen && <div className="lg:hidden">{mobilePanel}</div>}
 
