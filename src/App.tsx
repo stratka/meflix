@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Settings, X, WifiOff, Share2 } from 'lucide-react';
+import { Settings, X, WifiOff, Share2, Download } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from './hooks/useAuth';
 import { useCloudSettings } from './hooks/useCloudSettings';
@@ -63,7 +63,15 @@ export default function App() {
           </a>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-600">v1.7.7</span>
+          <span className="text-xs text-gray-600">v1.7.8</span>
+          <a
+            href="/mimoovie.apk"
+            download="mimoovie.apk"
+            className="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"
+            title="Stáhnout pro Android"
+          >
+            <Download className="w-5 h-5" />
+          </a>
           <button
             onClick={() => {
               const data = { title: 'Mimoovie', text: t('share.appText'), url: 'https://www.mimoovie.com' };
