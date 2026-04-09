@@ -292,6 +292,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
             onChange={setFilters}
             mobileOpen={mobileFilterOpen}
             onMobileOpenChange={setMobileFilterOpen}
+            totalResults={idMode ? idMovies.length : totalResults}
           />
         )}
 

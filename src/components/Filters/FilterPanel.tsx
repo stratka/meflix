@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, ChevronDown, SlidersHorizontal, Eye, Check, Bookmark } from 'lucide-react';
+import { Search, X, ChevronDown, SlidersHorizontal, Eye, Bookmark, BarChart2, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Genre } from '../../types/tmdb';
 import type { FilterState, SortOption } from '../../types/app';
@@ -12,18 +12,33 @@ interface Props {
   onChange: (filters: FilterState) => void;
   mobileOpen?: boolean;
   onMobileOpenChange?: (open: boolean) => void;
+  totalResults?: number;
 }
 
 const CURRENT_YEAR = new Date().getFullYear();
 
 const COUNTRY_CODES = ['', 'US', 'GB', 'FR', 'DE', 'IT', 'ES', 'CZ', 'SK', 'PL', 'AT', 'SE', 'DK', 'NO', 'JP', 'KR', 'IN', 'CN', 'AU', 'CA', 'BR', 'MX', 'IR', 'RU', 'TR'];
 
-export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMobileOpen, onMobileOpenChange }: Props) {
+const GENRE_ICONS: Record<number, string> = {
+  28: '⚔️', 12: '🗺️', 16: '🎨', 35: '😂', 80: '🔫',
+  99: '🎥', 18: '🎭', 10751: '👨‍👩‍👧', 14: '🏰', 36: '🏛️',
+  27: '💀', 10402: '🎵', 9648: '🔍', 10749: '❤️', 878: '🚀',
+  53: '😰', 10752: '🎖️', 37: '🤠',
+};
+
+const QUICK_PERSONS = [
+  { id: 525, name: 'Nolan', fullName: 'Christopher Nolan', dept: 'Directing' },
+  { id: 6193, name: 'DiCaprio', fullName: 'Leonardo DiCaprio', dept: 'Acting' },
+  { id: 55428, name: 'Villeneuve', fullName: 'Denis Villeneuve', dept: 'Directing' },
+  { id: 138, name: 'Tarantino', fullName: 'Quentin Tarantino', dept: 'Directing' },
+];
+
+export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMobileOpen, onMobileOpenChange, totalResults }: Props) {
   const { t, i18n } = useTranslation();
   const [internalMobileOpen, setInternalMobileOpen] = useState(false);
   const mobileOpen = externalMobileOpen !== undefined ? externalMobileOpen : internalMobileOpen;
   const setMobileOpen = (v: boolean) => { setInternalMobileOpen(v); onMobileOpenChange?.(v); };
-  const mobileContainerRef = useRef<HTMLDivElement>(null);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const [personQuery, setPersonQuery] = useState(filters.personName);
   const [personResults, setPersonResults] = useState<{ id: number; name: string; dept: string }[]>([]);
   const [personSearchLoading, setPersonSearchLoading] = useState(false);
@@ -31,7 +46,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
 
   const countryDisplayNames = new Intl.DisplayNames([i18n.language], { type: 'region' });
 
-  // Person search with debounce
   useEffect(() => {
     if (personTimeout.current) clearTimeout(personTimeout.current);
     if (!personQuery.trim() || personQuery === filters.personName) {
@@ -42,13 +56,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       setPersonSearchLoading(true);
       try {
         const res = await searchPerson(personQuery);
-        setPersonResults(
-          res.results.slice(0, 6).map(p => ({
-            id: p.id,
-            name: p.name,
-            dept: p.known_for_department,
-          }))
-        );
+        setPersonResults(res.results.slice(0, 6).map(p => ({ id: p.id, name: p.name, dept: p.known_for_department })));
       } catch { /* ignore */ }
       finally { setPersonSearchLoading(false); }
     }, 400);
@@ -57,12 +65,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
   function selectPerson(id: number, name: string, dept: string) {
     setPersonQuery(name);
     setPersonResults([]);
-    onChange({
-      ...filters,
-      personId: id,
-      personName: name,
-      personRole: dept === 'Directing' ? 'crew' : 'cast',
-    });
+    onChange({ ...filters, personId: id, personName: name, personRole: dept === 'Directing' ? 'crew' : 'cast' });
   }
 
   function clearPerson() {
@@ -72,27 +75,11 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
   }
 
   function toggleGenre(id: number) {
-    const genres = filters.genres.includes(id)
+    const next = filters.genres.includes(id)
       ? filters.genres.filter(g => g !== id)
       : [...filters.genres, id];
-    onChange({ ...filters, genres });
+    onChange({ ...filters, genres: next });
   }
-
-  // Zavři mobilní filtr při odscrollování mimo viewport (zpožděně, aby scroll stihl proběhnout)
-  useEffect(() => {
-    if (!mobileOpen) return;
-    const el = mobileContainerRef.current;
-    if (!el) return;
-    let observer: IntersectionObserver;
-    const timer = setTimeout(() => {
-      observer = new IntersectionObserver(
-        ([entry]) => { if (!entry.isIntersecting) setMobileOpen(false); },
-        { threshold: 0 }
-      );
-      observer.observe(el);
-    }, 400);
-    return () => { clearTimeout(timer); observer?.disconnect(); };
-  }, [mobileOpen]);
 
   const activeFilterCount = [
     filters.genres.length > 0,
@@ -106,71 +93,377 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
     filters.certification !== '',
   ].filter(Boolean).length;
 
-  const panelContent = (
-    <div className="space-y-6">
-      {/* Shlédnuté filmy */}
+  const selectedGenres = genres.filter(g => filters.genres.includes(g.id));
+  const otherGenres = genres.filter(g => !filters.genres.includes(g.id));
+
+  const mobilePanel = (
+    <div className="fixed inset-0 z-50 bg-gray-950 flex flex-col overflow-hidden">
+      {/* Header */}
+      <div className="px-4 pt-5 pb-3 flex-shrink-0">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-white">{t('filter.findYourMovie')}</h2>
+          <button
+            onClick={() => setAdvancedOpen(v => !v)}
+            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-colors ${advancedOpen ? 'border-red-500 text-red-400 bg-red-500/10' : 'border-gray-700 text-gray-400'}`}
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+            {t('filter.refine')}
+          </button>
+        </div>
+
+        {/* Stats */}
+        {totalResults !== undefined && totalResults > 0 && (
+          <div className="flex items-center gap-2 px-3 py-2.5 bg-gray-900 rounded-xl border border-gray-800 mb-4">
+            <BarChart2 className="w-4 h-4 text-blue-400 flex-shrink-0" />
+            <span className="text-sm text-white">
+              <span className="font-bold text-blue-400">{totalResults.toLocaleString()}</span>
+              {' '}{t('filter.moviesAvailable')}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-5">
+
+        {/* Váš výběr */}
+        <section>
+          <h3 className="text-sm font-semibold text-gray-400 mb-3 flex items-center gap-1.5">
+            <Eye className="w-4 h-4" /> {t('filter.yourSelection')}
+          </h3>
+          <div className="space-y-2.5">
+            <div>
+              <p className="text-xs text-gray-500 mb-1.5">{t('filter.watched')}</p>
+              <div className="flex rounded-xl overflow-hidden border border-gray-800">
+                {([
+                  { value: 'all', label: t('filter.all') },
+                  { value: 'hide', label: t('filter.hide') },
+                  { value: 'only', label: t('filter.onlyWatched') },
+                ] as const).map(opt => (
+                  <button
+                    key={opt.value}
+                    onClick={() => onChange({ ...filters, watchedFilter: opt.value })}
+                    className={`flex-1 py-2 text-xs font-medium transition-colors ${filters.watchedFilter === opt.value ? 'bg-red-600 text-white' : 'bg-gray-900 text-gray-400 hover:text-white'}`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 mb-1.5">{t('filter.watchlist')}</p>
+              <div className="flex rounded-xl overflow-hidden border border-gray-800">
+                {([
+                  { value: 'all', label: t('filter.all') },
+                  { value: 'hide', label: t('filter.hide') },
+                  { value: 'only', label: t('filter.onlyWatchlist') },
+                ] as const).map(opt => (
+                  <button
+                    key={opt.value}
+                    onClick={() => onChange({ ...filters, watchlistFilter: opt.value })}
+                    className={`flex-1 py-2 text-xs font-medium transition-colors ${filters.watchlistFilter === opt.value ? 'bg-red-600 text-white' : 'bg-gray-900 text-gray-400 hover:text-white'}`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Co hledáte */}
+        <section>
+          <h3 className="text-sm font-semibold text-gray-400 mb-3">{t('filter.whatAreYouLookingFor')}</h3>
+
+          {/* Typ obsahu */}
+          <div className="flex gap-2 mb-4">
+            {(['movie', 'tv'] as const).map(type => (
+              <button
+                key={type}
+                onClick={() => onChange({ ...filters, mediaType: type })}
+                className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-800 bg-gray-900 text-gray-400'}`}
+              >
+                <span className="text-2xl">{type === 'movie' ? '🎬' : '📺'}</span>
+                <span className="text-xs font-medium">{type === 'movie' ? t('filter.movies') : t('filter.series')}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Žánry */}
+          <p className="text-xs text-gray-500 mb-2">{t('filter.genre')}</p>
+          <div className="grid grid-cols-2 gap-2">
+            {selectedGenres.map(genre => (
+              <button
+                key={genre.id}
+                onClick={() => toggleGenre(genre.id)}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-red-600/20 border border-red-500/40 text-white text-sm font-medium transition-colors hover:bg-red-600/30"
+              >
+                <span className="text-base">{GENRE_ICONS[genre.id] ?? '🎞️'}</span>
+                <span className="truncate">{genre.name}</span>
+              </button>
+            ))}
+            {otherGenres.map(genre => (
+              <button
+                key={genre.id}
+                onClick={() => toggleGenre(genre.id)}
+                className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-gray-300 text-sm transition-colors hover:border-gray-600 hover:text-white"
+              >
+                <span className="text-base">{GENRE_ICONS[genre.id] ?? '🎞️'}</span>
+                <span className="truncate">{genre.name}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Upřesnění (collapsible) */}
+        <section>
+          <button
+            onClick={() => setAdvancedOpen(v => !v)}
+            className="w-full flex items-center justify-between mb-3"
+          >
+            <h3 className="text-sm font-semibold text-gray-400">{t('filter.refinement')}</h3>
+            <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {advancedOpen && (
+            <div className="space-y-4">
+              {/* Řazení + Věkové hodnocení */}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <p className="text-xs text-gray-500 mb-1.5">{t('filter.sort')}</p>
+                  <div className="relative">
+                    <select
+                      value={filters.sortBy}
+                      onChange={e => onChange({ ...filters, sortBy: e.target.value as SortOption })}
+                      className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white appearance-none focus:outline-none focus:border-red-500 pr-7"
+                    >
+                      {SORT_OPTIONS.map(o => (
+                        <option key={o.value} value={o.value}>
+                          {t(`sort.${o.value.replace(/\./g, '_')}`)}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1.5">{t('filter.ageRating')}</p>
+                  <div className="relative">
+                    <select
+                      value={filters.certification}
+                      onChange={e => onChange({ ...filters, certification: e.target.value as FilterState['certification'] })}
+                      className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white appearance-none focus:outline-none focus:border-red-500 pr-7"
+                    >
+                      <option value="">{t('filter.ratingAll')}</option>
+                      <option value="G">{t('filter.forKids')}</option>
+                      <option value="PG">{t('filter.children')}</option>
+                      <option value="PG-13">{t('filter.youth')}</option>
+                    </select>
+                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Minimální hodnocení */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs text-gray-500">{t('filter.minRating', { value: filters.minRating > 0 ? filters.minRating.toFixed(1) : t('filter.minRatingAll') })}</p>
+                  <div className="flex gap-0.5">
+                    {[1,2,3,4,5].map(i => (
+                      <span key={i} className={`text-base ${filters.minRating >= i * 2 - 1 ? 'text-yellow-400' : filters.minRating >= i * 2 - 1.5 ? 'text-yellow-400/50' : 'text-gray-700'}`}>★</span>
+                    ))}
+                  </div>
+                </div>
+                <input
+                  type="range" min={0} max={9} step={0.5}
+                  value={filters.minRating}
+                  onChange={e => onChange({ ...filters, minRating: parseFloat(e.target.value) })}
+                  className="w-full accent-red-500"
+                />
+                <div className="flex justify-between text-xs text-gray-600 mt-1">
+                  <span>{t('filter.ratingAll')}</span><span>9.0</span>
+                </div>
+              </div>
+
+              {/* Rok vydání */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs text-gray-500">{t('filter.yearRange', { from: filters.yearFrom, to: filters.yearTo })}</p>
+                </div>
+                <div className="relative mt-3 mb-1">
+                  <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-gray-800 rounded-full pointer-events-none">
+                    <div
+                      className="absolute h-full bg-red-500 rounded-full"
+                      style={{
+                        left: `${((filters.yearFrom - 1950) / (CURRENT_YEAR - 1950)) * 100}%`,
+                        right: `${((CURRENT_YEAR - filters.yearTo) / (CURRENT_YEAR - 1950)) * 100}%`,
+                      }}
+                    />
+                  </div>
+                  <div className="dual-range">
+                    <input type="range" min={1950} max={CURRENT_YEAR} step={1} value={filters.yearFrom}
+                      onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearFrom: v, yearTo: Math.max(v, filters.yearTo) }); }}
+                    />
+                    <input type="range" min={1950} max={CURRENT_YEAR} step={1} value={filters.yearTo}
+                      onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearTo: v, yearFrom: Math.min(v, filters.yearFrom) }); }}
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-between text-xs text-gray-600 mt-1">
+                  <span>1950</span><span>{CURRENT_YEAR}</span>
+                </div>
+              </div>
+
+              {/* Země původu */}
+              <div>
+                <p className="text-xs text-gray-500 mb-1.5">{t('filter.originCountry')}</p>
+                <div className="relative">
+                  <select
+                    value={filters.originCountry}
+                    onChange={e => onChange({ ...filters, originCountry: e.target.value })}
+                    className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8"
+                  >
+                    {COUNTRY_CODES.map(code => (
+                      <option key={code} value={code}>
+                        {code === '' ? t('filter.allCountries') : countryDisplayNames.of(code) ?? code}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* Osoby */}
+        <section>
+          <h3 className="text-sm font-semibold text-gray-400 mb-3">{t('filter.personSearch')}</h3>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <input
+              type="text"
+              value={personQuery}
+              onChange={e => setPersonQuery(e.target.value)}
+              placeholder={t('filter.personPlaceholder')}
+              className="w-full bg-gray-900 border border-gray-800 rounded-xl pl-9 pr-9 py-2.5 text-sm text-white placeholder-gray-600 focus:outline-none focus:border-red-500"
+            />
+            {(personQuery || filters.personId) && (
+              <button onClick={clearPerson} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+          {personResults.length > 0 && (
+            <div className="mt-1 bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-xl">
+              {personResults.map(p => (
+                <button key={p.id} onClick={() => selectPerson(p.id, p.name, p.dept)}
+                  className="w-full text-left px-3 py-2.5 hover:bg-gray-800 text-sm text-white flex justify-between items-center border-b border-gray-800 last:border-0"
+                >
+                  <span>{p.name}</span>
+                  <span className="text-xs text-gray-500">{p.dept}</span>
+                </button>
+              ))}
+            </div>
+          )}
+          {personSearchLoading && <p className="text-xs text-gray-500 mt-1">{t('filter.searching')}</p>}
+          {filters.personId && <p className="text-xs text-green-400 mt-1">{t('filter.filteredBy', { name: filters.personName })}</p>}
+
+          {/* Quick persons */}
+          {!filters.personId && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {QUICK_PERSONS.map(p => (
+                <button
+                  key={p.id}
+                  onClick={() => selectPerson(p.id, p.fullName, p.dept)}
+                  className="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-full text-xs text-gray-300 hover:border-gray-600 hover:text-white transition-colors"
+                >
+                  {p.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+
+      {/* Bottom CTA */}
+      <div className="flex-shrink-0 px-4 py-4 border-t border-gray-800 bg-gray-950">
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="w-full flex items-center justify-center gap-2 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-2xl transition-colors shadow-lg shadow-emerald-500/20"
+        >
+          <span>
+            {totalResults !== undefined && totalResults > 0
+              ? t('filter.showResults', { count: totalResults })
+              : t('filter.showResultsSimple')}
+          </span>
+          <Sparkles className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+
+  // Desktop sidebar (zachován původní styl)
+  const desktopPanel = (
+    <div className="space-y-5">
+      {/* Watched */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
           <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> {t('filter.watched')}</span>
         </label>
         <div className="flex rounded-lg overflow-hidden border border-gray-700">
-          {([
-            { value: 'all', label: t('filter.all') },
-            { value: 'hide', label: t('filter.hide') },
-            { value: 'only', label: t('filter.onlyWatched') },
-          ] as const).map(opt => (
-            <button
-              key={opt.value}
-              onClick={() => onChange({ ...filters, watchedFilter: opt.value })}
-              className={`flex-1 py-2 text-xs font-medium transition-colors ${
-                filters.watchedFilter === opt.value
-                  ? 'bg-red-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:text-white'
-              }`}
-            >
-              {opt.label}
-            </button>
+          {([{ value: 'all', label: t('filter.all') }, { value: 'hide', label: t('filter.hide') }, { value: 'only', label: t('filter.onlyWatched') }] as const).map(opt => (
+            <button key={opt.value} onClick={() => onChange({ ...filters, watchedFilter: opt.value })}
+              className={`flex-1 py-2 text-xs font-medium transition-colors ${filters.watchedFilter === opt.value ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+            >{opt.label}</button>
           ))}
         </div>
       </div>
 
-      {/* Chci vidět */}
+      {/* Watchlist */}
       <div>
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
           <span className="flex items-center gap-1"><Bookmark className="w-3.5 h-3.5" /> {t('filter.watchlist')}</span>
         </label>
         <div className="flex rounded-lg overflow-hidden border border-gray-700">
-          {([
-            { value: 'all', label: t('filter.all') },
-            { value: 'hide', label: t('filter.hide') },
-            { value: 'only', label: t('filter.onlyWatchlist') },
-          ] as const).map(opt => (
-            <button
-              key={opt.value}
-              onClick={() => onChange({ ...filters, watchlistFilter: opt.value })}
-              className={`flex-1 py-2 text-xs font-medium transition-colors ${
-                filters.watchlistFilter === opt.value
-                  ? 'bg-red-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:text-white'
-              }`}
-            >
-              {opt.label}
-            </button>
+          {([{ value: 'all', label: t('filter.all') }, { value: 'hide', label: t('filter.hide') }, { value: 'only', label: t('filter.onlyWatchlist') }] as const).map(opt => (
+            <button key={opt.value} onClick={() => onChange({ ...filters, watchlistFilter: opt.value })}
+              className={`flex-1 py-2 text-xs font-medium transition-colors ${filters.watchlistFilter === opt.value ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+            >{opt.label}</button>
           ))}
         </div>
       </div>
 
-      {/* Certification / věkové hodnocení */}
+      {/* Media type */}
       <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          {t('filter.ageRating')}
-        </label>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.contentType')}</label>
+        <div className="flex rounded-lg overflow-hidden border border-gray-700">
+          {(['movie', 'tv'] as const).map(type => (
+            <button key={type} onClick={() => onChange({ ...filters, mediaType: type })}
+              className={`flex-1 py-2 text-sm font-medium transition-colors ${filters.mediaType === type ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
+            >{type === 'movie' ? t('filter.movies') : t('filter.series')}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Sort */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.sort')}</label>
         <div className="relative">
-          <select
-            value={filters.certification}
-            onChange={e => onChange({ ...filters, certification: e.target.value as FilterState['certification'] })}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8"
-          >
+          <select value={filters.sortBy} onChange={e => onChange({ ...filters, sortBy: e.target.value as SortOption })}
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8">
+            {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{t(`sort.${o.value.replace(/\./g, '_')}`)}</option>)}
+          </select>
+          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+        </div>
+      </div>
+
+      {/* Certification */}
+      <div>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.ageRating')}</label>
+        <div className="relative">
+          <select value={filters.certification} onChange={e => onChange({ ...filters, certification: e.target.value as FilterState['certification'] })}
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8">
             <option value="">{t('filter.ratingAll')}</option>
             <option value="G">{t('filter.forKids')}</option>
             <option value="PG">{t('filter.children')}</option>
@@ -180,94 +473,29 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
         </div>
       </div>
 
-      {/* Media type */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          {t('filter.contentType')}
-        </label>
-        <div className="flex rounded-lg overflow-hidden border border-gray-700">
-          {(['movie', 'tv'] as const).map(type => (
-            <button
-              key={type}
-              onClick={() => onChange({ ...filters, mediaType: type })}
-              className={`flex-1 py-2 text-sm font-medium transition-colors ${
-                filters.mediaType === type
-                  ? 'bg-red-600 text-white'
-                  : 'bg-gray-800 text-gray-400 hover:text-white'
-              }`}
-            >
-              {type === 'movie' ? t('filter.movies') : t('filter.series')}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Sort */}
-      <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          {t('filter.sort')}
-        </label>
-        <div className="relative">
-          <select
-            value={filters.sortBy}
-            onChange={e => onChange({ ...filters, sortBy: e.target.value as SortOption })}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8"
-          >
-            {SORT_OPTIONS.map(o => (
-              <option key={o.value} value={o.value}>
-                {t(`sort.${o.value.replace(/\./g, '_')}`)}
-              </option>
-            ))}
-          </select>
-          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-        </div>
-      </div>
-
       {/* Person search */}
       <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          {t('filter.personSearch')}
-        </label>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.personSearch')}</label>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-          <input
-            type="text"
-            value={personQuery}
-            onChange={e => setPersonQuery(e.target.value)}
-            placeholder={t('filter.personPlaceholder')}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-9 pr-9 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500"
-          />
+          <input type="text" value={personQuery} onChange={e => setPersonQuery(e.target.value)} placeholder={t('filter.personPlaceholder')}
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-9 pr-9 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-red-500" />
           {(personQuery || filters.personId) && (
-            <button
-              onClick={clearPerson}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"
-            >
-              <X className="w-4 h-4" />
-            </button>
+            <button onClick={clearPerson} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"><X className="w-4 h-4" /></button>
           )}
         </div>
         {personResults.length > 0 && (
-          <div className="mt-1 bg-gray-800 border border-gray-700 rounded-lg overflow-hidden shadow-xl z-10">
+          <div className="mt-1 bg-gray-800 border border-gray-700 rounded-lg overflow-hidden shadow-xl">
             {personResults.map(p => (
-              <button
-                key={p.id}
-                onClick={() => selectPerson(p.id, p.name, p.dept)}
-                className="w-full text-left px-3 py-2 hover:bg-gray-700 text-sm text-white flex justify-between items-center"
-              >
-                <span>{p.name}</span>
-                <span className="text-xs text-gray-500">{p.dept}</span>
+              <button key={p.id} onClick={() => selectPerson(p.id, p.name, p.dept)}
+                className="w-full text-left px-3 py-2 hover:bg-gray-700 text-sm text-white flex justify-between items-center">
+                <span>{p.name}</span><span className="text-xs text-gray-500">{p.dept}</span>
               </button>
             ))}
           </div>
         )}
-        {personSearchLoading && (
-          <p className="text-xs text-gray-500 mt-1">{t('filter.searching')}</p>
-        )}
-        {filters.personId && (
-          <p className="text-xs text-green-400 mt-1">
-            {t('filter.filteredBy', { name: filters.personName })}
-          </p>
-        )}
+        {personSearchLoading && <p className="text-xs text-gray-500 mt-1">{t('filter.searching')}</p>}
+        {filters.personId && <p className="text-xs text-green-400 mt-1">{t('filter.filteredBy', { name: filters.personName })}</p>}
       </div>
 
       {/* Min rating */}
@@ -275,36 +503,20 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
           {t('filter.minRating', { value: filters.minRating > 0 ? filters.minRating.toFixed(1) : t('filter.minRatingAll') })}
         </label>
-        <input
-          type="range"
-          min={0}
-          max={9}
-          step={0.5}
-          value={filters.minRating}
+        <input type="range" min={0} max={9} step={0.5} value={filters.minRating}
           onChange={e => onChange({ ...filters, minRating: parseFloat(e.target.value) })}
-          className="w-full accent-red-500"
-        />
-        <div className="flex justify-between text-xs text-gray-500 mt-1">
-          <span>{t('filter.ratingAll')}</span>
-          <span>9.0</span>
-        </div>
+          className="w-full accent-red-500" />
+        <div className="flex justify-between text-xs text-gray-500 mt-1"><span>{t('filter.ratingAll')}</span><span>9.0</span></div>
       </div>
 
       {/* Origin country */}
       <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          {t('filter.originCountry')}
-        </label>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.originCountry')}</label>
         <div className="relative">
-          <select
-            value={filters.originCountry}
-            onChange={e => onChange({ ...filters, originCountry: e.target.value })}
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8"
-          >
+          <select value={filters.originCountry} onChange={e => onChange({ ...filters, originCountry: e.target.value })}
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8">
             {COUNTRY_CODES.map(code => (
-              <option key={code} value={code}>
-                {code === '' ? t('filter.allCountries') : countryDisplayNames.of(code) ?? code}
-              </option>
+              <option key={code} value={code}>{code === '' ? t('filter.allCountries') : countryDisplayNames.of(code) ?? code}</option>
             ))}
           </select>
           <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -317,84 +529,42 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
           {t('filter.yearRange', { from: filters.yearFrom, to: filters.yearTo })}
         </label>
         <div className="relative mt-3 mb-1">
-          {/* Track */}
           <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-gray-700 rounded-full pointer-events-none">
-            <div
-              className="absolute h-full bg-red-500 rounded-full"
-              style={{
-                left: `${((filters.yearFrom - 1950) / (CURRENT_YEAR - 1950)) * 100}%`,
-                right: `${((CURRENT_YEAR - filters.yearTo) / (CURRENT_YEAR - 1950)) * 100}%`,
-              }}
-            />
+            <div className="absolute h-full bg-red-500 rounded-full"
+              style={{ left: `${((filters.yearFrom - 1950) / (CURRENT_YEAR - 1950)) * 100}%`, right: `${((CURRENT_YEAR - filters.yearTo) / (CURRENT_YEAR - 1950)) * 100}%` }} />
           </div>
           <div className="dual-range">
-            <input
-              type="range"
-              min={1950}
-              max={CURRENT_YEAR}
-              step={1}
-              value={filters.yearFrom}
-              onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearFrom: v, yearTo: Math.max(v, filters.yearTo) }); }}
-            />
-            <input
-              type="range"
-              min={1950}
-              max={CURRENT_YEAR}
-              step={1}
-              value={filters.yearTo}
-              onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearTo: v, yearFrom: Math.min(v, filters.yearFrom) }); }}
-            />
+            <input type="range" min={1950} max={CURRENT_YEAR} step={1} value={filters.yearFrom}
+              onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearFrom: v, yearTo: Math.max(v, filters.yearTo) }); }} />
+            <input type="range" min={1950} max={CURRENT_YEAR} step={1} value={filters.yearTo}
+              onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearTo: v, yearFrom: Math.min(v, filters.yearFrom) }); }} />
           </div>
         </div>
-        <div className="flex justify-between text-xs text-gray-500 mt-1">
-          <span>1950</span>
-          <span>{CURRENT_YEAR}</span>
-        </div>
+        <div className="flex justify-between text-xs text-gray-500 mt-1"><span>1950</span><span>{CURRENT_YEAR}</span></div>
       </div>
 
       {/* Genres */}
       <div>
-        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
-          {t('filter.genre')}
-        </label>
+        <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.genre')}</label>
         <div className="flex flex-wrap gap-2">
           {genres.map(genre => {
             const active = filters.genres.includes(genre.id);
             return (
-              <button
-                key={genre.id}
-                onClick={() => toggleGenre(genre.id)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                  active
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
-                }`}
-              >
+              <button key={genre.id} onClick={() => toggleGenre(genre.id)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${active ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'}`}>
                 {genre.name}
               </button>
             );
           })}
         </div>
       </div>
-
     </div>
   );
 
   return (
     <>
-      {/* Mobile filter dropdown */}
-      {mobileOpen && (
-        <div ref={mobileContainerRef} className="lg:hidden px-4 pb-3 bg-gray-900/95 border-b border-gray-800">
-          <button
-            onClick={() => setMobileOpen(false)}
-            className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center transition-colors shadow-lg"
-            aria-label={t('filter.closeFilters')}
-          >
-            <Check className="w-5 h-5" />
-          </button>
-          {panelContent}
-        </div>
-      )}
+      {/* Mobile full-screen panel */}
+      {mobileOpen && <div className="lg:hidden">{mobilePanel}</div>}
 
       {/* Desktop sidebar */}
       <aside className="hidden lg:block w-64 flex-shrink-0">
@@ -403,12 +573,10 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
             <SlidersHorizontal className="w-4 h-4" />
             {t('filter.title')}
             {activeFilterCount > 0 && (
-              <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
-                {activeFilterCount}
-              </span>
+              <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">{activeFilterCount}</span>
             )}
           </h2>
-          {panelContent}
+          {desktopPanel}
         </div>
       </aside>
     </>
