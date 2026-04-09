@@ -152,18 +152,9 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-5">
 
-        {/* Upřesnění (collapsible) – nahoře */}
+        {/* Upřesnění – vždy viditelné */}
         <section>
-          <button
-            onClick={() => setAdvancedOpen(v => !v)}
-            className="w-full flex items-center justify-between mb-3"
-          >
-            <h3 className="text-sm font-semibold text-gray-400">{t('filter.refinement')}</h3>
-            <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />
-          </button>
-
-          {advancedOpen && (
-            <div className="space-y-4">
+          <div className="space-y-4">
               {/* Řazení + Věkové hodnocení */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
@@ -246,7 +237,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
                 </div>
               </div>
             </div>
-          )}
         </section>
 
         {/* Váš výběr */}
