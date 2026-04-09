@@ -38,7 +38,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
   const [internalMobileOpen, setInternalMobileOpen] = useState(false);
   const mobileOpen = externalMobileOpen !== undefined ? externalMobileOpen : internalMobileOpen;
   const setMobileOpen = (v: boolean) => { setInternalMobileOpen(v); onMobileOpenChange?.(v); };
-  const [advancedOpen, setAdvancedOpen] = useState(true);
   const [genreModalOpen, setGenreModalOpen] = useState(false);
   const [personQuery, setPersonQuery] = useState(filters.personName);
   const [personResults, setPersonResults] = useState<{ id: number; name: string; dept: string }[]>([]);
