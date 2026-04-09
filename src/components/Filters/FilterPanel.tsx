@@ -225,7 +225,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
               </div>
               {/* Země původu */}
               <div>
-                <p className="text-xs text-gray-500 mb-1.5">{t('filter.originCountry')}</p>
                 <div className="relative">
                   <select value={filters.originCountry} onChange={e => onChange({ ...filters, originCountry: e.target.value })}
                     className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8">
