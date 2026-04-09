@@ -101,10 +101,40 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-5">
 
-        {/* Upřesnění – vždy viditelné */}
+        {/* Filmy / Seriály + Žánr */}
+        <section>
+          <div className="flex gap-2 mb-4">
+            {(['movie', 'tv'] as const).map(type => (
+              <button
+                key={type}
+                onClick={() => onChange({ ...filters, mediaType: type, genres: [] })}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-800 bg-gray-900 text-gray-400'}`}
+              >
+                <span className="text-sm font-medium">{type === 'movie' ? t('filter.movies') : t('filter.series')}</span>
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => setGenreModalOpen(true)}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-600 transition-colors"
+          >
+            <span className="text-sm text-gray-300">
+              {filters.genres.length > 0
+                ? selectedGenres.map(g => `${GENRE_ICONS[g.id] ?? '🎞️'} ${g.name}`).join(', ')
+                : t('filter.genre')}
+            </span>
+            <span className="flex items-center gap-1.5 flex-shrink-0 ml-2">
+              {filters.genres.length > 0 && (
+                <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">{filters.genres.length}</span>
+              )}
+              <ChevronDown className="w-4 h-4 text-gray-500" />
+            </span>
+          </button>
+        </section>
+
+        {/* Upřesnění */}
         <section>
           <div className="space-y-4">
-              {/* Řazení + Věkové hodnocení */}
               <div className="grid grid-cols-2 gap-2">
                 <div>
                   <p className="text-xs text-gray-500 mb-1.5">{t('filter.sort')}</p>
@@ -140,7 +170,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
                   </div>
                 </div>
               </div>
-              {/* Minimální hodnocení */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-xs text-gray-500">{t('filter.minRating', { value: filters.minRating > 0 ? filters.minRating.toFixed(1) : t('filter.minRatingAll') })}</p>
@@ -155,7 +184,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
                   className="w-full accent-red-500" />
                 <div className="flex justify-between text-xs text-gray-600 mt-1"><span>{t('filter.ratingAll')}</span><span>9.0</span></div>
               </div>
-              {/* Rok vydání */}
               <div>
                 <p className="text-xs text-gray-500 mb-2">{t('filter.yearRange', { from: filters.yearFrom, to: filters.yearTo })}</p>
                 <div className="relative mt-3 mb-1">
@@ -172,7 +200,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
                 </div>
                 <div className="flex justify-between text-xs text-gray-600 mt-1"><span>1950</span><span>{CURRENT_YEAR}</span></div>
               </div>
-              {/* Země původu */}
               <div>
                 <div className="relative">
                   <select value={filters.originCountry} onChange={e => onChange({ ...filters, originCountry: e.target.value })}
@@ -227,40 +254,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
               </div>
             </div>
           </div>
-        </section>
-
-        {/* Co hledáte */}
-        <section>
-          {/* Typ obsahu */}
-          <div className="flex gap-2 mb-4">
-            {(['movie', 'tv'] as const).map(type => (
-              <button
-                key={type}
-                onClick={() => onChange({ ...filters, mediaType: type, genres: [] })}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-800 bg-gray-900 text-gray-400'}`}
-              >
-                <span className="text-sm font-medium">{type === 'movie' ? t('filter.movies') : t('filter.series')}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Žánry – tlačítko → popup */}
-          <button
-            onClick={() => setGenreModalOpen(true)}
-            className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-600 transition-colors"
-          >
-            <span className="text-sm text-gray-300">
-              {filters.genres.length > 0
-                ? selectedGenres.map(g => `${GENRE_ICONS[g.id] ?? '🎞️'} ${g.name}`).join(', ')
-                : t('filter.genre')}
-            </span>
-            <span className="flex items-center gap-1.5 flex-shrink-0 ml-2">
-              {filters.genres.length > 0 && (
-                <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">{filters.genres.length}</span>
-              )}
-              <ChevronDown className="w-4 h-4 text-gray-500" />
-            </span>
-          </button>
         </section>
 
         {/* Osoby */}
@@ -333,6 +326,32 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
   // Desktop sidebar
   const desktopPanel = (
     <div className="space-y-5">
+      {/* Filmy / Seriály + Žánr */}
+      <section>
+        <div className="flex gap-2 mb-4">
+          {(['movie', 'tv'] as const).map(type => (
+            <button key={type} onClick={() => onChange({ ...filters, mediaType: type, genres: [] })}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-700 bg-gray-800 text-gray-400'}`}>
+              <span className="text-sm font-medium">{type === 'movie' ? t('filter.movies') : t('filter.series')}</span>
+            </button>
+          ))}
+        </div>
+        <button onClick={() => setGenreModalOpen(true)}
+          className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 hover:border-gray-600 transition-colors">
+          <span className="text-sm text-gray-300">
+            {filters.genres.length > 0
+              ? selectedGenres.map(g => `${GENRE_ICONS[g.id] ?? '🎞️'} ${g.name}`).join(', ')
+              : t('filter.genre')}
+          </span>
+          <span className="flex items-center gap-1.5 flex-shrink-0 ml-2">
+            {filters.genres.length > 0 && (
+              <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">{filters.genres.length}</span>
+            )}
+            <ChevronDown className="w-4 h-4 text-gray-500" />
+          </span>
+        </button>
+      </section>
+
       {/* Upřesnění */}
       <section>
         <div className="space-y-4">
@@ -429,32 +448,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Co hledáte */}
-      <section>
-        <div className="flex gap-2 mb-4">
-          {(['movie', 'tv'] as const).map(type => (
-            <button key={type} onClick={() => onChange({ ...filters, mediaType: type, genres: [] })}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-700 bg-gray-800 text-gray-400'}`}>
-              <span className="text-sm font-medium">{type === 'movie' ? t('filter.movies') : t('filter.series')}</span>
-            </button>
-          ))}
-        </div>
-        <button onClick={() => setGenreModalOpen(true)}
-          className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 hover:border-gray-600 transition-colors">
-          <span className="text-sm text-gray-300">
-            {filters.genres.length > 0
-              ? selectedGenres.map(g => `${GENRE_ICONS[g.id] ?? '🎞️'} ${g.name}`).join(', ')
-              : t('filter.genre')}
-          </span>
-          <span className="flex items-center gap-1.5 flex-shrink-0 ml-2">
-            {filters.genres.length > 0 && (
-              <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">{filters.genres.length}</span>
-            )}
-            <ChevronDown className="w-4 h-4 text-gray-500" />
-          </span>
-        </button>
       </section>
 
       {/* Osoby */}
