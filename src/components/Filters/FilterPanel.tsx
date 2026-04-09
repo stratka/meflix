@@ -237,10 +237,9 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
               <button
                 key={type}
                 onClick={() => onChange({ ...filters, mediaType: type, genres: [] })}
-                className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-800 bg-gray-900 text-gray-400'}`}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-800 bg-gray-900 text-gray-400'}`}
               >
-                <span className="text-2xl">{type === 'movie' ? '🎬' : '📺'}</span>
-                <span className="text-xs font-medium">{type === 'movie' ? t('filter.movies') : t('filter.series')}</span>
+                <span className="text-sm font-medium">{type === 'movie' ? t('filter.movies') : t('filter.series')}</span>
               </button>
             ))}
           </div>
@@ -437,9 +436,8 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
         <div className="flex gap-2 mb-4">
           {(['movie', 'tv'] as const).map(type => (
             <button key={type} onClick={() => onChange({ ...filters, mediaType: type, genres: [] })}
-              className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-700 bg-gray-800 text-gray-400'}`}>
-              <span className="text-2xl">{type === 'movie' ? '🎬' : '📺'}</span>
-              <span className="text-xs font-medium">{type === 'movie' ? t('filter.movies') : t('filter.series')}</span>
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-700 bg-gray-800 text-gray-400'}`}>
+              <span className="text-sm font-medium">{type === 'movie' ? t('filter.movies') : t('filter.series')}</span>
             </button>
           ))}
         </div>
