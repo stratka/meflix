@@ -97,7 +97,10 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+      try { screen.orientation.lock('portrait'); } catch { /* ignore */ }
+    };
   }, []);
 
   useEffect(() => {
@@ -383,7 +386,10 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
               )}
               {!loading && trailer && !showTrailer && (
                 <button
-                  onClick={() => setShowTrailer(true)}
+                  onClick={() => {
+                    setShowTrailer(true);
+                    try { screen.orientation.unlock(); } catch { /* ignore */ }
+                  }}
                   className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors"
                 >
                   <Youtube className="w-4 h-4" />
