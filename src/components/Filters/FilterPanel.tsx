@@ -38,7 +38,8 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
   const [internalMobileOpen, setInternalMobileOpen] = useState(false);
   const mobileOpen = externalMobileOpen !== undefined ? externalMobileOpen : internalMobileOpen;
   const setMobileOpen = (v: boolean) => { setInternalMobileOpen(v); onMobileOpenChange?.(v); };
-  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [advancedOpen, setAdvancedOpen] = useState(true);
+  const [genreModalOpen, setGenreModalOpen] = useState(false);
   const [personQuery, setPersonQuery] = useState(filters.personName);
   const [personResults, setPersonResults] = useState<{ id: number; name: string; dept: string }[]>([]);
   const [personSearchLoading, setPersonSearchLoading] = useState(false);
@@ -123,8 +124,155 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
         )}
       </div>
 
+      {/* Genre popup modal */}
+      {genreModalOpen && (
+        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/70 backdrop-blur-sm" onClick={() => setGenreModalOpen(false)}>
+          <div className="w-full max-h-[80vh] bg-gray-900 rounded-t-2xl flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-4 py-4 border-b border-gray-800 flex-shrink-0">
+              <h3 className="font-semibold text-white">{t('filter.genre')}</h3>
+              <div className="flex items-center gap-2">
+                {filters.genres.length > 0 && (
+                  <button onClick={() => onChange({ ...filters, genres: [] })} className="text-xs text-red-400 hover:text-red-300">
+                    {t('filter.ratingAll')}
+                  </button>
+                )}
+                <button onClick={() => setGenreModalOpen(false)} className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-white rounded-lg hover:bg-gray-800">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            <div className="overflow-y-auto p-4 grid grid-cols-2 gap-2">
+              {genres.map(genre => {
+                const active = filters.genres.includes(genre.id);
+                return (
+                  <button
+                    key={genre.id}
+                    onClick={() => toggleGenre(genre.id)}
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                      active
+                        ? 'bg-red-600/20 border border-red-500/60 text-white'
+                        : 'bg-gray-800 border border-gray-700 text-gray-300 hover:border-gray-500 hover:text-white'
+                    }`}
+                  >
+                    <span className="text-base">{GENRE_ICONS[genre.id] ?? '🎞️'}</span>
+                    <span className="truncate">{genre.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="px-4 py-3 border-t border-gray-800 flex-shrink-0">
+              <button
+                onClick={() => setGenreModalOpen(false)}
+                className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-semibold rounded-xl transition-colors"
+              >
+                {filters.genres.length > 0
+                  ? `${t('filter.genre')}: ${filters.genres.length} ✓`
+                  : t('filter.showResultsSimple')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-5">
+
+        {/* Upřesnění (collapsible) – nahoře */}
+        <section>
+          <button
+            onClick={() => setAdvancedOpen(v => !v)}
+            className="w-full flex items-center justify-between mb-3"
+          >
+            <h3 className="text-sm font-semibold text-gray-400">{t('filter.refinement')}</h3>
+            <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {advancedOpen && (
+            <div className="space-y-4">
+              {/* Řazení + Věkové hodnocení */}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <p className="text-xs text-gray-500 mb-1.5">{t('filter.sort')}</p>
+                  <div className="relative">
+                    <select
+                      value={filters.sortBy}
+                      onChange={e => onChange({ ...filters, sortBy: e.target.value as SortOption })}
+                      className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white appearance-none focus:outline-none focus:border-red-500 pr-7"
+                    >
+                      {SORT_OPTIONS.map(o => (
+                        <option key={o.value} value={o.value}>
+                          {t(`sort.${o.value.replace(/\./g, '_')}`)}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500 mb-1.5">{t('filter.ageRating')}</p>
+                  <div className="relative">
+                    <select
+                      value={filters.certification}
+                      onChange={e => onChange({ ...filters, certification: e.target.value as FilterState['certification'] })}
+                      className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white appearance-none focus:outline-none focus:border-red-500 pr-7"
+                    >
+                      <option value="">{t('filter.ratingAll')}</option>
+                      <option value="G">{t('filter.forKids')}</option>
+                      <option value="PG">{t('filter.children')}</option>
+                      <option value="PG-13">{t('filter.youth')}</option>
+                    </select>
+                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
+                  </div>
+                </div>
+              </div>
+              {/* Minimální hodnocení */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs text-gray-500">{t('filter.minRating', { value: filters.minRating > 0 ? filters.minRating.toFixed(1) : t('filter.minRatingAll') })}</p>
+                  <div className="flex gap-0.5">
+                    {[1,2,3,4,5].map(i => (
+                      <span key={i} className={`text-base ${filters.minRating >= i * 2 - 1 ? 'text-yellow-400' : filters.minRating >= i * 2 - 1.5 ? 'text-yellow-400/50' : 'text-gray-700'}`}>★</span>
+                    ))}
+                  </div>
+                </div>
+                <input type="range" min={0} max={9} step={0.5} value={filters.minRating}
+                  onChange={e => onChange({ ...filters, minRating: parseFloat(e.target.value) })}
+                  className="w-full accent-red-500" />
+                <div className="flex justify-between text-xs text-gray-600 mt-1"><span>{t('filter.ratingAll')}</span><span>9.0</span></div>
+              </div>
+              {/* Rok vydání */}
+              <div>
+                <p className="text-xs text-gray-500 mb-2">{t('filter.yearRange', { from: filters.yearFrom, to: filters.yearTo })}</p>
+                <div className="relative mt-3 mb-1">
+                  <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-gray-800 rounded-full pointer-events-none">
+                    <div className="absolute h-full bg-red-500 rounded-full"
+                      style={{ left: `${((filters.yearFrom - 1950) / (CURRENT_YEAR - 1950)) * 100}%`, right: `${((CURRENT_YEAR - filters.yearTo) / (CURRENT_YEAR - 1950)) * 100}%` }} />
+                  </div>
+                  <div className="dual-range">
+                    <input type="range" min={1950} max={CURRENT_YEAR} step={1} value={filters.yearFrom}
+                      onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearFrom: v, yearTo: Math.max(v, filters.yearTo) }); }} />
+                    <input type="range" min={1950} max={CURRENT_YEAR} step={1} value={filters.yearTo}
+                      onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearTo: v, yearFrom: Math.min(v, filters.yearFrom) }); }} />
+                  </div>
+                </div>
+                <div className="flex justify-between text-xs text-gray-600 mt-1"><span>1950</span><span>{CURRENT_YEAR}</span></div>
+              </div>
+              {/* Země původu */}
+              <div>
+                <p className="text-xs text-gray-500 mb-1.5">{t('filter.originCountry')}</p>
+                <div className="relative">
+                  <select value={filters.originCountry} onChange={e => onChange({ ...filters, originCountry: e.target.value })}
+                    className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8">
+                    {COUNTRY_CODES.map(code => (
+                      <option key={code} value={code}>{code === '' ? t('filter.allCountries') : countryDisplayNames.of(code) ?? code}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+          )}
+        </section>
 
         {/* Váš výběr */}
         <section>
@@ -180,7 +328,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
             {(['movie', 'tv'] as const).map(type => (
               <button
                 key={type}
-                onClick={() => onChange({ ...filters, mediaType: type })}
+                onClick={() => onChange({ ...filters, mediaType: type, genres: [] })}
                 className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-800 bg-gray-900 text-gray-400'}`}
               >
                 <span className="text-2xl">{type === 'movie' ? '🎬' : '📺'}</span>
@@ -189,151 +337,23 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
             ))}
           </div>
 
-          {/* Žánry */}
-          <p className="text-xs text-gray-500 mb-2">{t('filter.genre')}</p>
-          <div className="grid grid-cols-2 gap-2">
-            {selectedGenres.map(genre => (
-              <button
-                key={genre.id}
-                onClick={() => toggleGenre(genre.id)}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-red-600/20 border border-red-500/40 text-white text-sm font-medium transition-colors hover:bg-red-600/30"
-              >
-                <span className="text-base">{GENRE_ICONS[genre.id] ?? '🎞️'}</span>
-                <span className="truncate">{genre.name}</span>
-              </button>
-            ))}
-            {otherGenres.map(genre => (
-              <button
-                key={genre.id}
-                onClick={() => toggleGenre(genre.id)}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-gray-900 border border-gray-800 text-gray-300 text-sm transition-colors hover:border-gray-600 hover:text-white"
-              >
-                <span className="text-base">{GENRE_ICONS[genre.id] ?? '🎞️'}</span>
-                <span className="truncate">{genre.name}</span>
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* Upřesnění (collapsible) */}
-        <section>
+          {/* Žánry – tlačítko → popup */}
           <button
-            onClick={() => setAdvancedOpen(v => !v)}
-            className="w-full flex items-center justify-between mb-3"
+            onClick={() => setGenreModalOpen(true)}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-600 transition-colors"
           >
-            <h3 className="text-sm font-semibold text-gray-400">{t('filter.refinement')}</h3>
-            <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${advancedOpen ? 'rotate-180' : ''}`} />
+            <span className="text-sm text-gray-300">
+              {filters.genres.length > 0
+                ? selectedGenres.map(g => `${GENRE_ICONS[g.id] ?? '🎞️'} ${g.name}`).join(', ')
+                : t('filter.genre')}
+            </span>
+            <span className="flex items-center gap-1.5 flex-shrink-0 ml-2">
+              {filters.genres.length > 0 && (
+                <span className="bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[20px] text-center">{filters.genres.length}</span>
+              )}
+              <ChevronDown className="w-4 h-4 text-gray-500" />
+            </span>
           </button>
-
-          {advancedOpen && (
-            <div className="space-y-4">
-              {/* Řazení + Věkové hodnocení */}
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <p className="text-xs text-gray-500 mb-1.5">{t('filter.sort')}</p>
-                  <div className="relative">
-                    <select
-                      value={filters.sortBy}
-                      onChange={e => onChange({ ...filters, sortBy: e.target.value as SortOption })}
-                      className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white appearance-none focus:outline-none focus:border-red-500 pr-7"
-                    >
-                      {SORT_OPTIONS.map(o => (
-                        <option key={o.value} value={o.value}>
-                          {t(`sort.${o.value.replace(/\./g, '_')}`)}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 mb-1.5">{t('filter.ageRating')}</p>
-                  <div className="relative">
-                    <select
-                      value={filters.certification}
-                      onChange={e => onChange({ ...filters, certification: e.target.value as FilterState['certification'] })}
-                      className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-xs text-white appearance-none focus:outline-none focus:border-red-500 pr-7"
-                    >
-                      <option value="">{t('filter.ratingAll')}</option>
-                      <option value="G">{t('filter.forKids')}</option>
-                      <option value="PG">{t('filter.children')}</option>
-                      <option value="PG-13">{t('filter.youth')}</option>
-                    </select>
-                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Minimální hodnocení */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs text-gray-500">{t('filter.minRating', { value: filters.minRating > 0 ? filters.minRating.toFixed(1) : t('filter.minRatingAll') })}</p>
-                  <div className="flex gap-0.5">
-                    {[1,2,3,4,5].map(i => (
-                      <span key={i} className={`text-base ${filters.minRating >= i * 2 - 1 ? 'text-yellow-400' : filters.minRating >= i * 2 - 1.5 ? 'text-yellow-400/50' : 'text-gray-700'}`}>★</span>
-                    ))}
-                  </div>
-                </div>
-                <input
-                  type="range" min={0} max={9} step={0.5}
-                  value={filters.minRating}
-                  onChange={e => onChange({ ...filters, minRating: parseFloat(e.target.value) })}
-                  className="w-full accent-red-500"
-                />
-                <div className="flex justify-between text-xs text-gray-600 mt-1">
-                  <span>{t('filter.ratingAll')}</span><span>9.0</span>
-                </div>
-              </div>
-
-              {/* Rok vydání */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs text-gray-500">{t('filter.yearRange', { from: filters.yearFrom, to: filters.yearTo })}</p>
-                </div>
-                <div className="relative mt-3 mb-1">
-                  <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-1 bg-gray-800 rounded-full pointer-events-none">
-                    <div
-                      className="absolute h-full bg-red-500 rounded-full"
-                      style={{
-                        left: `${((filters.yearFrom - 1950) / (CURRENT_YEAR - 1950)) * 100}%`,
-                        right: `${((CURRENT_YEAR - filters.yearTo) / (CURRENT_YEAR - 1950)) * 100}%`,
-                      }}
-                    />
-                  </div>
-                  <div className="dual-range">
-                    <input type="range" min={1950} max={CURRENT_YEAR} step={1} value={filters.yearFrom}
-                      onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearFrom: v, yearTo: Math.max(v, filters.yearTo) }); }}
-                    />
-                    <input type="range" min={1950} max={CURRENT_YEAR} step={1} value={filters.yearTo}
-                      onChange={e => { const v = parseInt(e.target.value); onChange({ ...filters, yearTo: v, yearFrom: Math.min(v, filters.yearFrom) }); }}
-                    />
-                  </div>
-                </div>
-                <div className="flex justify-between text-xs text-gray-600 mt-1">
-                  <span>1950</span><span>{CURRENT_YEAR}</span>
-                </div>
-              </div>
-
-              {/* Země původu */}
-              <div>
-                <p className="text-xs text-gray-500 mb-1.5">{t('filter.originCountry')}</p>
-                <div className="relative">
-                  <select
-                    value={filters.originCountry}
-                    onChange={e => onChange({ ...filters, originCountry: e.target.value })}
-                    className="w-full bg-gray-900 border border-gray-800 rounded-xl px-3 py-2.5 text-sm text-white appearance-none focus:outline-none focus:border-red-500 pr-8"
-                  >
-                    {COUNTRY_CODES.map(code => (
-                      <option key={code} value={code}>
-                        {code === '' ? t('filter.allCountries') : countryDisplayNames.of(code) ?? code}
-                      </option>
-                    ))}
-                  </select>
-                  <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                </div>
-              </div>
-            </div>
-          )}
         </section>
 
         {/* Osoby */}
@@ -439,7 +459,7 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
         <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">{t('filter.contentType')}</label>
         <div className="flex rounded-lg overflow-hidden border border-gray-700">
           {(['movie', 'tv'] as const).map(type => (
-            <button key={type} onClick={() => onChange({ ...filters, mediaType: type })}
+            <button key={type} onClick={() => onChange({ ...filters, mediaType: type, genres: [] })}
               className={`flex-1 py-2 text-sm font-medium transition-colors ${filters.mediaType === type ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
             >{type === 'movie' ? t('filter.movies') : t('filter.series')}</button>
           ))}

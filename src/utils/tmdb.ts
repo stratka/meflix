@@ -37,8 +37,9 @@ async function tmdbFetch<T>(url: string): Promise<T> {
   return res.json();
 }
 
-export async function fetchGenres(): Promise<TMDBGenresResponse> {
-  return tmdbFetch<TMDBGenresResponse>(buildUrl('genre/movie/list', new URLSearchParams({ language: getTmdbLanguage() })));
+export async function fetchGenres(mediaType: 'movie' | 'tv' = 'movie'): Promise<TMDBGenresResponse> {
+  const path = mediaType === 'tv' ? 'genre/tv/list' : 'genre/movie/list';
+  return tmdbFetch<TMDBGenresResponse>(buildUrl(path, new URLSearchParams({ language: getTmdbLanguage() })));
 }
 
 /** Vrátí seznam providerů dostupných v daném regionu (ID + název + logo) */

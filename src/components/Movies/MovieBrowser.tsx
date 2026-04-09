@@ -123,7 +123,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
     searchQuery
   );
 
-  const { genres } = useGenres();
+  const { genres } = useGenres(filters.mediaType);
 
   useEffect(() => {
     const timer = setTimeout(() => {
