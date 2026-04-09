@@ -326,11 +326,13 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3">
               <MovieSkeletonGrid count={20} />
             </div>
-          ) : (idMode ? idMovies : movies).filter(m => !hiddenMovieIds.has(m.id)).filter(m => !idMode ? (
-              filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id))
-            ) : true).filter(m => !idMode ? (
-              filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id))
-            ) : true).sort((a, b) => {
+          ) : (idMode ? idMovies : movies).filter(m => !hiddenMovieIds.has(m.id)).filter(m => {
+              if (!idMode) return filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id));
+              return filters.watchedFilter !== 'hide' || !isWatched(m.id);
+            }).filter(m => {
+              if (!idMode) return filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id));
+              return filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id);
+            }).sort((a, b) => {
               if (filters.watchedFilter !== 'only') return 0;
               const dateA = watched[a.id]?.date ?? '';
               const dateB = watched[b.id]?.date ?? '';
