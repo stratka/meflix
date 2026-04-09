@@ -48,8 +48,8 @@ const cs = {
   browser: {
     searchPlaceholder: 'Hledat film…',
     filters: 'Filtry',
-    reset: 'Resetovat',
-    resetFilters: 'Resetovat filtry ({{count}})',
+    reset: 'Zrušit filtry',
+    resetFilters: 'Zrušit filtry ({{count}})',
     results: '{{count, number}} výsledků',
     movies: '{{count, number}} filmů',
     allShown: 'Zobrazeno všech {{count}} filmů',

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, ChevronDown, SlidersHorizontal, Eye, Bookmark, BarChart2, Sparkles } from 'lucide-react';
+import { Search, X, ChevronDown, SlidersHorizontal, Eye, Bookmark, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Genre } from '../../types/tmdb';
 import type { FilterState, SortOption } from '../../types/app';
@@ -98,30 +98,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
 
   const mobilePanel = (
     <div className="fixed inset-0 z-50 bg-gray-950 flex flex-col overflow-hidden">
-      {/* Header */}
-      <div className="px-4 pt-5 pb-3 flex-shrink-0">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-white">{t('filter.findYourMovie')}</h2>
-          <button
-            onClick={() => setAdvancedOpen(v => !v)}
-            className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-colors ${advancedOpen ? 'border-red-500 text-red-400 bg-red-500/10' : 'border-gray-700 text-gray-400'}`}
-          >
-            <SlidersHorizontal className="w-3.5 h-3.5" />
-            {t('filter.refine')}
-          </button>
-        </div>
-
-        {/* Stats */}
-        {totalResults !== undefined && totalResults > 0 && (
-          <div className="flex items-center gap-2 px-3 py-2.5 bg-gray-900 rounded-xl border border-gray-800 mb-4">
-            <BarChart2 className="w-4 h-4 text-blue-400 flex-shrink-0" />
-            <span className="text-sm text-white">
-              <span className="font-bold text-blue-400">{totalResults.toLocaleString()}</span>
-              {' '}{t('filter.moviesAvailable')}
-            </span>
-          </div>
-        )}
-      </div>
 
       {/* Genre popup modal */}
       {genreModalOpen && (
@@ -275,9 +251,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
 
         {/* Váš výběr */}
         <section>
-          <h3 className="text-sm font-semibold text-gray-400 mb-3 flex items-center gap-1.5">
-            <Eye className="w-4 h-4" /> {t('filter.yourSelection')}
-          </h3>
           <div className="space-y-2.5">
             <div>
               <p className="text-xs text-gray-500 mb-1.5">{t('filter.watched')}</p>
@@ -320,8 +293,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
 
         {/* Co hledáte */}
         <section>
-          <h3 className="text-sm font-semibold text-gray-400 mb-3">{t('filter.whatAreYouLookingFor')}</h3>
-
           {/* Typ obsahu */}
           <div className="flex gap-2 mb-4">
             {(['movie', 'tv'] as const).map(type => (
