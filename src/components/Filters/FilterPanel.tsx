@@ -95,7 +95,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
   ].filter(Boolean).length;
 
   const selectedGenres = genres.filter(g => filters.genres.includes(g.id));
-  const otherGenres = genres.filter(g => !filters.genres.includes(g.id));
 
   const mobilePanel = (
     <div className="fixed inset-0 z-50 bg-gray-950 flex flex-col overflow-hidden">
