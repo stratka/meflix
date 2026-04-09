@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.mimoovie.app",
+      "sha256_cert_fingerprints": [
+        "9D:01:E0:4E:87:81:BC:A8:88:88:CD:26:E8:72:24:FA:82:82:11:3F:A0:C0:87:AA:8B:44:1E:31:DA:28:2A:6D"
+      ]
+    }
+  }
+]
