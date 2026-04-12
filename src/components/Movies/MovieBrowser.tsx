@@ -160,7 +160,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
         .filter(m => filters.watchedFilter !== 'hide' || !isWatched(m.id))
         .filter(m => filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id))
         .filter(m => {
-              const isASL = m.original_language === 'sgn' || /\bASL\b/i.test(m.title ?? '') || /\bASL\b/i.test(m.original_title ?? '');
+              const isASL = m.original_language === 'sgn' || /\bASL\b/i.test(m.title ?? '');
               return filters.signLanguage ? isASL : !isASL;
             })
         .length
@@ -346,7 +346,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
               if (!idMode) return filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id));
               return filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id);
             }).filter(m => {
-              const isASL = m.original_language === 'sgn' || /\bASL\b/i.test(m.title ?? '') || /\bASL\b/i.test(m.original_title ?? '');
+              const isASL = m.original_language === 'sgn' || /\bASL\b/i.test(m.title ?? '');
               return filters.signLanguage ? isASL : !isASL;
             })
             .sort((a, b) => {
@@ -364,7 +364,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                   .filter(m => { if (!idMode) return filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id)); return filters.watchedFilter !== 'hide' || !isWatched(m.id); })
                   .filter(m => { if (!idMode) return filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id)); return filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id); })
                   .filter(m => {
-              const isASL = m.original_language === 'sgn' || /\bASL\b/i.test(m.title ?? '') || /\bASL\b/i.test(m.original_title ?? '');
+              const isASL = m.original_language === 'sgn' || /\bASL\b/i.test(m.title ?? '');
               return filters.signLanguage ? isASL : !isASL;
             })
                   .sort((a, b) => {
