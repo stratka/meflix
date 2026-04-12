@@ -159,7 +159,10 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
         .filter(m => !hiddenMovieIds.has(m.id))
         .filter(m => filters.watchedFilter !== 'hide' || !isWatched(m.id))
         .filter(m => filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id))
-        .filter(m => filters.signLanguage ? m.original_language === 'sgn' : m.original_language !== 'sgn')
+        .filter(m => {
+              const isASL = m.original_language === 'sgn' || /\bASL\b/i.test(m.title ?? '') || /\bASL\b/i.test(m.original_title ?? '');
+              return filters.signLanguage ? isASL : !isASL;
+            })
         .length
     : totalResults;
 
@@ -342,7 +345,10 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
             }).filter(m => {
               if (!idMode) return filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id));
               return filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id);
-            }).filter(m => filters.signLanguage ? m.original_language === 'sgn' : m.original_language !== 'sgn')
+            }).filter(m => {
+              const isASL = m.original_language === 'sgn' || /\bASL\b/i.test(m.title ?? '') || /\bASL\b/i.test(m.original_title ?? '');
+              return filters.signLanguage ? isASL : !isASL;
+            })
             .sort((a, b) => {
               if (filters.watchedFilter !== 'only') return 0;
               const dateA = watched[a.id]?.date ?? '';
@@ -357,7 +363,10 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                   .filter(m => !hiddenMovieIds.has(m.id))
                   .filter(m => { if (!idMode) return filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id)); return filters.watchedFilter !== 'hide' || !isWatched(m.id); })
                   .filter(m => { if (!idMode) return filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id)); return filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id); })
-                  .filter(m => filters.signLanguage ? m.original_language === 'sgn' : m.original_language !== 'sgn')
+                  .filter(m => {
+              const isASL = m.original_language === 'sgn' || /\bASL\b/i.test(m.title ?? '') || /\bASL\b/i.test(m.original_title ?? '');
+              return filters.signLanguage ? isASL : !isASL;
+            })
                   .sort((a, b) => {
                     if (filters.watchedFilter !== 'only') return 0;
                     const dateA = watched[a.id]?.date ?? '';
