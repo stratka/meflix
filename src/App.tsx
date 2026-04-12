@@ -63,7 +63,7 @@ export default function App() {
           </a>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-600">v1.7.8</span>
+          <span className="text-xs text-gray-600">v1.8.0</span>
           <a
             href="/mimoovie.apk"
             download="mimoovie.apk"
