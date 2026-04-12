@@ -253,6 +253,13 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
                 ))}
               </div>
             </div>
+            <button
+              onClick={() => onChange({ ...filters, signLanguage: !filters.signLanguage })}
+              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border text-xs font-medium transition-colors ${filters.signLanguage ? 'border-blue-500 bg-blue-500/10 text-blue-300' : 'border-gray-800 bg-gray-900 text-gray-500 hover:text-gray-300'}`}
+            >
+              <span>🤟</span>
+              <span>{filters.signLanguage ? 'Jen znakový jazyk' : 'Zobrazit jen znakový jazyk'}</span>
+            </button>
           </div>
         </section>
 
@@ -447,6 +454,13 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
               ))}
             </div>
           </div>
+          <button
+            onClick={() => onChange({ ...filters, signLanguage: !filters.signLanguage })}
+            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border text-xs font-medium transition-colors ${filters.signLanguage ? 'border-blue-500 bg-blue-500/10 text-blue-300' : 'border-gray-700 bg-gray-800 text-gray-500 hover:text-gray-300'}`}
+          >
+            <span>🤟</span>
+            <span>{filters.signLanguage ? 'Jen znakový jazyk' : 'Zobrazit jen znakový jazyk'}</span>
+          </button>
         </div>
       </section>
 

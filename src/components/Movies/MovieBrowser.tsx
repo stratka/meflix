@@ -45,6 +45,7 @@ const DEFAULT_FILTERS: FilterState = {
   originCountry: '',
   mediaType: 'movie',
   certification: '' as const,
+  signLanguage: false,
 };
 
 function loadFilters(): FilterState {
@@ -158,6 +159,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
         .filter(m => !hiddenMovieIds.has(m.id))
         .filter(m => filters.watchedFilter !== 'hide' || !isWatched(m.id))
         .filter(m => filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id))
+        .filter(m => filters.signLanguage ? m.original_language === 'sgn' : m.original_language !== 'sgn')
         .length
     : totalResults;
 
@@ -340,7 +342,8 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
             }).filter(m => {
               if (!idMode) return filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id));
               return filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id);
-            }).sort((a, b) => {
+            }).filter(m => filters.signLanguage ? m.original_language === 'sgn' : m.original_language !== 'sgn')
+            .sort((a, b) => {
               if (filters.watchedFilter !== 'only') return 0;
               const dateA = watched[a.id]?.date ?? '';
               const dateB = watched[b.id]?.date ?? '';
@@ -354,6 +357,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                   .filter(m => !hiddenMovieIds.has(m.id))
                   .filter(m => { if (!idMode) return filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id)); return filters.watchedFilter !== 'hide' || !isWatched(m.id); })
                   .filter(m => { if (!idMode) return filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id)); return filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id); })
+                  .filter(m => filters.signLanguage ? m.original_language === 'sgn' : m.original_language !== 'sgn')
                   .sort((a, b) => {
                     if (filters.watchedFilter !== 'only') return 0;
                     const dateA = watched[a.id]?.date ?? '';

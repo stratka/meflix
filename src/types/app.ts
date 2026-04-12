@@ -27,6 +27,7 @@ export interface FilterState {
   originCountry: string;
   mediaType: 'movie' | 'tv';
   certification: '' | 'G' | 'PG' | 'PG-13';
+  signLanguage: boolean;
 }
 
 export interface WatchedEntry {
