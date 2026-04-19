@@ -51,7 +51,7 @@ const cs = {
     reset: 'Zrušit filtry',
     resetFilters: 'Zrušit filtry ({{count}})',
     results: '{{count, number}} výsledků',
-    movies: '{{count, number}} filmů',
+    movies: '{{count, number}} položek',
     allShown: 'Zobrazeno všech {{count}} filmů',
     total: 'Celkem {{count}} filmů',
     tryAgain: 'Zkusit znovu', noServices: 'Není vybrána žádná služba – zobrazují se všechny filmy', addServices: 'Přidat služby',

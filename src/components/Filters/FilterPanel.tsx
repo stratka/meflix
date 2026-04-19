@@ -99,21 +99,12 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
     <div className="fixed inset-0 z-50 bg-gray-950 flex flex-col overflow-hidden">
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-5">
+      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-4 space-y-5">
 
-        {/* Filmy / Seriály + Žánr */}
+        <h2 className="text-lg font-bold text-white">{t('filter.title')}</h2>
+
+        {/* Žánr */}
         <section>
-          <div className="flex gap-2 mb-4">
-            {(['movie', 'tv'] as const).map(type => (
-              <button
-                key={type}
-                onClick={() => onChange({ ...filters, mediaType: type, genres: [] })}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-800 bg-gray-900 text-gray-400'}`}
-              >
-                <span className="text-sm font-medium">{type === 'movie' ? t('filter.movies') : t('filter.series')}</span>
-              </button>
-            ))}
-          </div>
           <button
             onClick={() => setGenreModalOpen(true)}
             className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-900 border border-gray-800 hover:border-gray-600 transition-colors"
@@ -223,30 +214,11 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
                 {([
                   { value: 'all', label: t('filter.all') },
                   { value: 'hide', label: t('filter.hide') },
-                  { value: 'only', label: t('filter.onlyWatched') },
                 ] as const).map(opt => (
                   <button
                     key={opt.value}
                     onClick={() => onChange({ ...filters, watchedFilter: opt.value })}
                     className={`flex-1 py-2 text-xs font-medium transition-colors ${filters.watchedFilter === opt.value ? 'bg-red-600 text-white' : 'bg-gray-900 text-gray-400 hover:text-white'}`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="text-xs text-gray-500 mb-1.5">{t('filter.watchlist')}</p>
-              <div className="flex rounded-xl overflow-hidden border border-gray-800">
-                {([
-                  { value: 'all', label: t('filter.all') },
-                  { value: 'hide', label: t('filter.hide') },
-                  { value: 'only', label: t('filter.onlyWatchlist') },
-                ] as const).map(opt => (
-                  <button
-                    key={opt.value}
-                    onClick={() => onChange({ ...filters, watchlistFilter: opt.value })}
-                    className={`flex-1 py-2 text-xs font-medium transition-colors ${filters.watchlistFilter === opt.value ? 'bg-red-600 text-white' : 'bg-gray-900 text-gray-400 hover:text-white'}`}
                   >
                     {opt.label}
                   </button>
@@ -265,7 +237,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
 
         {/* Osoby */}
         <section>
-          <h3 className="text-sm font-semibold text-gray-400 mb-3">{t('filter.personSearch')}</h3>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <input
@@ -295,21 +266,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
           )}
           {personSearchLoading && <p className="text-xs text-gray-500 mt-1">{t('filter.searching')}</p>}
           {filters.personId && <p className="text-xs text-green-400 mt-1">{t('filter.filteredBy', { name: filters.personName })}</p>}
-
-          {/* Quick persons */}
-          {!filters.personId && (
-            <div className="flex flex-wrap gap-2 mt-2">
-              {QUICK_PERSONS.map(p => (
-                <button
-                  key={p.id}
-                  onClick={() => selectPerson(p.id, p.fullName, p.dept)}
-                  className="px-3 py-1.5 bg-gray-900 border border-gray-800 rounded-full text-xs text-gray-300 hover:border-gray-600 hover:text-white transition-colors"
-                >
-                  {p.name}
-                </button>
-              ))}
-            </div>
-          )}
         </section>
       </div>
 
@@ -333,16 +289,8 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
   // Desktop sidebar
   const desktopPanel = (
     <div className="space-y-5">
-      {/* Filmy / Seriály + Žánr */}
+      {/* Žánr */}
       <section>
-        <div className="flex gap-2 mb-4">
-          {(['movie', 'tv'] as const).map(type => (
-            <button key={type} onClick={() => onChange({ ...filters, mediaType: type, genres: [] })}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border transition-colors ${filters.mediaType === type ? 'border-blue-500 bg-blue-500/10 text-white' : 'border-gray-700 bg-gray-800 text-gray-400'}`}>
-              <span className="text-sm font-medium">{type === 'movie' ? t('filter.movies') : t('filter.series')}</span>
-            </button>
-          ))}
-        </div>
         <button onClick={() => setGenreModalOpen(true)}
           className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-gray-800 border border-gray-700 hover:border-gray-600 transition-colors">
           <span className="text-sm text-gray-300">
@@ -437,19 +385,9 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
           <div>
             <p className="text-xs text-gray-500 mb-1.5">{t('filter.watched')}</p>
             <div className="flex rounded-xl overflow-hidden border border-gray-700">
-              {([{ value: 'all', label: t('filter.all') }, { value: 'hide', label: t('filter.hide') }, { value: 'only', label: t('filter.onlyWatched') }] as const).map(opt => (
+              {([{ value: 'all', label: t('filter.all') }, { value: 'hide', label: t('filter.hide') }] as const).map(opt => (
                 <button key={opt.value} onClick={() => onChange({ ...filters, watchedFilter: opt.value })}
                   className={`flex-1 py-2 text-xs font-medium transition-colors ${filters.watchedFilter === opt.value ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
-                >{opt.label}</button>
-              ))}
-            </div>
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 mb-1.5">{t('filter.watchlist')}</p>
-            <div className="flex rounded-xl overflow-hidden border border-gray-700">
-              {([{ value: 'all', label: t('filter.all') }, { value: 'hide', label: t('filter.hide') }, { value: 'only', label: t('filter.onlyWatchlist') }] as const).map(opt => (
-                <button key={opt.value} onClick={() => onChange({ ...filters, watchlistFilter: opt.value })}
-                  className={`flex-1 py-2 text-xs font-medium transition-colors ${filters.watchlistFilter === opt.value ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white'}`}
                 >{opt.label}</button>
               ))}
             </div>
@@ -466,7 +404,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
 
       {/* Osoby */}
       <section>
-        <h3 className="text-sm font-semibold text-gray-400 mb-3">{t('filter.personSearch')}</h3>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
           <input type="text" value={personQuery} onChange={e => setPersonQuery(e.target.value)} placeholder={t('filter.personPlaceholder')}
@@ -489,16 +426,6 @@ export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMob
         )}
         {personSearchLoading && <p className="text-xs text-gray-500 mt-1">{t('filter.searching')}</p>}
         {filters.personId && <p className="text-xs text-green-400 mt-1">{t('filter.filteredBy', { name: filters.personName })}</p>}
-        {!filters.personId && (
-          <div className="flex flex-wrap gap-2 mt-2">
-            {QUICK_PERSONS.map(p => (
-              <button key={p.id} onClick={() => selectPerson(p.id, p.fullName, p.dept)}
-                className="px-3 py-1.5 bg-gray-800 border border-gray-700 rounded-full text-xs text-gray-300 hover:border-gray-600 hover:text-white transition-colors">
-                {p.name}
-              </button>
-            ))}
-          </div>
-        )}
       </section>
     </div>
   );

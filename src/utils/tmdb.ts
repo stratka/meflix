@@ -96,6 +96,7 @@ export async function discoverMovies(
     if (filters.personRole === 'cast') params.set('with_cast', String(filters.personId));
     else params.set('with_crew', String(filters.personId));
   }
+  if (filters.signLanguage) params.set('with_keywords', '188953|210910');
   if (filters.originCountry) params.set('with_origin_country', filters.originCountry);
   if (filters.certification) {
     params.set('certification_country', 'US');

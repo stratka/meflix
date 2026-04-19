@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { AlertCircle, RefreshCw, Search, X, ArrowLeft, SlidersHorizontal } from 'lucide-react';
+import { AlertCircle, RefreshCw, Search, X, ArrowLeft, SlidersHorizontal, Eye, Bookmark } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { User } from '@supabase/supabase-js';
 import type { TMDBMovie } from '../../types/tmdb';
@@ -159,10 +159,6 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
         .filter(m => !hiddenMovieIds.has(m.id))
         .filter(m => filters.watchedFilter !== 'hide' || !isWatched(m.id))
         .filter(m => filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id))
-        .filter(m => {
-              const isASL = m.original_language === 'sgn' || /\bASL\b/i.test(m.title ?? '');
-              return filters.signLanguage ? isASL : !isASL;
-            })
         .length
     : totalResults;
 
@@ -285,9 +281,50 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
             </button>
           )}
 
+          {/* Watched & Watchlist toggles + media type */}
+          <div className="flex items-center gap-1 ml-auto">
+            <button
+              onClick={() => setFilters(f => ({ ...f, watchedFilter: f.watchedFilter === 'only' ? 'all' : 'only', watchlistFilter: f.watchedFilter !== 'only' ? 'all' : f.watchlistFilter }))}
+              className={`w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${
+                filters.watchedFilter === 'only'
+                  ? 'text-red-500 bg-red-500/15'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-800'
+              }`}
+              title={t('filter.watched')}
+            >
+              <Eye className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setFilters(f => ({ ...f, watchlistFilter: f.watchlistFilter === 'only' ? 'all' : 'only', watchedFilter: f.watchlistFilter !== 'only' ? 'all' : f.watchedFilter }))}
+              className={`w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${
+                filters.watchlistFilter === 'only'
+                  ? 'text-red-500 bg-red-500/15'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-800'
+              }`}
+              title={t('filter.watchlist')}
+            >
+              <Bookmark className="w-5 h-5" />
+            </button>
+            <div className="flex rounded-lg overflow-hidden border border-gray-700 ml-1">
+              {(['movie', 'tv'] as const).map(type => (
+                <button
+                  key={type}
+                  onClick={() => setFilters(f => ({ ...f, mediaType: type, genres: [] }))}
+                  className={`px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                    filters.mediaType === type
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-800 text-gray-400 hover:text-white'
+                  }`}
+                >
+                  {type === 'movie' ? t('filter.movies') : t('filter.series')}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Počet výsledků */}
           {(idMode ? idMovies.length > 0 : totalResults > 0) && (
-            <span className="text-sm text-gray-500 ml-auto">
+            <span className="text-sm text-gray-500">
               {isSearching
                 ? t('browser.results', { count: totalResults })
                 : t('browser.movies', { count: idMode ? idMovies.length : totalResults })}
@@ -345,9 +382,6 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
             }).filter(m => {
               if (!idMode) return filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id));
               return filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id);
-            }).filter(m => {
-              const isASL = m.original_language === 'sgn' || /\bASL\b/i.test(m.title ?? '');
-              return filters.signLanguage ? isASL : !isASL;
             })
             .sort((a, b) => {
               if (filters.watchedFilter !== 'only') return 0;
@@ -363,11 +397,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                   .filter(m => !hiddenMovieIds.has(m.id))
                   .filter(m => { if (!idMode) return filters.watchedFilter === 'all' || (filters.watchedFilter === 'hide' ? !isWatched(m.id) : isWatched(m.id)); return filters.watchedFilter !== 'hide' || !isWatched(m.id); })
                   .filter(m => { if (!idMode) return filters.watchlistFilter === 'all' || (filters.watchlistFilter === 'hide' ? !isInWatchlist(m.id) : isInWatchlist(m.id)); return filters.watchlistFilter !== 'hide' || !isInWatchlist(m.id); })
-                  .filter(m => {
-              const isASL = m.original_language === 'sgn' || /\bASL\b/i.test(m.title ?? '');
-              return filters.signLanguage ? isASL : !isASL;
-            })
-                  .sort((a, b) => {
+                            .sort((a, b) => {
                     if (filters.watchedFilter !== 'only') return 0;
                     const dateA = watched[a.id]?.date ?? '';
                     const dateB = watched[b.id]?.date ?? '';
@@ -380,6 +410,7 @@ export function MovieBrowser({ settings, user, resetKey, watched, markWatched, u
                     onClick={setSelectedMovie}
                     isWatched={isWatched(movie.id)}
                     watchedDate={watched[movie.id]?.date}
+                    isInWatchlist={isInWatchlist(movie.id)}
                     dimmed={unavailableIds.has(movie.id)}
                     availableOn={unavailableIds.has(movie.id) ? movieProviders.get(movie.id) : undefined}
                   />

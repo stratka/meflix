@@ -1,4 +1,4 @@
-import { Star, Eye } from 'lucide-react';
+import { Star, Eye, Bookmark } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { TMDBMovie } from '../../types/tmdb';
 import type { StreamingService } from '../../types/app';
@@ -9,11 +9,12 @@ interface Props {
   onClick: (movie: TMDBMovie) => void;
   isWatched?: boolean;
   watchedDate?: string;
+  isInWatchlist?: boolean;
   dimmed?: boolean;
   availableOn?: StreamingService[];
 }
 
-export function MovieCard({ movie, onClick, isWatched, watchedDate, dimmed, availableOn }: Props) {
+export function MovieCard({ movie, onClick, isWatched, watchedDate, isInWatchlist, dimmed, availableOn }: Props) {
   const { t, i18n } = useTranslation();
 
   const posterUrl = movie.poster_path
@@ -69,6 +70,12 @@ export function MovieCard({ movie, onClick, isWatched, watchedDate, dimmed, avai
                 ? new Date(watchedDate).toLocaleDateString(i18n.language, { day: 'numeric', month: 'numeric', year: '2-digit' })
                 : t('watched.badge')}
             </span>
+          </div>
+        )}
+        {/* Watchlist badge */}
+        {isInWatchlist && !isWatched && (
+          <div className="absolute bottom-2 left-2 bg-blue-600/90 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center gap-1">
+            <Bookmark className="w-3 h-3 text-white fill-white" />
           </div>
         )}
       </div>

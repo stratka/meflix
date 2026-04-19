@@ -99,7 +99,7 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
     document.body.style.overflow = 'hidden';
     return () => {
       document.body.style.overflow = '';
-      try { (screen.orientation as any).lock('portrait'); } catch { /* ignore */ }
+      try { (screen.orientation as any).lock?.('portrait')?.catch?.(() => {}); } catch { /* ignore */ }
     };
   }, []);
 
@@ -141,12 +141,16 @@ export function MovieModal({ movie, settings, onClose, watchedEntry, onMarkWatch
   useEffect(() => {
     history.pushState({ modal: true }, '');
     const handlePopState = () => onCloseRef.current();
-    window.addEventListener('popstate', handlePopState);
+    // Delay listener to avoid StrictMode double-mount popstate ghost
+    const timer = setTimeout(() => {
+      window.addEventListener('popstate', handlePopState);
+    }, 50);
     return () => {
+      clearTimeout(timer);
       window.removeEventListener('popstate', handlePopState);
       if (history.state?.modal) history.back();
     };
-  }, []); // prázdné deps — efekt běží jen při mount/unmount, ne při každém re-renderu
+  }, []);
 
   const backdropUrl = movie.backdrop_path
     ? `${TMDB_IMAGE_BASE}/w1280${movie.backdrop_path}`

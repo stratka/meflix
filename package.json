@@ -1,7 +1,7 @@
 {
   "name": "mimoovie",
   "private": true,
-  "version": "1.7.8",
+  "version": "1.8.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
