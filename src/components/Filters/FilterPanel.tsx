@@ -26,12 +26,6 @@ const GENRE_ICONS: Record<number, string> = {
   53: '😰', 10752: '🎖️', 37: '🤠',
 };
 
-const QUICK_PERSONS = [
-  { id: 525, name: 'Nolan', fullName: 'Christopher Nolan', dept: 'Directing' },
-  { id: 6193, name: 'DiCaprio', fullName: 'Leonardo DiCaprio', dept: 'Acting' },
-  { id: 55428, name: 'Villeneuve', fullName: 'Denis Villeneuve', dept: 'Directing' },
-  { id: 138, name: 'Tarantino', fullName: 'Quentin Tarantino', dept: 'Directing' },
-];
 
 export function FilterPanel({ filters, genres, onChange, mobileOpen: externalMobileOpen, onMobileOpenChange, totalResults }: Props) {
   const { t, i18n } = useTranslation();
