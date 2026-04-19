@@ -77,7 +77,7 @@ export async function discoverMovies(
 
   const params = new URLSearchParams({
     sort_by: filters.sortBy,
-    'vote_count.gte': '5',
+    'vote_count.gte': '20',
     page: String(page),
     language: getTmdbLanguage(),
   });

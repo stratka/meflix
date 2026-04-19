@@ -39,7 +39,7 @@ const DEFAULT_FILTERS: FilterState = {
   personId: null,
   personName: '',
   personRole: 'cast',
-  sortBy: 'vote_average.desc',
+  sortBy: 'popularity.desc',
   watchedFilter: 'all' as const,
   watchlistFilter: 'all' as const,
   originCountry: '',
